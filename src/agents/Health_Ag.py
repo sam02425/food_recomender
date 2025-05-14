@@ -1,3 +1,4 @@
+# /agents/Health_Ag.py
 """
 Health Recommender Agent for making activity-based food recommendations.
 """
@@ -483,6 +484,8 @@ class HealthRecommenderAgent:
         # Add mood-specific reasoning
         if "reasoning" in adjusted_recs:
             adjusted_recs["reasoning"] = f"{adjusted_recs['reasoning']} {mood_adjustments[mood]['reasoning_suffix']}"
+        else:
+            adjusted_recs["reasoning"] = mood_adjustments[mood]['reasoning_suffix']
 
         # Adjust veggie recommendations for mood
         if "veggies" in adjusted_recs:

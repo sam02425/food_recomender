@@ -1,3 +1,4 @@
+# /main.py
 """
 Main application for the self-ordering kiosk system.
 This integrates all agent components and manages the ordering workflow.
