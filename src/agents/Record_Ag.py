@@ -69,6 +69,35 @@ class RecordKeeperAgent:
                 writer.writerow(headers)
             logger.debug(f"Initialized CSV file: {file_path}")
 
+    def get_customer_by_id(self, customer_id: str) -> Optional[Dict[str, Any]]:
+        """
+        Retrieve customer information by customer ID.
+
+        Args:
+            customer_id: Customer ID to search for
+
+        Returns:
+            Customer data or None if not found
+        """
+        try:
+            with open(self.customers_path, 'r', newline='') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    if row["customer_id"] == customer_id:
+                        return {
+                            "customer_id": row["customer_id"],
+                            "name": row["name"],
+                            "phone_number": row["phone_number"],
+                            "face_id": row["face_id"],
+                            "visit_count": int(row["visit_count"]) if row["visit_count"] else 0,
+                            "last_visit": row["last_visit"],
+                            "created_at": row["created_at"]
+                        }
+            return None
+        except Exception as e:
+            logger.error(f"Error finding customer by ID: {e}")
+            return None
+
     def get_customer_by_face_id(self, face_id: str) -> Optional[Dict[str, Any]]:
         """
         Retrieve customer information by face ID.

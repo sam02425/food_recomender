@@ -21,6 +21,8 @@ from agents.weather_recommender_agent import WeatherRecommenderAgent
 from agents.entertainer_agent import EntertainerAgent
 from agents.learner_agent import LearnerAgent
 from agents.record_keeper_agent import RecordKeeperAgent
+from agents.social_agent import SocialAgent
+
 
 # Import UI components
 from ui.kiosk_app import run_kiosk_ui
@@ -80,6 +82,10 @@ class SelfOrderingKiosk:
             orders_path=os.path.join(data_dir, "orders.csv"),
             feedback_path=os.path.join(data_dir, "feedback.csv"),
             customers_path=os.path.join(data_dir, "customers.csv")
+        )
+        self.social_agent = SocialAgent(
+            social_data_path=os.path.join(data_dir, "social_data.json"),
+            media_storage_path=os.path.join(data_dir, "social_media")
         )
 
         # Current session state
@@ -466,6 +472,57 @@ class SelfOrderingKiosk:
 
         logger.info(f"Generated dish name suggestions")
         return name_suggestions
+
+    def generate_social_sharing(self, customer_id: str, dish_name: str) -> Dict[str, Any]:
+        """
+        Generate social sharing prompt for customer.
+
+        Args:
+            customer_id: Customer ID
+            dish_name: Name of the dish
+
+        Returns:
+            Social sharing prompt information
+        """
+        customer = self.record_keeper.get_customer_by_id(customer_id)
+        customer_name = customer.get("name", "Guest") if customer else "Guest"
+
+        return self.social_agent.generate_share_prompt(customer_name, dish_name)
+
+    def handle_social_sharing(self, customer_id: str, image_data: bytes,
+                            dish_name: str, platforms: List[str],
+                            caption: str) -> Dict[str, Any]:
+        """
+        Handle social media sharing process.
+
+        Args:
+            customer_id: Customer ID
+            image_data: Image binary data
+            dish_name: Name of the dish
+            platforms: List of platforms to share to
+            caption: Sharing caption
+
+        Returns:
+            Sharing results
+        """
+        # Store the customer photo
+        photo_info = self.social_agent.store_customer_photo(
+            customer_id=customer_id,
+            image_data=image_data,
+            dish_name=dish_name
+        )
+
+        if "error" in photo_info:
+            logger.error(f"Failed to store customer photo: {photo_info['error']}")
+            return {"success": False, "error": photo_info["error"]}
+
+        # Share to selected platforms
+        return self.social_agent.share_to_platforms(
+            customer_id=customer_id,
+            image_path=photo_info["file_path"],
+            caption=caption,
+            platforms=platforms
+        )
 
     def process_recommendation_feedback(self, recommendation_type: str, feedback: str,
                                       custom_suggestion: Optional[str] = None) -> Dict[str, Any]:
