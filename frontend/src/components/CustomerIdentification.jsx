@@ -1,0 +1,286 @@
+// frontend/src/components/CustomerIdentification.jsx
+import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
+/**
+ * Production-level component for customer identification with input validation,
+ * error handling, accessibility features, and proper loading states.
+ */
+const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => {
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [imageData, setImageData] = useState(null);
+  const [errors, setErrors] = useState({});
+  const [isCameraAvailable, setIsCameraAvailable] = useState(true);
+  const fileInputRef = useRef(null);
+  const phoneInputRef = useRef(null);
+
+  // Format phone number with appropriate separators
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+
+    // Remove all non-digit characters
+    const phoneNumber = value.replace(/\D/g, '');
+
+    // Format the phone number as needed (US format example)
+    if (phoneNumber.length <= 3) {
+      return phoneNumber;
+    } else if (phoneNumber.length <= 6) {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+    } else {
+      return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+    }
+  };
+
+  // Handle phone number input with formatting
+  const handlePhoneChange = (e) => {
+    const formattedNumber = formatPhoneNumber(e.target.value);
+    setPhoneNumber(formattedNumber);
+
+    // Clear error when user is typing
+    if (errors.phoneNumber) {
+      setErrors({...errors, phoneNumber: null});
+    }
+  };
+
+  // Check if camera is available when component mounts
+  useEffect(() => {
+    // Check if navigator.mediaDevices is supported
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(() => setIsCameraAvailable(true))
+        .catch(() => setIsCameraAvailable(false));
+    } else {
+      setIsCameraAvailable(false);
+    }
+
+    // Focus on phone input when component mounts
+    if (phoneInputRef.current) {
+      phoneInputRef.current.focus();
+    }
+  }, []);
+
+  // Handle photo capture
+  const handlePhotoCapture = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type and size
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+
+    if (!validTypes.includes(file.type)) {
+      setErrors({...errors, image: 'Please select a JPEG or PNG image'});
+      return;
+    }
+
+    if (file.size > maxSize) {
+      setErrors({...errors, image: 'Image size should be less than 5MB'});
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setImageData(reader.result);
+      // Clear any image errors
+      setErrors({...errors, image: null});
+    };
+    reader.onerror = () => {
+      setErrors({...errors, image: 'Failed to read image file'});
+    };
+  };
+
+  // Take a new photo
+  const handleTakePhoto = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // Clear the current photo
+  const handleClearPhoto = () => {
+    setImageData(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+    // Clear image errors
+    setErrors({...errors, image: null});
+  };
+
+  // Validate form
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Check if at least phone or image is provided
+    if (!phoneNumber && !imageData) {
+      newErrors.form = 'Please provide either a phone number or a photo for identification';
+    }
+
+    // Validate phone number if provided
+    if (phoneNumber) {
+      const digitsOnly = phoneNumber.replace(/\D/g, '');
+      if (digitsOnly.length !== 10) {
+        newErrors.phoneNumber = 'Please enter a valid 10-digit phone number';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Handle form submission
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    // Process the phone number to strip formatting
+    const processedPhoneNumber = phoneNumber ? phoneNumber.replace(/\D/g, '') : null;
+
+    // Submit to parent component
+    onCustomerIdentified({
+      phoneNumber: processedPhoneNumber,
+      imageData
+    });
+  };
+
+  return (
+    <div className="max-w-md mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-center" id="identification-heading">Welcome!</h2>
+      <p className="text-gray-600 mb-6 text-center">
+        Please identify yourself for a personalized experience
+      </p>
+
+      {errors.form && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md" role="alert">
+          {errors.form}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} aria-labelledby="identification-heading">
+        <div className="mb-4">
+          <label htmlFor="phoneNumber" className="block text-gray-700 mb-2">
+            Phone Number
+          </label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            ref={phoneInputRef}
+            value={phoneNumber}
+            onChange={handlePhoneChange}
+            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
+            }`}
+            placeholder="(555) 555-5555"
+            aria-invalid={errors.phoneNumber ? 'true' : 'false'}
+            aria-describedby={errors.phoneNumber ? 'phone-error' : undefined}
+          />
+          {errors.phoneNumber && (
+            <p id="phone-error" className="mt-1 text-red-500 text-sm">
+              {errors.phoneNumber}
+            </p>
+          )}
+        </div>
+
+        <div className="mb-6">
+          <p className="block text-gray-700 mb-2">Take a Photo (optional)</p>
+
+          {!isCameraAvailable && (
+            <p className="mb-2 text-amber-600 text-sm">
+              Camera access is not available on your device or browser.
+            </p>
+          )}
+
+          <input
+            type="file"
+            accept="image/*"
+            capture="user"
+            ref={fileInputRef}
+            onChange={handlePhotoCapture}
+            className="hidden"
+            aria-label="Take photo for identification"
+            disabled={!isCameraAvailable}
+          />
+
+          {errors.image && (
+            <p className="mb-2 text-red-500 text-sm" role="alert">
+              {errors.image}
+            </p>
+          )}
+
+          {imageData ? (
+            <div className="mb-3">
+              <div className="relative">
+                <img
+                  src={imageData}
+                  alt="Captured"
+                  className="w-full h-40 object-cover rounded-md mb-2"
+                />
+                <button
+                  type="button"
+                  onClick={handleClearPhoto}
+                  className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full"
+                  aria-label="Clear photo"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </div>
+              <button
+                type="button"
+                onClick={handleTakePhoto}
+                className="text-blue-600 hover:text-blue-800 text-sm"
+              >
+                Take Another Photo
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={handleTakePhoto}
+              className="w-full py-3 bg-gray-200 hover:bg-gray-300 rounded-md transition-colors flex items-center justify-center disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed"
+              disabled={!isCameraAvailable}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+              </svg>
+              Take Photo
+            </button>
+          )}
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading || (!phoneNumber && !imageData)}
+          className={`
+            w-full py-2 rounded-md text-white transition-colors flex items-center justify-center
+            ${isLoading || (!phoneNumber && !imageData)
+              ? 'bg-gray-400 cursor-not-allowed'
+              : 'bg-blue-600 hover:bg-blue-700'}
+          `}
+          aria-busy={isLoading ? 'true' : 'false'}
+        >
+          {isLoading ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Processing...
+            </>
+          ) : 'Continue'}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+CustomerIdentification.propTypes = {
+  onCustomerIdentified: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool
+};
+
+export default CustomerIdentification;

@@ -1,0 +1,4 @@
+rule_type,applies_to,value,description
+free_items,veggies,5,"First 5 veggies are free"
+extra_price,veggies,1.00,"Price for each additional regular veggie"
+premium_item,Avocado,3.00,"Premium price for avocado"
