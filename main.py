@@ -13,15 +13,16 @@ import datetime
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
-# Import agent modules
-from agents.face_recognition_agent import FaceRecognitionAgent
-from agents.note_taker_agent import NoteTakerAgent
-from agents.health_recommender_agent import HealthRecommenderAgent
-from agents.weather_recommender_agent import WeatherRecommenderAgent
-from agents.entertainer_agent import EntertainerAgent
-from agents.learner_agent import LearnerAgent
-from agents.record_keeper_agent import RecordKeeperAgent
-from agents.social_agent import SocialAgent
+
+# To these imports
+from src.agents.Face_Ag import FaceRecognitionAgent
+from src.agents.Note_Ag import NoteTakerAgent
+from src.agents.Health_Ag import HealthRecommenderAgent
+from src.agents.Weather_Ag import WeatherRecommenderAgent
+from src.agents.Entertainer_Ag import EntertainerAgent
+from src.agents.Learner_Ag import LearnerAgent
+from src.agents.Record_Ag import RecordKeeperAgent
+from src.agents.Social_Ag import SocialAgent
 
 
 # Import UI components

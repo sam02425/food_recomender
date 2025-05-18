@@ -11,6 +11,9 @@ from datetime import datetime
 from typing import Dict, Any, List, Optional, Tuple
 
 # Import recommendation component
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from components.recommendation_highlight import render_recommendations
 
 def run_kiosk_ui(kiosk):

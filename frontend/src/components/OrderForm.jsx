@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import MenuSelectionGrid from './MenuSelectionGrid';
 import BaseSelectionGrid from './BaseSelectionGrid';
 import RecommendationFeedback from './RecommendationFeedback';
-import * as apiService from '../services/api';
+import * as apiService from './services/api';
 import CustomerIdentification from './CustomerIdentification';
 import ActivitySelection from './ActivitySelection';
 import OrderSummary from './OrderSummary';
@@ -181,6 +181,25 @@ const OrderForm = () => {
     } catch (error) {
       setError("Failed to get dish name suggestions.");
       console.error("Dish name suggestions error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleCompleteOrder = async () => {
+    try {
+      setIsLoading(true);
+      const response = await apiService.completeOrder();
+
+      if (response.success) {
+        // Handle successful order completion
+        alert("Your order has been completed successfully!");
+        setCurrentStep('social_sharing');
+      } else {
+        setError("Failed to complete order. Please try again.");
+      }
+    } catch (error) {
+      setError("An error occurred while completing your order.");
+      console.error("Complete order error:", error);
     } finally {
       setIsLoading(false);
     }
