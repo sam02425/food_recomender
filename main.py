@@ -24,6 +24,9 @@ from src.agents.Learner_Ag import LearnerAgent
 from src.agents.Record_Ag import RecordKeeperAgent
 from src.agents.Social_Ag import SocialAgent
 
+# At the top of main.py
+import dotenv
+dotenv.load_dotenv()
 
 # Import UI components
 from ui.kiosk_app import run_kiosk_ui

@@ -438,40 +438,47 @@ const OrderForm = () => {
       );
 
 
-      case 'protein':
+    case 'protein':
         return (
-          <>
+        <>
             <MenuSelectionGrid
-              title="Select Your Protein"
-              items={proteins}
-              recommendations={recommendations.proteins}
-              category="Protein"
-              selectedItems={protein}
-              onSelect={setProtein}
+            title="Select Your Protein"
+            items={proteins}
+            recommendations={recommendations.proteins}
+            category="Protein"
+            selectedItems={protein}
+            onSelect={setProtein}
             />
 
             <RecommendationFeedback
-              onIgnore={() => handleProteinFeedback('ignore')}
-              onAccept={() => handleProteinFeedback('accept')}
-              onCustom={(value) => handleProteinFeedback('custom', value)}
-              customValue={customProtein}
-              setCustomValue={setCustomProtein}
-              itemType="protein"
-              recommendedItem={recommendations.proteins[0]}
+            onIgnore={() => handleProteinFeedback('ignore')}
+            onAccept={() => handleProteinFeedback('accept')}
+            onCustom={(value) => handleProteinFeedback('custom', value)}
+            customValue={customProtein}
+            setCustomValue={setCustomProtein}
+            itemType="protein"
+            recommendedItem={recommendations.proteins[0]}
             />
 
+            <div className="mt-4 flex justify-between">
+            <button
+                onClick={() => setCurrentStep('activity')}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+            >
+                Back to Activity
+            </button>
+
             {protein && (
-              <div className="mt-4 flex justify-end">
                 <button
-                  onClick={() => handleProteinFeedback('ignore')}
-                  disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                onClick={() => handleProteinFeedback('ignore')}
+                disabled={isLoading}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
                 >
-                  {isLoading ? 'Loading...' : 'Continue'}
+                {isLoading ? 'Loading...' : 'Continue'}
                 </button>
-              </div>
             )}
-          </>
+            </div>
+        </>
         );
 
       case 'base':

@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from unittest.mock import patch, MagicMock
 import json
-from agents.social_agent import SocialAgent
+from src.agents.Social_Ag import SocialAgent
 
 class TestSocialAgent(unittest.TestCase):
     def setUp(self):
