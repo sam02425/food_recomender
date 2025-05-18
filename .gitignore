@@ -1,4 +1,5 @@
 foodEnv/
 frontend/package-lock.json
 frontend/package.json
-frontend/node_modules/
+frontend/node_modules/*
+src/agents/__pycache__/*
