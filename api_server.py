@@ -4,165 +4,256 @@ import sys
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
+import csv
+import random
 import datetime
-import requests
-from src.utils.llm_client import get_llm_response
-import logging
-from datetime import datetime
-
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-    print("Environment variables loaded from .env file")
-except ImportError:
-    print("python-dotenv not installed, using environment variables directly")
 
 app = Flask(__name__)
 # Enable CORS for all routes and all origins with all methods
 CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}})
 
+# Simulated LLM recommendation generator
+def generate_llm_recommendations(recommendation_type, **params):
+    """
+    Generate creative recommendations that simulate LLM outputs
+
+    Args:
+        recommendation_type: Type of recommendation to generate
+        params: Additional parameters for specific recommendation types
+
+    Returns:
+        Dictionary with simulated LLM recommendations
+    """
+    if recommendation_type == "health":
+        activity_level = params.get("activity_level", "work")
+
+        # Different recommendations based on activity level
+        if activity_level == "study":
+            proteins = ["Egg", "Paneer/Indian Cheese"]
+            sauces = ["Mint Sauce", "Yogurt/Raita"]
+            base_types = ["Wrap", "Bowl"]
+            veggies = ["Spinach", "Bell Pepper", "Tomato", "Cilantro"]
+            reasoning = "For study sessions, these brain-boosting proteins and light carbs provide sustained mental energy without causing crashes. The leafy greens and vegetables offer essential nutrients that improve focus and cognitive function."
+
+        elif activity_level == "active" or activity_level == "gym":
+            proteins = ["Chicken", "Soya"]
+            sauces = ["Curry Special", "Red Spicy Sauce"]
+            base_types = ["Bowl", "Biryani"]
+            veggies = ["Spinach", "Bell Pepper", "Grilled Onion", "Avocado"]
+            reasoning = "For an active lifestyle, these protein-rich options support muscle recovery and growth. The complex carbohydrates provide sustained energy throughout your workout, while the vegetable selection offers essential micronutrients."
+
+        elif activity_level == "chilling" or activity_level == "relaxing":
+            proteins = ["Paneer/Indian Cheese", "Potato"]
+            sauces = ["Malai Masala", "Curry Special"]
+            base_types = ["Bowl", "Wrap"]
+            veggies = ["Avocado", "Tomato", "Cilantro", "Jalapeño"]
+            reasoning = "For relaxation time, these comfort food options provide a perfect balance of flavor and nutrition. The creamy proteins pair beautifully with aromatic spices to create a satisfying meal experience."
+
+        else:  # work or default
+            proteins = ["Chicken", "Egg", "Soya"]
+            sauces = ["Curry Special", "Mint Sauce", "Malai Masala"]
+            base_types = ["Sandwich", "Wrap"]
+            veggies = ["Bell Pepper", "Tomato", "Spinach", "Grilled Onion"]
+            reasoning = "For your workday, these balanced options provide steady energy without causing post-meal drowsiness. The protein and fiber combination helps maintain focus and productivity throughout your shift."
+
+        # Randomly choose an additional protein and sauce for more variety
+        all_proteins = ["Chicken", "Egg", "Paneer/Indian Cheese", "Soya", "Potato", "Pepperoni"]
+        all_sauces = ["Curry Special", "Malai Masala", "Curry Masala", "Marinara", "Yogurt/Raita", "Red Spicy Sauce", "Mint Sauce", "Green Spicy Sauce"]
+
+        extra_protein = random.choice([p for p in all_proteins if p not in proteins])
+        extra_sauce = random.choice([s for s in all_sauces if s not in sauces])
+
+        # Sometimes add these extras
+        if random.random() > 0.5:
+            proteins.append(extra_protein)
+        if random.random() > 0.5:
+            sauces.append(extra_sauce)
+
+        return {
+            "proteins": proteins,
+            "sauces": sauces,
+            "base_types": base_types,
+            "veggies": veggies,
+            "reasoning": reasoning,
+            "timestamp": datetime.datetime.now().isoformat(),
+            "activity_level": activity_level
+        }
+
+    elif recommendation_type == "weather":
+        weather_condition = params.get("weather_condition", "sunny")
+        temperature = params.get("temperature", 25)
+        time_of_day = params.get("time_of_day", "afternoon")
+
+        # Different recommendations based on weather and time
+        if weather_condition in ["rainy", "cloudy"] or temperature < 15:
+            base_types = ["Bowl", "Biryani"]
+            suggested_base = "Bowl"
+            reasoning = f"For {weather_condition} weather at {temperature}°C, these warming options provide comfort and satisfaction. The bowl format keeps everything warm longer while you enjoy your meal."
+
+        elif weather_condition == "hot" or temperature > 28:
+            base_types = ["Wrap", "Sandwich & Subs"]
+            suggested_base = "Wrap"
+            reasoning = f"For hot weather at {temperature}°C, these lighter options are more refreshing and won't weigh you down. The wrap format is perfect for keeping all flavors contained while being easy to handle."
+
+        else:  # sunny or default
+            if time_of_day == "morning":
+                base_types = ["Wrap", "Sandwich & Subs"]
+                suggested_base = "Wrap"
+                reasoning = f"For a {weather_condition} {time_of_day}, these options offer portability and convenience to start your day. The wrap format is easy to eat on-the-go while containing all flavors."
+            else:
+                base_types = ["Bowl", "Wrap"]
+                suggested_base = "Bowl"
+                reasoning = f"For a {weather_condition} {time_of_day}, these options offer the perfect balance between satisfaction and freshness. The bowl format lets you appreciate each component of your meal."
+
+        return {
+            "weather_condition": weather_condition,
+            "temperature": temperature,
+            "time_of_day": time_of_day,
+            "base_types": base_types,
+            "suggested_base": suggested_base,
+            "reasoning": reasoning,
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+
+    elif recommendation_type == "dish_name":
+        protein = params.get("protein", "Chicken")
+        base_type = params.get("base_type", "Bowl")
+
+        # Creative naming components
+        prefixes = [
+            "Mumbai", "Delhi", "Tandoori", "Bombay", "Spicy", "Maharaja",
+            "Royal", "Curry", "Masala", "Fusion", "Incredible", "Signature"
+        ]
+
+        suffixes = [
+            "Delight", "Special", "Express", "Creation", "Fiesta",
+            "Magic", "Wonder", "Fusion", "Sensation", "Experience"
+        ]
+
+        styles = [
+            "Street Style", "Chef's Special", "House Favorite", "Traditional",
+            "Homestyle", "Gourmet", "Premium", "Classic", "Artisan"
+        ]
+
+        # Generate creative names
+        name_templates = [
+            f"{random.choice(prefixes)} {protein} {base_type}",
+            f"{protein} {base_type} {random.choice(suffixes)}",
+            f"{random.choice(styles)} {protein} {base_type}",
+            f"{random.choice(prefixes)} {random.choice(suffixes)} {protein}",
+            f"{protein} {random.choice(prefixes)} {base_type}"
+        ]
+
+        # Shuffle and select
+        random.shuffle(name_templates)
+
+        return {
+            "name": name_templates[0],
+            "alternatives": name_templates[1:4],
+            "format_used": "Creative fusion naming with Indian regional influences"
+        }
+
+    # Default response if no matching type
+    return {"error": "Unknown recommendation type"}
+
 # Mock functions to simulate the kiosk
 def start_new_order():
     return {
-        "order_id": "ORD12345",
-        "timestamp": "2023-07-25T12:00:00",
+        "order_id": f"ORD{int(time.time())}",
+        "timestamp": datetime.datetime.now().isoformat(),
         "items": [],
         "total_price": 0.0
     }
 
-
-def debug_llm_integration():
-    """Test the LLM integration and print diagnostic information"""
-    print("\n----- LLM INTEGRATION TEST -----")
-
-    # Check API key
-    api_key = os.environ.get("LLM_API_KEY", "")
-    if not api_key:
-        print("WARNING: LLM_API_KEY environment variable is not set!")
-    else:
-        print(f"API key found: {'*' * (len(api_key) - 4)}{api_key[-4:]}")
-
-    # Test LLM call with simple prompt
-    test_prompt = "Generate a creative name for a chicken sandwich dish in an Indian fusion restaurant."
-    print(f"\nTesting LLM with prompt: {test_prompt}")
-
+def get_health_recommendations(activity_level):
+    """
+    Get health-based food recommendations for a specific activity level.
+    Uses simulated LLM recommendations for variety and creativity.
+    """
     try:
-        result = get_llm_recommendation(test_prompt, max_tokens=50)
-        if result:
-            print(f"LLM Response: {result}")
-            return True
-        else:
-            print("LLM returned empty response")
-            return False
-    except Exception as e:
-        print(f"LLM test failed with error: {str(e)}")
-        return False
-
-def get_llm_recommendation(prompt, max_tokens=150):
-    """Get recommendation from LLM API with improved error handling"""
-    try:
-        # Check if API key is available
-        API_KEY = os.environ.get("LLM_API_KEY", "")
-        if not API_KEY:
-            print("ERROR: No LLM API key found. Set the LLM_API_KEY environment variable.")
-            return None
-
-        # Default to OpenAI's API
-        API_URL = os.environ.get("LLM_API_URL", "https://api.openai.com/v1/chat/completions")
-
-        print(f"Calling LLM API with prompt: {prompt[:50]}...")
-
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {API_KEY}"
-        }
-
-        payload = {
-            "model": "gpt-3.5-turbo",
-            "messages": [{"role": "user", "content": prompt}],
-            "max_tokens": max_tokens,
-            "temperature": 0.7
-        }
-
-        response = requests.post(
-            API_URL,
-            headers=headers,
-            json=payload,
-            timeout=15
+        # Get LLM-style recommendations for the activity level
+        recommendations = generate_llm_recommendations(
+            "health",
+            activity_level=activity_level
         )
 
-        # Print response details for debugging
-        print(f"LLM API response status: {response.status_code}")
-
-        if response.status_code == 200:
-            result = response.json()
-            content = result["choices"][0]["message"]["content"].strip()
-            print(f"LLM response: {content[:50]}...")
-            return content
-        else:
-            print(f"LLM API error: {response.status_code}")
-            print(f"Response body: {response.text[:200]}")
-            return None
-
-    except requests.exceptions.RequestException as e:
-        print(f"Network error when calling LLM API: {e}")
-        return None
-    except KeyError as e:
-        print(f"Error parsing LLM response (missing key): {e}")
-        return None
-    except json.JSONDecodeError as e:
-        print(f"Error decoding LLM JSON response: {e}")
-        return None
-    except Exception as e:
-        print(f"Unexpected error with LLM API: {e}")
-        return None
-
-def get_health_recommendations(activity_level):
-    """Get health recommendations based on activity level"""
-    try:
-        # Get simulated health recommendations
-        recommendations = get_simulated_llm_recommendation("health")
-
-        # Add activity level info
-        recommendations["activity_level"] = activity_level
-        recommendations["timestamp"] = datetime.datetime.now().isoformat()
-
-        return {"success": True, "recommendations": recommendations}
+        return {
+            "success": True,
+            "recommendations": recommendations
+        }
     except Exception as e:
         print(f"Error in health_recommendations: {e}")
-        return {"success": False, "error": str(e)}, 500
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 def get_weather_recommendations():
-    """Get weather-based recommendations"""
+    """
+    Get weather-based food recommendations.
+    Uses simulated LLM recommendations based on current weather and time.
+    """
     try:
-        # Simulate current weather
-        weather_condition = random.choice(["sunny", "rainy", "cloudy", "hot", "cold"])
+        # Generate random weather data for simulation
+        # In a real app, this would come from a weather API
+        weather_conditions = ["sunny", "rainy", "cloudy", "hot", "cold"]
+        weather_condition = random.choice(weather_conditions)
         temperature = random.randint(5, 35)
-        time_of_day = random.choice(["morning", "afternoon", "evening"])
 
-        # Get simulated weather recommendations
-        recommendations = get_simulated_llm_recommendation("weather")
+        # Get current time of day
+        hour = datetime.datetime.now().hour
+        if 5 <= hour < 12:
+            time_of_day = "morning"
+        elif 12 <= hour < 17:
+            time_of_day = "afternoon"
+        else:
+            time_of_day = "evening"
 
-        # Add weather info
-        recommendations["weather_condition"] = weather_condition
-        recommendations["temperature"] = temperature
-        recommendations["time_of_day"] = time_of_day
-        recommendations["timestamp"] = datetime.datetime.now().isoformat()
+        # Get LLM-style recommendations for this weather
+        recommendations = generate_llm_recommendations(
+            "weather",
+            weather_condition=weather_condition,
+            temperature=temperature,
+            time_of_day=time_of_day
+        )
 
-        return {"success": True, "recommendations": recommendations}
+        return {
+            "success": True,
+            "recommendations": recommendations
+        }
     except Exception as e:
         print(f"Error in weather_recommendations: {e}")
-        return {"success": False, "error": str(e)}, 500
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 def get_dish_name(selections):
-    """Get creative dish name suggestions"""
+    """
+    Get creative dish name suggestions.
+    Uses simulated LLM to generate unique, creative names.
+    """
     try:
-        # Generate creative names using our simulation
-        suggestions = get_simulated_llm_recommendation("dish_name")
-        return {"success": True, "suggestions": suggestions}
+        protein = selections.get('protein', 'Chicken')
+        base_type = selections.get('base_type', 'Bowl')
+
+        # Get LLM-style creative dish names
+        suggestions = generate_llm_recommendations(
+            "dish_name",
+            protein=protein,
+            base_type=base_type
+        )
+
+        return {
+            "success": True,
+            "suggestions": suggestions
+        }
     except Exception as e:
         print(f"Error in dish_name: {e}")
-        return {"success": False, "error": str(e)}, 500
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 def process_recommendation_feedback(rec_type, feedback, custom=None):
     return {"status": "success"}
@@ -183,7 +274,7 @@ def complete_order():
     return {
         "order_id": "ORD12345",
         "total_price": 12.99,
-        "timestamp": "2023-07-25T12:30:00"
+        "timestamp": datetime.datetime.now().isoformat()
     }
 
 # API Routes
@@ -208,7 +299,7 @@ def api_health_recommendations():
         data = request.json or {}
         activity_level = data.get('activity_level', 'work')
         result = get_health_recommendations(activity_level)
-        return jsonify({"success": True, "recommendations": result})
+        return jsonify(result)
     except Exception as e:
         print(f"Error in health_recommendations: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
@@ -220,7 +311,7 @@ def api_weather_recommendations():
         return '', 204
     try:
         result = get_weather_recommendations()
-        return jsonify({"success": True, "recommendations": result})
+        return jsonify(result)
     except Exception as e:
         print(f"Error in weather_recommendations: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
@@ -234,7 +325,7 @@ def api_dish_name():
         data = request.json or {}
         selections = data.get('selections', {})
         result = get_dish_name(selections)
-        return jsonify({"success": True, "suggestions": result})
+        return jsonify(result)
     except Exception as e:
         print(f"Error in dish_name: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
@@ -358,6 +449,28 @@ def api_menu_data():
         print(f"Error in menu_data: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
 
+@app.route('/api/debug-llm', methods=['GET'])
+def api_debug_llm():
+    """Debug endpoint to test LLM integration"""
+    try:
+        # Test all three recommendation types
+        health_test = generate_llm_recommendations("health", activity_level="active")
+        weather_test = generate_llm_recommendations("weather", weather_condition="sunny", temperature=25)
+        dish_test = generate_llm_recommendations("dish_name", protein="Chicken", base_type="Bowl")
+
+        return jsonify({
+            "success": True,
+            "message": "LLM simulation is working",
+            "health_sample": health_test,
+            "weather_sample": weather_test,
+            "dish_name_sample": dish_test
+        })
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        })
+
 @app.route('/', methods=['GET'])
 def home():
     return """
@@ -385,61 +498,15 @@ def home():
                 <li><code>POST /api/add-item</code> - Add an item to the order</li>
                 <li><code>POST /api/complete-order</code> - Complete the current order</li>
                 <li><code>GET /api/menu-data</code> - Get menu data</li>
+                <li><code>GET /api/debug-llm</code> - Test LLM recommendation functionality</li>
             </ul>
             <p>The API is running and ready to accept requests from the frontend.</p>
         </body>
     </html>
     """
-    # Add at the top of api_server.py
-import random
-
-# Simple LLM simulation function
-def get_simulated_llm_recommendation(query_type):
-    """Generate creative recommendations without needing a real LLM API"""
-    if query_type == "dish_name":
-        prefixes = ["Mumbai", "Delhi", "Spicy", "Tandoori", "Royal", "Fusion"]
-        suffixes = ["Delight", "Special", "Express", "Creation", "Masala"]
-
-        # Generate a few random combinations
-        names = []
-        for _ in range(4):
-            name = f"{random.choice(prefixes)} {random.choice(suffixes)}"
-            if name not in names:
-                names.append(name)
-
-        return {
-            "name": names[0],
-            "alternatives": names[1:],
-            "format_used": "Indian fusion naming convention"
-        }
-
-    elif query_type == "health":
-        protein_options = ["Chicken", "Paneer/Indian Cheese", "Egg", "Soya"]
-        sauce_options = ["Curry Special", "Mint Sauce", "Malai Masala", "Yogurt/Raita"]
-        base_options = ["Bowl", "Wrap", "Biryani", "Sandwich"]
-        veggie_options = ["Spinach", "Bell Pepper", "Tomato", "Cilantro", "Grilled Onion"]
-
-        return {
-            "proteins": random.sample(protein_options, 2),
-            "sauces": random.sample(sauce_options, 2),
-            "base_types": random.sample(base_options, 2),
-            "veggies": random.sample(veggie_options, 3),
-            "reasoning": "These options provide a perfect balance of nutrition and flavor for your lifestyle."
-        }
-
-    elif query_type == "weather":
-        base_options = ["Bowl", "Wrap", "Sandwich", "Biryani"]
-        selected = random.sample(base_options, 2)
-
-        return {
-            "base_types": selected,
-            "suggested_base": selected[0],
-            "reasoning": "These options are ideal for the current weather conditions."
-        }
-
-    return {"error": "Unknown recommendation type"}
 
 if __name__ == '__main__':
+    import time  # Add import for time.time() used in start_new_order()
     print("Starting Curry Creations API server on http://localhost:5000")
     print("CORS is enabled for all origins")
     app.run(host='0.0.0.0', port=5000, debug=True)
