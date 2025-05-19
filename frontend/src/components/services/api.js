@@ -24,12 +24,13 @@ export const startOrder = async () => {
 };
 
 /**
- * Get health recommendations based on activity level
+ * Get health recommendations based on activity level and customer data
  */
-export const getHealthRecommendations = async (activityLevel) => {
+export const getHealthRecommendations = async (activityLevel, customerPhone = null) => {
   try {
     const response = await apiClient.post('/health-recommendations', {
       activity_level: activityLevel,
+      customer_phone: customerPhone, // Include customer phone for personalization
     });
     return response.data;
   } catch (error) {
@@ -41,9 +42,11 @@ export const getHealthRecommendations = async (activityLevel) => {
 /**
  * Get weather-based recommendations
  */
-export const getWeatherRecommendations = async () => {
+export const getWeatherRecommendations = async (customerPhone = null) => {
   try {
-    const response = await apiClient.post('/weather-recommendations');
+    const response = await apiClient.post('/weather-recommendations', {
+      customer_phone: customerPhone, // Include customer phone for personalization
+    });
     return response.data;
   } catch (error) {
     console.error('Error getting weather recommendations:', error);
@@ -67,12 +70,13 @@ export const getDishName = async (selections) => {
 /**
  * Submit feedback on recommendations
  */
-export const submitRecommendationFeedback = async (recommendationType, feedback, customSuggestion = null) => {
+export const submitRecommendationFeedback = async (recommendationType, feedback, customSuggestion = null, customerPhone = null) => {
   try {
     const response = await apiClient.post('/recommendation-feedback', {
       recommendation_type: recommendationType,
       feedback,
       custom_suggestion: customSuggestion,
+      customer_phone: customerPhone, // Include customer phone
     });
     return response.data;
   } catch (error) {
@@ -97,9 +101,12 @@ export const addOrderItem = async (selections) => {
 /**
  * Complete the current order
  */
-export const completeOrder = async () => {
+export const completeOrder = async (customerPhone = null, customerName = null) => {
   try {
-    const response = await apiClient.post('/complete-order');
+    const response = await apiClient.post('/complete-order', {
+      customer_phone: customerPhone,
+      customer_name: customerName
+    });
     return response.data;
   } catch (error) {
     console.error('Error completing order:', error);
@@ -116,6 +123,34 @@ export const getMenuData = async () => {
     return response.data;
   } catch (error) {
     console.error('Error getting menu data:', error);
+    throw error;
+  }
+};
+
+/**
+ * Get customer's previous orders based on phone number
+ */
+export const getCustomerPreviousOrders = async (phoneNumber) => {
+  try {
+    const response = await apiClient.get('/customer-orders', {
+      params: { phone: phoneNumber }
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting customer previous orders:', error);
+    throw error;
+  }
+};
+
+/**
+ * Update customer information
+ */
+export const updateCustomerInfo = async (customerData) => {
+  try {
+    const response = await apiClient.post('/update-customer', customerData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating customer info:', error);
     throw error;
   }
 };

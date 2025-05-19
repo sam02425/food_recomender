@@ -7,10 +7,61 @@ import json
 import csv
 import random
 import datetime
+import time
 
 app = Flask(__name__)
 # Enable CORS for all routes and all origins with all methods
 CORS(app, resources={r"/api/*": {"origins": "*", "methods": ["GET", "POST", "PUT", "DELETE"]}})
+
+# Customer data storage (simple in-memory for testing, use database in production)
+customers = {}
+orders_history = []
+
+# Load customer data from CSV if available
+def load_customer_data():
+    try:
+        if os.path.exists('data/customers.csv'):
+            with open('data/customers.csv', 'r', newline='') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    phone = row.get('phone_number')
+                    if phone:
+                        customers[phone] = {
+                            'name': row.get('name', ''),
+                            'phone_number': phone,
+                            'face_id': row.get('face_id', ''),
+                            'visit_count': int(row.get('visit_count', 0)),
+                            'last_visit': row.get('last_visit', '')
+                        }
+            print(f"Loaded {len(customers)} customers from CSV")
+    except Exception as e:
+        print(f"Error loading customer data: {e}")
+
+# Load orders data from CSV if available
+def load_orders_data():
+    try:
+        if os.path.exists('data/orders.csv'):
+            with open('data/orders.csv', 'r', newline='') as file:
+                reader = csv.DictReader(file)
+                for row in reader:
+                    try:
+                        items = json.loads(row.get('items', '[]'))
+                        orders_history.append({
+                            'order_id': row.get('order_id', ''),
+                            'customer_id': row.get('customer_id', ''),
+                            'phone_number': row.get('phone_number', ''),
+                            'items': items,
+                            'timestamp': row.get('timestamp', '')
+                        })
+                    except:
+                        pass
+            print(f"Loaded {len(orders_history)} orders from CSV")
+    except Exception as e:
+        print(f"Error loading orders data: {e}")
+
+# Load data at startup
+load_customer_data()
+load_orders_data()
 
 # Simulated LLM recommendation generator
 def generate_llm_recommendations(recommendation_type, **params):
@@ -24,6 +75,22 @@ def generate_llm_recommendations(recommendation_type, **params):
     Returns:
         Dictionary with simulated LLM recommendations
     """
+    # Extract customer phone for personalization if available
+    customer_phone = params.get("customer_phone")
+    customer_name = None
+    previous_orders = []
+
+    # Look up customer data and previous orders if phone provided
+    if customer_phone and customer_phone in customers:
+        customer_name = customers[customer_phone].get('name')
+        # Find previous orders for this customer
+        previous_orders = [order for order in orders_history
+                          if order.get('phone_number') == customer_phone]
+
+    # Track if we used personalization
+    personalized = False
+    personalization_text = ""
+
     if recommendation_type == "health":
         activity_level = params.get("activity_level", "work")
 
@@ -56,6 +123,72 @@ def generate_llm_recommendations(recommendation_type, **params):
             veggies = ["Bell Pepper", "Tomato", "Spinach", "Grilled Onion"]
             reasoning = "For your workday, these balanced options provide steady energy without causing post-meal drowsiness. The protein and fiber combination helps maintain focus and productivity throughout your shift."
 
+        # Personalize based on previous orders if available
+        if previous_orders and len(previous_orders) > 0:
+            # Extract proteins from previous orders
+            previous_proteins = []
+            previous_sauces = []
+            previous_base_types = []
+            for order in previous_orders:
+                for item in order.get('items', []):
+                    if isinstance(item, dict):
+                        if 'protein' in item and item['protein']:
+                            previous_proteins.append(item['protein'])
+                        if 'sauce' in item and item['sauce']:
+                            previous_sauces.append(item['sauce'])
+                        if 'base_type' in item and item['base_type']:
+                            previous_base_types.append(item['base_type'])
+
+            # Count occurrences
+            protein_counts = {}
+            for protein in previous_proteins:
+                if protein in protein_counts:
+                    protein_counts[protein] += 1
+                else:
+                    protein_counts[protein] = 1
+
+            # Get most frequent protein
+            if protein_counts:
+                favorite_protein = max(protein_counts.items(), key=lambda x: x[1])[0]
+                # Add to recommendations if not already there
+                if favorite_protein not in proteins:
+                    proteins.insert(0, favorite_protein)
+                    personalized = True
+
+            # Similarly for sauces and base types
+            if previous_sauces:
+                sauce_counts = {}
+                for sauce in previous_sauces:
+                    if sauce in sauce_counts:
+                        sauce_counts[sauce] += 1
+                    else:
+                        sauce_counts[sauce] = 1
+
+                if sauce_counts:
+                    favorite_sauce = max(sauce_counts.items(), key=lambda x: x[1])[0]
+                    if favorite_sauce not in sauces:
+                        sauces.insert(0, favorite_sauce)
+                        personalized = True
+
+            if previous_base_types:
+                base_counts = {}
+                for base in previous_base_types:
+                    if base in base_counts:
+                        base_counts[base] += 1
+                    else:
+                        base_counts[base] = 1
+
+                if base_counts:
+                    favorite_base = max(base_counts.items(), key=lambda x: x[1])[0]
+                    if favorite_base not in base_types:
+                        base_types.insert(0, favorite_base)
+                        personalized = True
+
+        # Add personalization text if used
+        if personalized:
+            personalization_text = f"Based on your previous orders, we've added some of your favorite options. "
+            reasoning = personalization_text + reasoning
+
         # Randomly choose an additional protein and sauce for more variety
         all_proteins = ["Chicken", "Egg", "Paneer/Indian Cheese", "Soya", "Potato", "Pepperoni"]
         all_sauces = ["Curry Special", "Malai Masala", "Curry Masala", "Marinara", "Yogurt/Raita", "Red Spicy Sauce", "Mint Sauce", "Green Spicy Sauce"]
@@ -76,13 +209,18 @@ def generate_llm_recommendations(recommendation_type, **params):
             "veggies": veggies,
             "reasoning": reasoning,
             "timestamp": datetime.datetime.now().isoformat(),
-            "activity_level": activity_level
+            "activity_level": activity_level,
+            "personalized": personalized
         }
 
     elif recommendation_type == "weather":
         weather_condition = params.get("weather_condition", "sunny")
         temperature = params.get("temperature", 25)
         time_of_day = params.get("time_of_day", "afternoon")
+        customer_phone = params.get("customer_phone")
+
+        # Personalization flag
+        personalized = False
 
         # Different recommendations based on weather and time
         if weather_condition in ["rainy", "cloudy"] or temperature < 15:
@@ -105,6 +243,38 @@ def generate_llm_recommendations(recommendation_type, **params):
                 suggested_base = "Bowl"
                 reasoning = f"For a {weather_condition} {time_of_day}, these options offer the perfect balance between satisfaction and freshness. The bowl format lets you appreciate each component of your meal."
 
+        # Personalize based on previous orders if available
+        if previous_orders and len(previous_orders) > 0:
+            # Extract base types from previous orders
+            previous_base_types = []
+            for order in previous_orders:
+                for item in order.get('items', []):
+                    if isinstance(item, dict) and 'base_type' in item and item['base_type']:
+                        previous_base_types.append(item['base_type'])
+
+            # Count occurrences
+            base_counts = {}
+            for base in previous_base_types:
+                if base in base_counts:
+                    base_counts[base] += 1
+                else:
+                    base_counts[base] = 1
+
+            # Get most frequent base
+            if base_counts:
+                favorite_base = max(base_counts.items(), key=lambda x: x[1])[0]
+                # Set as suggested base if it appears frequently enough
+                if base_counts[favorite_base] >= 2:
+                    suggested_base = favorite_base
+                    if favorite_base not in base_types:
+                        base_types.insert(0, favorite_base)
+                    personalized = True
+
+        # Add personalization text if used
+        if personalized and customer_name:
+            personalization_text = f"{customer_name}, based on your previous orders, we've suggested your preferred base type. "
+            reasoning = personalization_text + reasoning
+
         return {
             "weather_condition": weather_condition,
             "temperature": temperature,
@@ -112,12 +282,14 @@ def generate_llm_recommendations(recommendation_type, **params):
             "base_types": base_types,
             "suggested_base": suggested_base,
             "reasoning": reasoning,
-            "timestamp": datetime.datetime.now().isoformat()
+            "timestamp": datetime.datetime.now().isoformat(),
+            "personalized": personalized
         }
 
     elif recommendation_type == "dish_name":
         protein = params.get("protein", "Chicken")
         base_type = params.get("base_type", "Bowl")
+        customer_name = params.get("customer_name", "")
 
         # Creative naming components
         prefixes = [
@@ -144,6 +316,17 @@ def generate_llm_recommendations(recommendation_type, **params):
             f"{protein} {random.choice(prefixes)} {base_type}"
         ]
 
+        # Personalized names if customer name provided
+        if customer_name:
+            personal_templates = [
+                f"{customer_name}'s {random.choice(prefixes)} {protein}",
+                f"{customer_name}'s {protein} {random.choice(suffixes)}",
+                f"{customer_name}'s Special {base_type}",
+                f"The {customer_name} {random.choice(suffixes)}",
+            ]
+            # Add the personalized options to the front of the list
+            name_templates = personal_templates + name_templates
+
         # Shuffle and select
         random.shuffle(name_templates)
 
@@ -158,14 +341,15 @@ def generate_llm_recommendations(recommendation_type, **params):
 
 # Mock functions to simulate the kiosk
 def start_new_order():
+    order_id = f"ORD{int(time.time())}"
     return {
-        "order_id": f"ORD{int(time.time())}",
+        "order_id": order_id,
         "timestamp": datetime.datetime.now().isoformat(),
         "items": [],
         "total_price": 0.0
     }
 
-def get_health_recommendations(activity_level):
+def get_health_recommendations(activity_level, customer_phone=None):
     """
     Get health-based food recommendations for a specific activity level.
     Uses simulated LLM recommendations for variety and creativity.
@@ -174,7 +358,8 @@ def get_health_recommendations(activity_level):
         # Get LLM-style recommendations for the activity level
         recommendations = generate_llm_recommendations(
             "health",
-            activity_level=activity_level
+            activity_level=activity_level,
+            customer_phone=customer_phone
         )
 
         return {
@@ -188,7 +373,7 @@ def get_health_recommendations(activity_level):
             "error": str(e)
         }
 
-def get_weather_recommendations():
+def get_weather_recommendations(customer_phone=None):
     """
     Get weather-based food recommendations.
     Uses simulated LLM recommendations based on current weather and time.
@@ -214,7 +399,8 @@ def get_weather_recommendations():
             "weather",
             weather_condition=weather_condition,
             temperature=temperature,
-            time_of_day=time_of_day
+            time_of_day=time_of_day,
+            customer_phone=customer_phone
         )
 
         return {
@@ -236,12 +422,14 @@ def get_dish_name(selections):
     try:
         protein = selections.get('protein', 'Chicken')
         base_type = selections.get('base_type', 'Bowl')
+        customer_name = selections.get('customer_name', '')
 
         # Get LLM-style creative dish names
         suggestions = generate_llm_recommendations(
             "dish_name",
             protein=protein,
-            base_type=base_type
+            base_type=base_type,
+            customer_name=customer_name
         )
 
         return {
@@ -255,10 +443,24 @@ def get_dish_name(selections):
             "error": str(e)
         }
 
-def process_recommendation_feedback(rec_type, feedback, custom=None):
+def process_recommendation_feedback(rec_type, feedback, customer_phone=None, custom=None):
+    """
+    Process feedback on recommendations and store it with customer data if available
+    """
+    # In a real implementation, this would store feedback in a database
+    # For this demo, we'll just print it
+    print(f"Received {feedback} feedback for {rec_type} from {customer_phone if customer_phone else 'anonymous'}")
+
+    if customer_phone and customer_phone in customers:
+        # Update customer preferences (in a real system)
+        print(f"Updating preferences for customer: {customers[customer_phone].get('name', 'unknown')}")
+
     return {"status": "success"}
 
 def add_order_item(selections):
+    """
+    Add an item to the order, including customer data if provided
+    """
     return {
         "item_id": "ITEM1",
         "protein": selections.get("protein", ""),
@@ -267,15 +469,112 @@ def add_order_item(selections):
         "base_option": selections.get("base_option", ""),
         "veggies": selections.get("veggies", []),
         "price": 12.99,
-        "dish_name": selections.get("dish_name", "")
+        "dish_name": selections.get("dish_name", ""),
+        "customer_phone": selections.get("customer_phone", ""),
+        "customer_name": selections.get("customer_name", "")
     }
 
-def complete_order():
+def complete_order(customer_phone=None, customer_name=None):
+    """
+    Complete order and associate with customer if data is provided
+    """
+    order_id = f"ORD{int(time.time())}"
+
+    # Store customer association in a real implementation
+    if customer_phone:
+        print(f"Associating order {order_id} with customer phone: {customer_phone}")
+
+    if customer_name:
+        print(f"Associating order {order_id} with customer name: {customer_name}")
+
+    # Update visit count for customer
+    if customer_phone and customer_phone in customers:
+        customers[customer_phone]['visit_count'] = customers[customer_phone].get('visit_count', 0) + 1
+        customers[customer_phone]['last_visit'] = datetime.datetime.now().isoformat()
+        print(f"Updated visit count for customer: {customers[customer_phone].get('name', 'unknown')}")
+
     return {
-        "order_id": "ORD12345",
+        "order_id": order_id,
         "total_price": 12.99,
-        "timestamp": datetime.datetime.now().isoformat()
+        "timestamp": datetime.datetime.now().isoformat(),
+        "customer_phone": customer_phone,
+        "customer_name": customer_name
     }
+
+def get_customer_orders(phone_number):
+    """
+    Get previous orders for a customer by phone number
+    """
+    if not phone_number:
+        return {"success": False, "error": "Phone number is required"}
+
+    # Check if we need to format the phone number
+    if phone_number and len(phone_number) == 10:
+        # Ensure we search with a standardized format
+        phone_number = phone_number.strip()
+
+    # Find orders for this customer
+    customer_orders = []
+
+    # In a real implementation, query orders from database
+    # For this demo, check the in-memory orders_history
+    for order in orders_history:
+        if order.get('phone_number') == phone_number:
+            # Extract items from order
+            items = order.get('items', [])
+            for item in items:
+                if isinstance(item, dict):
+                    customer_orders.append({
+                        'order_id': order.get('order_id', ''),
+                        'timestamp': order.get('timestamp', ''),
+                        'dish_name': item.get('dish_name', ''),
+                        'protein': item.get('protein', ''),
+                        'sauce': item.get('sauce', ''),
+                        'base_type': item.get('base_type', ''),
+                        'base_option': item.get('base_option', '')
+                    })
+
+    # If we found orders, return them
+    if customer_orders:
+        print(f"Found {len(customer_orders)} previous orders for phone: {phone_number}")
+        return {"success": True, "orders": customer_orders}
+
+    # If customer exists but no orders
+    if phone_number in customers:
+        print(f"Customer found but no orders for phone: {phone_number}")
+        return {"success": True, "orders": []}
+
+    # If customer not found
+    print(f"No customer found for phone: {phone_number}")
+    return {"success": False, "error": "Customer not found"}
+
+def update_customer_info(customer_data):
+    """
+    Update or create customer information
+    """
+    phone_number = customer_data.get('phone_number')
+    name = customer_data.get('name')
+
+    if not phone_number:
+        return {"success": False, "error": "Phone number is required"}
+
+    # Update existing customer or create new one
+    if phone_number in customers:
+        customers[phone_number]['name'] = name or customers[phone_number].get('name', '')
+        customers[phone_number]['last_visit'] = datetime.datetime.now().isoformat()
+        print(f"Updated customer: {name}")
+    else:
+        customers[phone_number] = {
+            'name': name or '',
+            'phone_number': phone_number,
+            'face_id': customer_data.get('face_id', ''),
+            'visit_count': 1,
+            'last_visit': datetime.datetime.now().isoformat(),
+            'created_at': datetime.datetime.now().isoformat()
+        }
+        print(f"Created new customer: {name}")
+
+    return {"success": True, "customer": customers[phone_number]}
 
 # API Routes
 @app.route('/api/start-order', methods=['POST', 'OPTIONS'])
@@ -298,7 +597,8 @@ def api_health_recommendations():
     try:
         data = request.json or {}
         activity_level = data.get('activity_level', 'work')
-        result = get_health_recommendations(activity_level)
+        customer_phone = data.get('customer_phone')  # Get customer phone if provided
+        result = get_health_recommendations(activity_level, customer_phone)
         return jsonify(result)
     except Exception as e:
         print(f"Error in health_recommendations: {e}")
@@ -310,7 +610,9 @@ def api_weather_recommendations():
         # Preflight request
         return '', 204
     try:
-        result = get_weather_recommendations()
+        data = request.json or {}
+        customer_phone = data.get('customer_phone')  # Get customer phone if provided
+        result = get_weather_recommendations(customer_phone)
         return jsonify(result)
     except Exception as e:
         print(f"Error in weather_recommendations: {e}")
@@ -339,8 +641,9 @@ def api_recommendation_feedback():
         data = request.json or {}
         recommendation_type = data.get('recommendation_type')
         feedback = data.get('feedback')
+        customer_phone = data.get('customer_phone')  # Get customer phone if provided
         custom_suggestion = data.get('custom_suggestion')
-        result = process_recommendation_feedback(recommendation_type, feedback, custom_suggestion)
+        result = process_recommendation_feedback(recommendation_type, feedback, customer_phone, custom_suggestion)
         return jsonify({"success": True, "result": result})
     except Exception as e:
         print(f"Error in recommendation_feedback: {e}")
@@ -366,10 +669,39 @@ def api_complete_order():
         # Preflight request
         return '', 204
     try:
-        result = complete_order()
+        data = request.json or {}
+        customer_phone = data.get('customer_phone')
+        customer_name = data.get('customer_name')
+        result = complete_order(customer_phone, customer_name)
         return jsonify({"success": True, "order": result})
     except Exception as e:
         print(f"Error in complete_order: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/customer-orders', methods=['GET', 'OPTIONS'])
+def api_customer_orders():
+    if request.method == 'OPTIONS':
+        # Preflight request
+        return '', 204
+    try:
+        phone = request.args.get('phone')
+        result = get_customer_orders(phone)
+        return jsonify(result)
+    except Exception as e:
+        print(f"Error in customer_orders: {e}")
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/update-customer', methods=['POST', 'OPTIONS'])
+def api_update_customer():
+    if request.method == 'OPTIONS':
+        # Preflight request
+        return '', 204
+    try:
+        data = request.json or {}
+        result = update_customer_info(data)
+        return jsonify(result)
+    except Exception as e:
+        print(f"Error in update_customer: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
 
 @app.route('/api/menu-data', methods=['GET', 'OPTIONS'])
@@ -449,28 +781,6 @@ def api_menu_data():
         print(f"Error in menu_data: {e}")
         return jsonify({"success": False, "error": str(e)}), 500
 
-@app.route('/api/debug-llm', methods=['GET'])
-def api_debug_llm():
-    """Debug endpoint to test LLM integration"""
-    try:
-        # Test all three recommendation types
-        health_test = generate_llm_recommendations("health", activity_level="active")
-        weather_test = generate_llm_recommendations("weather", weather_condition="sunny", temperature=25)
-        dish_test = generate_llm_recommendations("dish_name", protein="Chicken", base_type="Bowl")
-
-        return jsonify({
-            "success": True,
-            "message": "LLM simulation is working",
-            "health_sample": health_test,
-            "weather_sample": weather_test,
-            "dish_name_sample": dish_test
-        })
-    except Exception as e:
-        return jsonify({
-            "success": False,
-            "error": str(e)
-        })
-
 @app.route('/', methods=['GET'])
 def home():
     return """
@@ -498,7 +808,8 @@ def home():
                 <li><code>POST /api/add-item</code> - Add an item to the order</li>
                 <li><code>POST /api/complete-order</code> - Complete the current order</li>
                 <li><code>GET /api/menu-data</code> - Get menu data</li>
-                <li><code>GET /api/debug-llm</code> - Test LLM recommendation functionality</li>
+                <li><code>GET /api/customer-orders</code> - Get customer's previous orders</li>
+                <li><code>POST /api/update-customer</code> - Update customer information</li>
             </ul>
             <p>The API is running and ready to accept requests from the frontend.</p>
         </body>
@@ -506,7 +817,6 @@ def home():
     """
 
 if __name__ == '__main__':
-    import time  # Add import for time.time() used in start_new_order()
     print("Starting Curry Creations API server on http://localhost:5000")
     print("CORS is enabled for all origins")
     app.run(host='0.0.0.0', port=5000, debug=True)

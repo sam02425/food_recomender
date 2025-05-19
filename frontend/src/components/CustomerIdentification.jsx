@@ -1,18 +1,19 @@
-// frontend/src/components/CustomerIdentification.jsx
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Production-level component for customer identification with input validation,
- * error handling, accessibility features, and proper loading states.
+ * Enhanced customer identification component with improved data collection.
+ * Added name field and ensures both phone and name are validated and stored.
  */
 const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [customerName, setCustomerName] = useState(''); // Added name state
   const [imageData, setImageData] = useState(null);
   const [errors, setErrors] = useState({});
   const [isCameraAvailable, setIsCameraAvailable] = useState(true);
   const fileInputRef = useRef(null);
   const phoneInputRef = useRef(null);
+  const nameInputRef = useRef(null); // Reference for name input
 
   // Format phone number with appropriate separators
   const formatPhoneNumber = (value) => {
@@ -39,6 +40,16 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
     // Clear error when user is typing
     if (errors.phoneNumber) {
       setErrors({...errors, phoneNumber: null});
+    }
+  };
+
+  // Handle name input
+  const handleNameChange = (e) => {
+    setCustomerName(e.target.value);
+
+    // Clear error when user is typing
+    if (errors.customerName) {
+      setErrors({...errors, customerName: null});
     }
   };
 
@@ -111,17 +122,20 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
   const validateForm = () => {
     const newErrors = {};
 
-    // Check if at least phone or image is provided
-    if (!phoneNumber && !imageData) {
-      newErrors.form = 'Please provide either a phone number or a photo for identification';
-    }
-
-    // Validate phone number if provided
-    if (phoneNumber) {
+    // Check if phone number is provided
+    if (!phoneNumber) {
+      newErrors.phoneNumber = 'Please enter your phone number';
+    } else {
+      // Validate phone number format
       const digitsOnly = phoneNumber.replace(/\D/g, '');
       if (digitsOnly.length !== 10) {
         newErrors.phoneNumber = 'Please enter a valid 10-digit phone number';
       }
+    }
+
+    // Check if name is provided
+    if (!customerName.trim()) {
+      newErrors.customerName = 'Please enter your name';
     }
 
     setErrors(newErrors);
@@ -142,8 +156,36 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
     // Submit to parent component
     onCustomerIdentified({
       phoneNumber: processedPhoneNumber,
+      name: customerName.trim(), // Added name
       imageData
     });
+  };
+
+  // Check if a returning customer based on phone number
+  const checkReturningCustomer = async () => {
+    // This would typically be an API call to check if this phone number exists in the system
+    const digitsOnly = phoneNumber.replace(/\D/g, '');
+
+    if (digitsOnly.length === 10) {
+      setIsLoading(true);
+      try {
+        // API call would go here
+        // For now, we'll simulate with a timeout
+        setTimeout(() => {
+          setIsLoading(false);
+          // If customer found, would populate name automatically
+          // This is just placeholder logic
+          if (Math.random() > 0.7) {
+            setCustomerName("John Doe"); // Example returning customer
+            nameInputRef.current.focus();
+            alert("Welcome back! We've filled in some of your information.");
+          }
+        }, 1000);
+      } catch (error) {
+        setIsLoading(false);
+        console.error("Error checking customer status:", error);
+      }
+    }
   };
 
   return (
@@ -162,24 +204,51 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
       <form onSubmit={handleSubmit} aria-labelledby="identification-heading">
         <div className="mb-4">
           <label htmlFor="phoneNumber" className="block text-gray-700 mb-2">
-            Phone Number
+            Phone Number <span className="text-red-500">*</span>
           </label>
-          <input
-            type="tel"
-            id="phoneNumber"
-            ref={phoneInputRef}
-            value={phoneNumber}
-            onChange={handlePhoneChange}
-            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-              errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="(555) 555-5555"
-            aria-invalid={errors.phoneNumber ? 'true' : 'false'}
-            aria-describedby={errors.phoneNumber ? 'phone-error' : undefined}
-          />
+          <div className="flex">
+            <input
+              type="tel"
+              id="phoneNumber"
+              ref={phoneInputRef}
+              value={phoneNumber}
+              onChange={handlePhoneChange}
+              onBlur={checkReturningCustomer}
+              className={`flex-1 px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="(555) 555-5555"
+              aria-invalid={errors.phoneNumber ? 'true' : 'false'}
+              aria-describedby={errors.phoneNumber ? 'phone-error' : undefined}
+            />
+          </div>
           {errors.phoneNumber && (
             <p id="phone-error" className="mt-1 text-red-500 text-sm">
               {errors.phoneNumber}
+            </p>
+          )}
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="customerName" className="block text-gray-700 mb-2">
+            Your Name <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="customerName"
+            ref={nameInputRef}
+            value={customerName}
+            onChange={handleNameChange}
+            className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+              errors.customerName ? 'border-red-500' : 'border-gray-300'
+            }`}
+            placeholder="Your name"
+            aria-invalid={errors.customerName ? 'true' : 'false'}
+            aria-describedby={errors.customerName ? 'name-error' : undefined}
+          />
+          {errors.customerName && (
+            <p id="name-error" className="mt-1 text-red-500 text-sm">
+              {errors.customerName}
             </p>
           )}
         </div>
@@ -254,10 +323,10 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
 
         <button
           type="submit"
-          disabled={isLoading || (!phoneNumber && !imageData)}
+          disabled={isLoading || !phoneNumber || !customerName.trim()}
           className={`
             w-full py-2 rounded-md text-white transition-colors flex items-center justify-center
-            ${isLoading || (!phoneNumber && !imageData)
+            ${isLoading || !phoneNumber || !customerName.trim()
               ? 'bg-gray-400 cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700'}
           `}

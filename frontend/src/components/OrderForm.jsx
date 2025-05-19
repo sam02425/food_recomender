@@ -1,4 +1,3 @@
-// frontend/src/components/OrderForm.jsx
 import React, { useState, useEffect } from 'react';
 import MenuSelectionGrid from './MenuSelectionGrid';
 import BaseSelectionGrid from './BaseSelectionGrid';
@@ -10,8 +9,8 @@ import OrderSummary from './OrderSummary';
 import SocialSharing from './SocialSharing';
 
 /**
- * Main order form component that manages the entire ordering flow.
- * Integrates all the specialized components and manages state.
+ * Enhanced order form component that manages the entire ordering flow.
+ * Added ability to go back, remove items, and improved navigation.
  */
 const OrderForm = () => {
   // State for the current step in the ordering process
@@ -41,6 +40,7 @@ const OrderForm = () => {
 
   // Customer data
   const [customerData, setCustomerData] = useState(null);
+  const [previousOrders, setPreviousOrders] = useState([]);
 
   // Custom suggestion inputs
   const [customProtein, setCustomProtein] = useState('');
@@ -113,9 +113,29 @@ const OrderForm = () => {
   }, []);
 
   // Handle customer identification
-  const handleCustomerIdentified = (customerInfo) => {
-    setCustomerData(customerInfo);
-    setCurrentStep('activity');
+  const handleCustomerIdentified = async (customerInfo) => {
+    setIsLoading(true);
+
+    try {
+      // Save the customer data
+      setCustomerData(customerInfo);
+
+      // Fetch previous orders for this customer if we have a phone number
+      if (customerInfo.phoneNumber) {
+        // This would be a new API call to get customer's previous orders
+        const response = await apiService.getCustomerPreviousOrders(customerInfo.phoneNumber);
+        if (response?.success) {
+          setPreviousOrders(response.orders || []);
+        }
+      }
+
+      setCurrentStep('activity');
+    } catch (error) {
+      setError("Failed to retrieve customer data.");
+      console.error("Customer data error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // Handle base selection (updates both type and option)
@@ -133,7 +153,10 @@ const OrderForm = () => {
   const getHealthRecommendations = async (activityLevel) => {
     try {
       setIsLoading(true);
-      const response = await apiService.getHealthRecommendations(activityLevel);
+      const response = await apiService.getHealthRecommendations(
+        activityLevel,
+        customerData?.phoneNumber // Pass phone number for personalized recommendations
+      );
 
       if (response?.success) {
         // Update recommendations state with health data
@@ -176,7 +199,9 @@ const OrderForm = () => {
   const getWeatherRecommendations = async () => {
     try {
       setIsLoading(true);
-      const response = await apiService.getWeatherRecommendations();
+      const response = await apiService.getWeatherRecommendations(
+        customerData?.phoneNumber // Pass phone number for personalized recommendations
+      );
 
       if (response?.success) {
         // Update recommendations state with weather data
@@ -202,7 +227,8 @@ const OrderForm = () => {
       setIsLoading(true);
       const selections = {
         protein: protein || "Chicken",
-        base_type: baseType || "Bowl"
+        base_type: baseType || "Bowl",
+        customer_name: customerData?.name // Pass customer name for personalization
       };
 
       const response = await apiService.getDishName(selections);
@@ -240,7 +266,12 @@ const OrderForm = () => {
   const handleCompleteOrder = async () => {
     try {
       setIsLoading(true);
-      const response = await apiService.completeOrder();
+
+      // Pass customer data with the order
+      const response = await apiService.completeOrder(
+        customerData?.phoneNumber,
+        customerData?.name
+      );
 
       if (response?.success) {
         // Handle successful order completion
@@ -265,7 +296,8 @@ const OrderForm = () => {
       const response = await apiService.submitRecommendationFeedback(
         type,
         feedback,
-        customValue
+        customValue,
+        customerData?.phoneNumber // Pass phone number to associate feedback with customer
       );
 
       return response?.success || false;
@@ -364,7 +396,9 @@ const OrderForm = () => {
         base_type: baseType,
         base_option: baseOption,
         veggies,
-        dish_name: dishName
+        dish_name: dishName,
+        customer_phone: customerData?.phoneNumber, // Include customer phone in selections
+        customer_name: customerData?.name // Include customer name in selections
       };
 
       const response = await apiService.addOrderItem(selections);
@@ -377,6 +411,32 @@ const OrderForm = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Remove item from order
+  const removeOrderItem = (index) => {
+    const updatedItems = [...orderItems];
+    updatedItems.splice(index, 1);
+    setOrderItems(updatedItems);
+  };
+
+  // Edit existing item
+  const editOrderItem = (index) => {
+    const itemToEdit = orderItems[index];
+
+    // Populate form with item data
+    setProtein(itemToEdit.protein);
+    setSauce(itemToEdit.sauce);
+    setBaseType(itemToEdit.base_type);
+    setBaseOption(itemToEdit.base_option);
+    setVeggies(itemToEdit.veggies);
+    setDishName(itemToEdit.dish_name);
+
+    // Remove the item from the list
+    removeOrderItem(index);
+
+    // Take user back to protein selection step
+    setCurrentStep('protein');
   };
 
   // Handle social sharing
@@ -429,7 +489,64 @@ const OrderForm = () => {
 
   // Start order button
   const handleStartOrder = () => {
-    setCurrentStep('activity');
+    setCurrentStep('identify'); // Changed from 'activity' to 'identify' to ensure we capture customer info
+  };
+
+  // Clear current selection
+  const clearSelections = () => {
+    // Clear protein
+    if (currentStep === 'protein') {
+      setProtein('');
+    }
+    // Clear base
+    else if (currentStep === 'base') {
+      setBaseType('');
+      setBaseOption('');
+    }
+    // Clear dish name
+    else if (currentStep === 'dishName') {
+      setDishName('');
+    }
+    // Clear sauce
+    else if (currentStep === 'sauce_selection') {
+      setSauce('');
+    }
+    // Clear veggies
+    else if (currentStep === 'veggie_selection') {
+      setVeggies([]);
+    }
+  };
+
+  // Go back to previous step with current selections maintained
+  const goToPreviousStep = () => {
+    switch (currentStep) {
+      case 'identify':
+        setCurrentStep('start');
+        break;
+      case 'activity':
+        setCurrentStep('identify');
+        break;
+      case 'protein':
+        setCurrentStep('activity');
+        break;
+      case 'base':
+        setCurrentStep('protein');
+        break;
+      case 'dishName':
+        setCurrentStep('base');
+        break;
+      case 'sauce_selection':
+        setCurrentStep('dishName');
+        break;
+      case 'veggie_selection':
+        setCurrentStep('sauce_selection');
+        break;
+      case 'review':
+        setCurrentStep('veggie_selection');
+        break;
+      default:
+        break;
+    }
   };
 
   // Render the appropriate step
@@ -460,10 +577,39 @@ const OrderForm = () => {
 
       case 'activity':
         return (
-          <ActivitySelection
-            onActivitySelected={handleActivitySelection}
-            isLoading={isLoading}
-          />
+          <>
+            <ActivitySelection
+              onActivitySelected={handleActivitySelection}
+              isLoading={isLoading}
+            />
+
+            {/* Display previous orders if available */}
+            {previousOrders.length > 0 && (
+              <div className="mt-8 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                <h3 className="text-lg font-semibold mb-2">Your Previous Orders</h3>
+                <div className="max-h-60 overflow-y-auto">
+                  {previousOrders.map((order, idx) => (
+                    <div key={idx} className="bg-white p-3 mb-2 rounded shadow-sm">
+                      <p className="font-medium">{order.dish_name || 'Custom Order'}</p>
+                      <p className="text-sm text-gray-600">
+                        {order.protein} with {order.sauce} on {order.base_option}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Back button */}
+            <div className="mt-4">
+              <button
+                onClick={goToPreviousStep}
+                className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Back
+              </button>
+            </div>
+          </>
         );
 
       case 'protein':
@@ -489,12 +635,21 @@ const OrderForm = () => {
             />
 
             <div className="mt-4 flex justify-between">
+              {/* Clear/Remove selection button */}
+              <button
+                onClick={clearSelections}
+                disabled={!protein}
+                className={`px-6 py-2 ${!protein ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
+              >
+                Clear Selection
+              </button>
+
               {/* Back button to activity selection */}
               <button
-                onClick={() => setCurrentStep('activity')}
+                onClick={goToPreviousStep}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Back to Activity
+                Back
               </button>
 
               {protein && (
@@ -533,12 +688,21 @@ const OrderForm = () => {
             />
 
             <div className="mt-4 flex justify-between">
+              {/* Clear/Remove selection button */}
+              <button
+                onClick={clearSelections}
+                disabled={!baseType}
+                className={`px-6 py-2 ${!baseType ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
+              >
+                Clear Selection
+              </button>
+
               {/* Back button to protein selection */}
               <button
-                onClick={() => setCurrentStep('protein')}
+                onClick={goToPreviousStep}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Back to Protein
+                Back
               </button>
 
               {baseType && baseOption && (
@@ -592,12 +756,20 @@ const OrderForm = () => {
             />
 
             <div className="mt-4 flex justify-between">
+              {/* Clear/Remove selection button */}
+              <button
+                onClick={clearSelections}
+                className="px-6 py-2 bg-red-200 text-red-800 rounded-md hover:bg-red-300 transition-colors"
+              >
+                Clear Selection
+              </button>
+
               {/* Back button to base selection */}
               <button
-                onClick={() => setCurrentStep('base')}
+                onClick={goToPreviousStep}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Back to Base
+                Back
               </button>
 
               <button
@@ -624,12 +796,21 @@ const OrderForm = () => {
             />
 
             <div className="mt-4 flex justify-between">
+              {/* Clear/Remove selection button */}
+              <button
+                onClick={clearSelections}
+                disabled={!sauce}
+                className={`px-6 py-2 ${!sauce ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
+              >
+                Clear Selection
+              </button>
+
               {/* Back button to dish name */}
               <button
-                onClick={() => setCurrentStep('dishName')}
+                onClick={goToPreviousStep}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Back to Dish Name
+                Back
               </button>
 
               {sauce && (
@@ -661,12 +842,21 @@ const OrderForm = () => {
             />
 
             <div className="mt-4 flex justify-between">
+              {/* Clear/Remove selection button */}
+              <button
+                onClick={clearSelections}
+                disabled={veggies.length === 0}
+                className={`px-6 py-2 ${veggies.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
+              >
+                Clear Selections
+              </button>
+
               {/* Back button to sauce selection */}
               <button
-                onClick={() => setCurrentStep('sauce_selection')}
+                onClick={goToPreviousStep}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Back to Sauce
+                Back
               </button>
 
               <button
@@ -706,6 +896,24 @@ const OrderForm = () => {
             }}
             onComplete={handleCompleteOrder}
             isLoading={isLoading}
+            onRemoveItem={() => {
+              // Reset selections
+              setProtein('');
+              setSauce('');
+              setBaseType('');
+              setBaseOption('');
+              setVeggies([]);
+              setDishName('');
+
+              // Go back to protein step
+              setCurrentStep('protein');
+            }}
+            onEditItem={() => {
+              // Keep selections but go back to protein step
+              setCurrentStep('protein');
+            }}
+            customerData={customerData}
+            goToPreviousStep={goToPreviousStep}
           />
         );
 
@@ -728,6 +936,12 @@ const OrderForm = () => {
             <p className="text-gray-600 mb-6">
               Your order has been placed and will be ready shortly.
             </p>
+            {customerData && (
+              <div className="bg-green-50 p-4 rounded-lg mb-6 inline-block">
+                <p className="text-green-800 font-medium">Thank you, {customerData.name || "valued customer"}!</p>
+                <p className="text-green-600">We'll use your preferences for better recommendations next time.</p>
+              </div>
+            )}
             <button
               onClick={() => {
                 // Reset everything
