@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
- * Grid component for menu item selection with recommendation highlighting.
+ * Enhanced grid component for menu item selection with recommendation highlighting.
  * Handles both single-select (protein, sauce) and multi-select (veggies) options.
  */
 const MenuSelectionGrid = ({
@@ -29,7 +30,7 @@ const MenuSelectionGrid = ({
       }
     } else {
       // For single select (proteins, sauces, base)
-      onSelect(item);
+      onSelect(item === selectedItems ? '' : item); // Toggle selection if clicking the same item
     }
   };
 
@@ -67,16 +68,21 @@ const MenuSelectionGrid = ({
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {items.map((item) => {
+          // If item is an object (for proteins with prices), extract the properties
+          const itemName = typeof item === 'object' ? item.name : item;
+          const itemPrice = typeof item === 'object' ? item.price : null;
+          const itemDescription = typeof item === 'object' ? item.description : null;
+
           const isSelected = isMultiSelect
-            ? selectedItems.includes(item)
-            : selectedItems === item;
-          const isRecommended = recommendations.includes(item);
-          const pricing = getPricingInfo(item);
+            ? selectedItems.includes(itemName)
+            : selectedItems === itemName;
+          const isRecommended = recommendations.includes(itemName);
+          const pricing = getPricingInfo(itemName);
 
           return (
             <div
-              key={item}
-              onClick={() => handleItemClick(item)}
+              key={itemName}
+              onClick={() => handleItemClick(itemName)}
               className={`
                 relative p-4 rounded-lg border-2 cursor-pointer transition-all
                 ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}
@@ -86,12 +92,27 @@ const MenuSelectionGrid = ({
               `}
             >
               <div className="flex justify-between items-center">
-                <span className="font-medium">{item}</span>
+                <span className="font-medium">{itemName}</span>
                 {isRecommended && (
                   <span className="text-green-500 ml-2">✓</span>
                 )}
               </div>
 
+              {/* Display the price if protein item */}
+              {itemPrice !== null && (
+                <div className="text-sm text-gray-600 mt-1 font-medium">
+                  ${itemPrice.toFixed(2)}
+                </div>
+              )}
+
+              {/* Display the description if available */}
+              {itemDescription && (
+                <div className="text-xs text-gray-500 mt-1 truncate" title={itemDescription}>
+                  {itemDescription}
+                </div>
+              )}
+
+              {/* Show premium or extra pricing */}
               {pricing && (
                 <div className="text-sm text-gray-600 mt-1">
                   {pricing}
@@ -101,7 +122,7 @@ const MenuSelectionGrid = ({
               {isSelected && (
                 <div className="absolute top-0 right-0 bg-blue-500 w-6 h-6 flex items-center justify-center rounded-bl-md">
                   <span className="text-white text-xs">
-                    {isMultiSelect ? (selectedItems.indexOf(item) + 1) : '✓'}
+                    {isMultiSelect ? (selectedItems.indexOf(itemName) + 1) : '✓'}
                   </span>
                 </div>
               )}
@@ -111,6 +132,22 @@ const MenuSelectionGrid = ({
       </div>
     </div>
   );
+};
+
+MenuSelectionGrid.propTypes = {
+  title: PropTypes.string.isRequired,
+  items: PropTypes.array.isRequired,
+  recommendations: PropTypes.array,
+  category: PropTypes.string,
+  selectedItems: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.array
+  ]),
+  onSelect: PropTypes.func.isRequired,
+  maxFreeSelections: PropTypes.number,
+  premiumItems: PropTypes.array,
+  premiumPrice: PropTypes.number,
+  extraPrice: PropTypes.number
 };
 
 export default MenuSelectionGrid;

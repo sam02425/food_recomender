@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 /**
  * Specialized component for base options that handles the hierarchical structure.
@@ -12,6 +13,16 @@ const BaseSelectionGrid = ({
   selectedBaseOption = '',
   onSelect
 }) => {
+  // Handle base selection (updates both type and option)
+  const handleBaseSelection = (type, option) => {
+    // If the same item is selected, deselect it to allow changing
+    if (selectedBaseType === type && selectedBaseOption === option) {
+      onSelect('', ''); // Clear selection
+    } else {
+      onSelect(type, option);
+    }
+  };
+
   return (
     <div className="w-full mb-6">
       <h2 className="text-xl font-bold mb-3">{title}</h2>
@@ -30,7 +41,7 @@ const BaseSelectionGrid = ({
               return (
                 <div
                   key={`${baseType}-${option.name}`}
-                  onClick={() => onSelect(baseType, option.name)}
+                  onClick={() => handleBaseSelection(baseType, option.name)}
                   className={`
                     relative p-4 rounded-lg border-2 cursor-pointer transition-all
                     ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}
@@ -61,6 +72,15 @@ const BaseSelectionGrid = ({
       ))}
     </div>
   );
+};
+
+BaseSelectionGrid.propTypes = {
+  title: PropTypes.string.isRequired,
+  baseTypes: PropTypes.object.isRequired,
+  recommendations: PropTypes.array,
+  selectedBaseType: PropTypes.string,
+  selectedBaseOption: PropTypes.string,
+  onSelect: PropTypes.func.isRequired
 };
 
 export default BaseSelectionGrid;

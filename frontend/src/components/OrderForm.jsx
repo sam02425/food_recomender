@@ -42,6 +42,9 @@ const OrderForm = () => {
   const [customerData, setCustomerData] = useState(null);
   const [previousOrders, setPreviousOrders] = useState([]);
 
+  // Order items array
+  const [orderItems, setOrderItems] = useState([]);
+
   // Custom suggestion inputs
   const [customProtein, setCustomProtein] = useState('');
   const [customBase, setCustomBase] = useState('');
@@ -54,9 +57,17 @@ const OrderForm = () => {
     format_used: ""
   });
 
-  // Menu data
+  // Menu data with proper objects for proteins that include price and description
   const [menuData, setMenuData] = useState(null);
-  const proteins = ['Chicken', 'Egg', 'Paneer/Indian Cheese', 'Soya', 'Potato', 'Pepperoni'];
+  const proteins = [
+    { name: "Chicken", price: 4.50, description: "Grilled chicken pieces" },
+    { name: "Egg", price: 3.00, description: "Boiled or fried egg" },
+    { name: "Paneer/Indian Cheese", price: 4.00, description: "Fresh Indian cheese cubes" },
+    { name: "Soya", price: 3.50, description: "Marinated soya chunks" },
+    { name: "Potato", price: 2.50, description: "Spiced potato cubes" },
+    { name: "Pepperoni", price: 4.50, description: "Sliced pepperoni" }
+  ];
+
   const sauces = ['Curry Special', 'Malai Masala', 'Curry Masala', 'Marinara', 'Yogurt/Raita', 'Red Spicy Sauce', 'Mint Sauce', 'Green Spicy Sauce'];
   const baseTypes = {
     'Biryani': [
@@ -140,12 +151,18 @@ const OrderForm = () => {
 
   // Handle base selection (updates both type and option)
   const handleBaseSelection = (type, option) => {
-    setBaseType(type);
-    setBaseOption(option);
+    // If reselecting the same base, allow deselection
+    if (type === baseType && option === baseOption) {
+      setBaseType('');
+      setBaseOption('');
+    } else {
+      setBaseType(type);
+      setBaseOption(option);
 
-    // If we're on the base step, move to the next step after selection
-    if (currentStep === 'base') {
-      setCurrentStep('dishName');
+      // If we're on the base step, move to the next step after selection
+      if (currentStep === 'base') {
+        setCurrentStep('dishName');
+      }
     }
   };
 
@@ -401,9 +418,30 @@ const OrderForm = () => {
         customer_name: customerData?.name // Include customer name in selections
       };
 
+      // Create new order item
+      const newItem = {
+        protein,
+        sauce,
+        base_type: baseType,
+        base_option: baseOption,
+        veggies,
+        dish_name: dishName || "Custom Creation",
+        price: calculateTotal()
+      };
+
+      // Add to order items array
+      setOrderItems([...orderItems, newItem]);
+
+      // Call API
       const response = await apiService.addOrderItem(selections);
 
-      return response?.success || false;
+      if (response?.success) {
+        setCurrentStep('review');
+        return true;
+      } else {
+        setError("Failed to add item to order.");
+        return false;
+      }
     } catch (error) {
       setError("Failed to add item to order.");
       console.error("Add item error:", error);
@@ -415,9 +453,9 @@ const OrderForm = () => {
 
   // Remove item from order
   const removeOrderItem = (index) => {
-    const updatedItems = [...orderItems];
-    updatedItems.splice(index, 1);
-    setOrderItems(updatedItems);
+    const newItems = [...orderItems];
+    newItems.splice(index, 1);
+    setOrderItems(newItems);
   };
 
   // Edit existing item
@@ -450,8 +488,15 @@ const OrderForm = () => {
   const calculateTotal = () => {
     let total = 0;
 
-    // Add protein price (simple fixed prices)
-    if (protein) total += 4.50; // Simplified, would normally look up actual prices
+    // Add protein price - use the price from the object
+    if (protein) {
+      const selectedProtein = proteins.find(p => p.name === protein);
+      if (selectedProtein) {
+        total += selectedProtein.price;
+      } else {
+        total += 4.50; // Default price if not found
+      }
+    }
 
     // Add sauce price
     if (sauce) total += 1.50; // Simplified
@@ -478,7 +523,7 @@ const OrderForm = () => {
       }
     });
 
-    return total;
+    return parseFloat(total.toFixed(2));
   };
 
   // Handle activity selection
@@ -859,18 +904,21 @@ const OrderForm = () => {
                 Back
               </button>
 
+              {/* Add button to add item to order */}
               <button
-                onClick={() => setCurrentStep('review')}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                onClick={addItemToOrder}
+                disabled={!protein || !sauce || !baseType || !baseOption}
+                className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
               >
-                Review Order
+                Add to Order
               </button>
             </div>
           </>
         );
 
       case 'review':
-        const orderItem = {
+        // If no items have been added yet, use current selections to create one
+        const currentOrderItems = orderItems.length > 0 ? orderItems : [{
           dish_name: dishName || "Custom Creation",
           protein: protein || "",
           sauce: sauce || "",
@@ -878,12 +926,12 @@ const OrderForm = () => {
           base_option: baseOption || "",
           veggies: veggies || [],
           price: calculateTotal()
-        };
+        }];
 
         return (
           <OrderSummary
-            orderItems={[orderItem]}
-            totalPrice={calculateTotal()}
+            orderItems={currentOrderItems}
+            totalPrice={currentOrderItems.reduce((sum, item) => sum + item.price, 0)}
             onAddAnother={() => {
               // Reset selections and go back to protein step
               setProtein('');
@@ -896,21 +944,31 @@ const OrderForm = () => {
             }}
             onComplete={handleCompleteOrder}
             isLoading={isLoading}
-            onRemoveItem={() => {
-              // Reset selections
-              setProtein('');
-              setSauce('');
-              setBaseType('');
-              setBaseOption('');
-              setVeggies([]);
-              setDishName('');
+            onRemoveItem={(index) => {
+              // Handle removing item
+              if (orderItems.length > 0) {
+                removeOrderItem(index);
+              } else {
+                // Reset selections
+                setProtein('');
+                setSauce('');
+                setBaseType('');
+                setBaseOption('');
+                setVeggies([]);
+                setDishName('');
 
-              // Go back to protein step
-              setCurrentStep('protein');
+                // Go back to protein step
+                setCurrentStep('protein');
+              }
             }}
-            onEditItem={() => {
-              // Keep selections but go back to protein step
-              setCurrentStep('protein');
+            onEditItem={(index) => {
+              // Handle editing item
+              if (orderItems.length > 0) {
+                editOrderItem(index);
+              } else {
+                // Just go back to protein step to continue editing current selections
+                setCurrentStep('protein');
+              }
             }}
             customerData={customerData}
             goToPreviousStep={goToPreviousStep}
@@ -965,6 +1023,7 @@ const OrderForm = () => {
                   format_used: ""
                 });
                 setOrderData(null);
+                setOrderItems([]);
               }}
               className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >

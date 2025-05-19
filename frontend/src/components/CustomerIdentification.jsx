@@ -2,18 +2,19 @@ import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 /**
- * Enhanced customer identification component with improved data collection.
+ * Enhanced customer identification component with improved camera capture.
  * Added name field and ensures both phone and name are validated and stored.
  */
 const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [customerName, setCustomerName] = useState(''); // Added name state
+  const [customerName, setCustomerName] = useState('');
   const [imageData, setImageData] = useState(null);
   const [errors, setErrors] = useState({});
   const [isCameraAvailable, setIsCameraAvailable] = useState(true);
+  const [localIsLoading, setLocalIsLoading] = useState(isLoading); // Local loading state
   const fileInputRef = useRef(null);
   const phoneInputRef = useRef(null);
-  const nameInputRef = useRef(null); // Reference for name input
+  const nameInputRef = useRef(null);
 
   // Format phone number with appropriate separators
   const formatPhoneNumber = (value) => {
@@ -101,7 +102,7 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
     };
   };
 
-  // Take a new photo
+  // Take a new photo - trigger camera directly
   const handleTakePhoto = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -156,7 +157,7 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
     // Submit to parent component
     onCustomerIdentified({
       phoneNumber: processedPhoneNumber,
-      name: customerName.trim(), // Added name
+      name: customerName.trim(),
       imageData
     });
   };
@@ -167,12 +168,12 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
     const digitsOnly = phoneNumber.replace(/\D/g, '');
 
     if (digitsOnly.length === 10) {
-      setIsLoading(true);
+      setLocalIsLoading(true);
       try {
         // API call would go here
         // For now, we'll simulate with a timeout
         setTimeout(() => {
-          setIsLoading(false);
+          setLocalIsLoading(false);
           // If customer found, would populate name automatically
           // This is just placeholder logic
           if (Math.random() > 0.7) {
@@ -181,9 +182,9 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
             alert("Welcome back! We've filled in some of your information.");
           }
         }, 1000);
-      } catch (error) {
-        setIsLoading(false);
-        console.error("Error checking customer status:", error);
+      } catch (err) {
+        setLocalIsLoading(false);
+        console.error("Error checking customer status:", err);
       }
     }
   };
@@ -262,6 +263,7 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
             </p>
           )}
 
+          {/* Use 'user' for front camera or 'environment' for rear camera */}
           <input
             type="file"
             accept="image/*"
@@ -323,16 +325,16 @@ const CustomerIdentification = ({ onCustomerIdentified, isLoading = false }) => 
 
         <button
           type="submit"
-          disabled={isLoading || !phoneNumber || !customerName.trim()}
+          disabled={localIsLoading || !phoneNumber || !customerName.trim()}
           className={`
             w-full py-2 rounded-md text-white transition-colors flex items-center justify-center
-            ${isLoading || !phoneNumber || !customerName.trim()
+            ${localIsLoading || !phoneNumber || !customerName.trim()
               ? 'bg-gray-400 cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700'}
           `}
-          aria-busy={isLoading ? 'true' : 'false'}
+          aria-busy={localIsLoading ? 'true' : 'false'}
         >
-          {isLoading ? (
+          {localIsLoading ? (
             <>
               <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
