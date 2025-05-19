@@ -1,3 +1,4 @@
+// frontend/src/components/OrderForm.jsx
 import React, { useState, useEffect } from 'react';
 import MenuSelectionGrid from './MenuSelectionGrid';
 import BaseSelectionGrid from './BaseSelectionGrid';
@@ -14,19 +15,20 @@ import SocialSharing from './SocialSharing';
  */
 const OrderForm = () => {
   // State for the current step in the ordering process
-  const [currentStep, setCurrentStep] = useState('protein');
+  const [currentStep, setCurrentStep] = useState('start');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
   // Order data
   const [orderData, setOrderData] = useState(null);
 
-  // Recommendations
+  // Initialize recommendations with empty arrays to prevent map errors
   const [recommendations, setRecommendations] = useState({
-    proteins: ['Chicken', 'Paneer/Indian Cheese'],
-    sauces: ['Curry Special', 'Mint Sauce'],
-    baseTypes: ['Bowl'],
-    veggies: ['Bell Pepper', 'Spinach', 'Tomato']
+    proteins: [],
+    sauces: [],
+    base_types: [],
+    veggies: [],
+    reasoning: ""
   });
 
   // Selection state
@@ -37,15 +39,19 @@ const OrderForm = () => {
   const [veggies, setVeggies] = useState([]);
   const [dishName, setDishName] = useState('');
 
+  // Customer data
+  const [customerData, setCustomerData] = useState(null);
+
   // Custom suggestion inputs
   const [customProtein, setCustomProtein] = useState('');
   const [customBase, setCustomBase] = useState('');
   const [customDishName, setCustomDishName] = useState('');
 
-  // Suggested items
+  // Suggested items - initialize with empty values
   const [suggestedDishNames, setSuggestedDishNames] = useState({
-    name: "Customer's Special Creation",
-    alternatives: ["Flavor Fiesta", "Curry Creation"]
+    name: "",
+    alternatives: [],
+    format_used: ""
   });
 
   // Menu data
@@ -85,20 +91,15 @@ const OrderForm = () => {
 
         // Start a new order
         const orderResponse = await apiService.startOrder();
-        if (orderResponse.success) {
+        if (orderResponse?.success) {
           setOrderData(orderResponse.order_data);
         }
 
         // Get menu data
-        /*
-         * In a production app, we would uncomment this and use the data from the API
-         * For now, we're using hardcoded menu data for demonstration
-
         const menuResponse = await apiService.getMenuData();
-        if (menuResponse.success) {
+        if (menuResponse?.success) {
           setMenuData(menuResponse.menu_data);
         }
-        */
 
       } catch (error) {
         setError("Failed to initialize order. Please try again.");
@@ -110,6 +111,12 @@ const OrderForm = () => {
 
     initializeOrder();
   }, []);
+
+  // Handle customer identification
+  const handleCustomerIdentified = (customerInfo) => {
+    setCustomerData(customerInfo);
+    setCurrentStep('activity');
+  };
 
   // Handle base selection (updates both type and option)
   const handleBaseSelection = (type, option) => {
@@ -128,18 +135,38 @@ const OrderForm = () => {
       setIsLoading(true);
       const response = await apiService.getHealthRecommendations(activityLevel);
 
-      if (response.success) {
+      if (response?.success) {
         // Update recommendations state with health data
-        const healthRecs = response.recommendations;
+        const healthRecs = response.recommendations || {};
         setRecommendations(prev => ({
           ...prev,
-          proteins: healthRecs.proteins || prev.proteins,
-          veggies: healthRecs.veggies || prev.veggies
+          proteins: healthRecs.proteins || [],
+          sauces: healthRecs.sauces || [],
+          base_types: healthRecs.base_types || [],
+          veggies: healthRecs.veggies || [],
+          reasoning: healthRecs.reasoning || ""
         }));
+      } else {
+        // Set default recommendations if request failed
+        setRecommendations({
+          proteins: ["Chicken", "Paneer/Indian Cheese"],
+          sauces: ["Curry Special", "Mint Sauce"],
+          base_types: ["Bowl"],
+          veggies: ["Bell Pepper", "Spinach", "Tomato"],
+          reasoning: "Default recommendations for your activity level."
+        });
       }
     } catch (error) {
       setError("Failed to get health recommendations.");
       console.error("Health recommendations error:", error);
+      // Set default recommendations on error
+      setRecommendations({
+        proteins: ["Chicken", "Paneer/Indian Cheese"],
+        sauces: ["Curry Special", "Mint Sauce"],
+        base_types: ["Bowl"],
+        veggies: ["Bell Pepper", "Spinach", "Tomato"],
+        reasoning: "Default recommendations for your activity level."
+      });
     } finally {
       setIsLoading(false);
     }
@@ -151,12 +178,14 @@ const OrderForm = () => {
       setIsLoading(true);
       const response = await apiService.getWeatherRecommendations();
 
-      if (response.success) {
+      if (response?.success) {
         // Update recommendations state with weather data
-        const weatherRecs = response.recommendations;
+        const weatherRecs = response.recommendations || {};
         setRecommendations(prev => ({
           ...prev,
-          baseTypes: weatherRecs.baseTypes || prev.baseTypes
+          base_types: weatherRecs.base_types || prev.base_types || [],
+          suggested_base: weatherRecs.suggested_base || "",
+          reasoning: weatherRecs.reasoning || prev.reasoning || ""
         }));
       }
     } catch (error) {
@@ -171,26 +200,49 @@ const OrderForm = () => {
   const getDishNameSuggestions = async () => {
     try {
       setIsLoading(true);
-      const selections = { protein, baseType };
+      const selections = {
+        protein: protein || "Chicken",
+        base_type: baseType || "Bowl"
+      };
 
       const response = await apiService.getDishName(selections);
 
-      if (response.success) {
-        setSuggestedDishNames(response.suggestions);
+      if (response?.success) {
+        // Add defaults if properties are missing
+        const suggestions = response.suggestions || {};
+        setSuggestedDishNames({
+          name: suggestions.name || "Customer's Special Creation",
+          alternatives: suggestions.alternatives || ["Flavor Fiesta", "Curry Creation"],
+          format_used: suggestions.format_used || "Standard format"
+        });
+      } else {
+        // Set default values if request failed
+        setSuggestedDishNames({
+          name: "Customer's Special Creation",
+          alternatives: ["Flavor Fiesta", "Curry Creation"],
+          format_used: "Default format"
+        });
       }
     } catch (error) {
       setError("Failed to get dish name suggestions.");
       console.error("Dish name suggestions error:", error);
+      // Set defaults on error
+      setSuggestedDishNames({
+        name: "Customer's Special Creation",
+        alternatives: ["Flavor Fiesta", "Curry Creation"],
+        format_used: "Default format when error occurred"
+      });
     } finally {
       setIsLoading(false);
     }
   };
+
   const handleCompleteOrder = async () => {
     try {
       setIsLoading(true);
       const response = await apiService.completeOrder();
 
-      if (response.success) {
+      if (response?.success) {
         // Handle successful order completion
         alert("Your order has been completed successfully!");
         setCurrentStep('social_sharing');
@@ -216,12 +268,7 @@ const OrderForm = () => {
         customValue
       );
 
-      if (response.success) {
-        // Proceed based on feedback type
-        return true;
-      }
-
-      return false;
+      return response?.success || false;
     } catch (error) {
       setError(`Failed to process ${type} feedback.`);
       console.error("Feedback submission error:", error);
@@ -234,7 +281,8 @@ const OrderForm = () => {
   // Handle protein feedback
   const handleProteinFeedback = async (response, customValue = null) => {
     if (response === 'accept') {
-      setProtein(recommendations.proteins[0] || 'Chicken');
+      const recommendedProtein = recommendations?.proteins?.[0] || "Chicken";
+      setProtein(recommendedProtein);
       await handleRecommendationFeedback('health', 'accept');
     } else if (response === 'custom' && customValue) {
       setProtein(customValue);
@@ -251,33 +299,33 @@ const OrderForm = () => {
   // Handle base feedback
   const handleBaseFeedback = async (response, customValue = null) => {
     if (response === 'accept') {
-      const recommendedBase = recommendations.baseTypes[0] || 'Bowl';
+      const recommendedBase = recommendations?.suggested_base || recommendations?.base_types?.[0] || "Bowl";
       setBaseType(recommendedBase);
 
-      // Set a default option based on the type
-      if (recommendedBase === 'Biryani') {
-        setBaseOption('Rice');
-      } else if (recommendedBase === 'Sandwich & Subs') {
-        setBaseOption('Sourdough');
-      } else if (recommendedBase === 'Wrap') {
-        setBaseOption('Naan');
-      } else if (recommendedBase === 'Bowl') {
-        setBaseOption('Bowl');
+      // Set default base option
+      if (recommendedBase === "Biryani") {
+        setBaseOption("Rice");
+      } else if (recommendedBase === "Sandwich & Subs") {
+        setBaseOption("Sourdough");
+      } else if (recommendedBase === "Wrap") {
+        setBaseOption("Naan");
+      } else if (recommendedBase === "Bowl") {
+        setBaseOption("Bowl");
       }
 
       await handleRecommendationFeedback('weather', 'accept');
     } else if (response === 'custom' && customValue) {
       setBaseType(customValue);
 
-      // Set a default option based on the type
-      if (customValue === 'Biryani') {
-        setBaseOption('Rice');
-      } else if (customValue === 'Sandwich & Subs') {
-        setBaseOption('Sourdough');
-      } else if (customValue === 'Wrap') {
-        setBaseOption('Naan');
-      } else if (customValue === 'Bowl') {
-        setBaseOption('Bowl');
+      // Set default base option
+      if (customValue === "Biryani") {
+        setBaseOption("Rice");
+      } else if (customValue === "Sandwich & Subs") {
+        setBaseOption("Sourdough");
+      } else if (customValue === "Wrap") {
+        setBaseOption("Naan");
+      } else if (customValue === "Bowl") {
+        setBaseOption("Bowl");
       }
 
       await handleRecommendationFeedback('weather', 'custom', customValue);
@@ -293,7 +341,7 @@ const OrderForm = () => {
   // Handle dish name feedback
   const handleDishNameFeedback = async (response, customValue = null) => {
     if (response === 'accept') {
-      setDishName(suggestedDishNames.name);
+      setDishName(suggestedDishNames?.name || "Custom Creation");
       await handleRecommendationFeedback('dish_name', 'accept');
     } else if (response === 'custom' && customValue) {
       setDishName(customValue);
@@ -302,7 +350,7 @@ const OrderForm = () => {
       await handleRecommendationFeedback('dish_name', 'ignore');
     }
 
-    setCurrentStep('sauce');
+    setCurrentStep('sauce_selection');
   };
 
   // Add item to order
@@ -321,12 +369,7 @@ const OrderForm = () => {
 
       const response = await apiService.addOrderItem(selections);
 
-      if (response.success) {
-        // In a real application, you would update the order state here
-        return true;
-      }
-
-      return false;
+      return response?.success || false;
     } catch (error) {
       setError("Failed to add item to order.");
       console.error("Add item error:", error);
@@ -336,26 +379,11 @@ const OrderForm = () => {
     }
   };
 
-  // Complete order
-  const completeOrder = async () => {
-    try {
-      setIsLoading(true);
-
-      const response = await apiService.completeOrder();
-
-      if (response.success) {
-        alert("Your order has been completed successfully!");
-        return true;
-      }
-
-      return false;
-    } catch (error) {
-      setError("Failed to complete order.");
-      console.error("Complete order error:", error);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+  // Handle social sharing
+  const handleSocialShare = (shareData) => {
+    // In a real app, this would integrate with social media APIs
+    console.log("Sharing to social media:", shareData);
+    setCurrentStep('complete');
   };
 
   // Calculate total price
@@ -421,64 +449,65 @@ const OrderForm = () => {
             </button>
           </div>
         );
-    case 'identify':
-      return (
-        <CustomerIdentification
-          onCustomerIdentified={handleCustomerIdentified}
-          isLoading={isLoading}
-        />
-      );
 
-    case 'activity':
-      return (
-        <ActivitySelection
-          onActivitySelected={handleActivitySelection}
-          isLoading={isLoading}
-        />
-      );
-
-
-    case 'protein':
+      case 'identify':
         return (
-        <>
+          <CustomerIdentification
+            onCustomerIdentified={handleCustomerIdentified}
+            isLoading={isLoading}
+          />
+        );
+
+      case 'activity':
+        return (
+          <ActivitySelection
+            onActivitySelected={handleActivitySelection}
+            isLoading={isLoading}
+          />
+        );
+
+      case 'protein':
+        return (
+          <>
             <MenuSelectionGrid
-            title="Select Your Protein"
-            items={proteins}
-            recommendations={recommendations.proteins}
-            category="Protein"
-            selectedItems={protein}
-            onSelect={setProtein}
+              title="Select Your Protein"
+              items={proteins}
+              recommendations={recommendations?.proteins || []}
+              category="Protein"
+              selectedItems={protein}
+              onSelect={setProtein}
             />
 
             <RecommendationFeedback
-            onIgnore={() => handleProteinFeedback('ignore')}
-            onAccept={() => handleProteinFeedback('accept')}
-            onCustom={(value) => handleProteinFeedback('custom', value)}
-            customValue={customProtein}
-            setCustomValue={setCustomProtein}
-            itemType="protein"
-            recommendedItem={recommendations.proteins[0]}
+              onIgnore={() => handleProteinFeedback('ignore')}
+              onAccept={() => handleProteinFeedback('accept')}
+              onCustom={(value) => handleProteinFeedback('custom', value)}
+              customValue={customProtein}
+              setCustomValue={setCustomProtein}
+              itemType="protein"
+              recommendedItem={recommendations?.proteins?.[0] || ""}
             />
 
             <div className="mt-4 flex justify-between">
-            <button
+              {/* Back button to activity selection */}
+              <button
                 onClick={() => setCurrentStep('activity')}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-            >
+              >
                 Back to Activity
-            </button>
+              </button>
 
-            {protein && (
+              {protein && (
                 <button
-                onClick={() => handleProteinFeedback('ignore')}
-                disabled={isLoading}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                  onClick={() => handleProteinFeedback('ignore')}
+                  disabled={isLoading}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
                 >
-                {isLoading ? 'Loading...' : 'Continue'}
+                  {isLoading ? 'Loading...' : 'Continue'}
                 </button>
-            )}
+              )}
             </div>
-        </>
+          </>
         );
 
       case 'base':
@@ -487,7 +516,7 @@ const OrderForm = () => {
             <BaseSelectionGrid
               title="Select Your Base"
               baseTypes={baseTypes}
-              recommendations={recommendations.baseTypes}
+              recommendations={recommendations?.base_types || []}
               selectedBaseType={baseType}
               selectedBaseOption={baseOption}
               onSelect={handleBaseSelection}
@@ -500,17 +529,19 @@ const OrderForm = () => {
               customValue={customBase}
               setCustomValue={setCustomBase}
               itemType="base type"
-              recommendedItem={recommendations.baseTypes[0]}
+              recommendedItem={recommendations?.suggested_base || recommendations?.base_types?.[0] || ""}
             />
 
-            {baseType && baseOption && (
-              <div className="mt-4 flex justify-between">
-                <button
-                  onClick={() => setCurrentStep('protein')}
-                  className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-                >
-                  Back
-                </button>
+            <div className="mt-4 flex justify-between">
+              {/* Back button to protein selection */}
+              <button
+                onClick={() => setCurrentStep('protein')}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Back to Protein
+              </button>
+
+              {baseType && baseOption && (
                 <button
                   onClick={() => handleBaseFeedback('ignore')}
                   disabled={isLoading}
@@ -518,8 +549,8 @@ const OrderForm = () => {
                 >
                   {isLoading ? 'Loading...' : 'Continue'}
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </>
         );
 
@@ -530,14 +561,14 @@ const OrderForm = () => {
               <h2 className="text-xl font-bold mb-3">Your Personalized Dish Name</h2>
 
               <div className="mb-6 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-100 text-center">
-                <h3 className="text-2xl font-bold text-orange-700 mb-2">🎉 {suggestedDishNames.name}</h3>
+                <h3 className="text-2xl font-bold text-orange-700 mb-2">🎉 {suggestedDishNames?.name || "Custom Creation"}</h3>
                 <p className="text-gray-600">Personalized just for you!</p>
               </div>
 
               <div className="mb-4">
                 <h3 className="text-lg font-medium mb-2">Alternative names:</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {suggestedDishNames.alternatives.map((name, index) => (
+                  {(suggestedDishNames?.alternatives || []).map((name, index) => (
                     <div
                       key={index}
                       onClick={() => setSuggestedDishNames({...suggestedDishNames, name})}
@@ -557,16 +588,18 @@ const OrderForm = () => {
               customValue={customDishName}
               setCustomValue={setCustomDishName}
               itemType="dish name"
-              recommendedItem={suggestedDishNames.name}
+              recommendedItem={suggestedDishNames?.name || ""}
             />
 
             <div className="mt-4 flex justify-between">
+              {/* Back button to base selection */}
               <button
                 onClick={() => setCurrentStep('base')}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Back
+                Back to Base
               </button>
+
               <button
                 onClick={() => handleDishNameFeedback('ignore')}
                 disabled={isLoading}
@@ -578,44 +611,46 @@ const OrderForm = () => {
           </>
         );
 
-      case 'sauce':
+      case 'sauce_selection':
         return (
           <>
             <MenuSelectionGrid
               title="Select Your Sauce"
               items={sauces}
-              recommendations={recommendations.sauces}
+              recommendations={recommendations?.sauces || []}
               category="Sauce"
               selectedItems={sauce}
               onSelect={setSauce}
             />
 
-            {sauce && (
-              <div className="mt-4 flex justify-between">
+            <div className="mt-4 flex justify-between">
+              {/* Back button to dish name */}
+              <button
+                onClick={() => setCurrentStep('dishName')}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Back to Dish Name
+              </button>
+
+              {sauce && (
                 <button
-                  onClick={() => setCurrentStep('dishName')}
-                  className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setCurrentStep('veggies')}
+                  onClick={() => setCurrentStep('veggie_selection')}
                   className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
                   Continue
                 </button>
-              </div>
-            )}
+              )}
+            </div>
           </>
         );
 
-      case 'veggies':
+      case 'veggie_selection':
         return (
           <>
             <MenuSelectionGrid
               title="Select Your Veggies"
               items={veggieOptions}
-              recommendations={recommendations.veggies}
+              recommendations={recommendations?.veggies || []}
               category="Veggies"
               selectedItems={veggies}
               onSelect={setVeggies}
@@ -626,12 +661,14 @@ const OrderForm = () => {
             />
 
             <div className="mt-4 flex justify-between">
+              {/* Back button to sauce selection */}
               <button
-                onClick={() => setCurrentStep('sauce')}
+                onClick={() => setCurrentStep('sauce_selection')}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
-                Back
+                Back to Sauce
               </button>
+
               <button
                 onClick={() => setCurrentStep('review')}
                 className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -642,83 +679,94 @@ const OrderForm = () => {
           </>
         );
 
-        case 'review':
-            return (
-              <OrderSummary
-                orderItems={[
-                  {
-                    dish_name: dishName,
-                    protein: protein,
-                    sauce: sauce,
-                    base_type: baseType,
-                    base_option: baseOption,
-                    veggies: veggies,
-                    price: calculateTotal()
-                  }
-                ]}
-                totalPrice={calculateTotal()}
-                onAddAnother={() => {
-                  // Reset selections and go back to protein step
-                  setProtein('');
-                  setSauce('');
-                  setBaseType('');
-                  setBaseOption('');
-                  setVeggies([]);
-                  setDishName('');
-                  setCurrentStep('protein');
-                }}
-                onComplete={handleCompleteOrder}
-                isLoading={isLoading}
-              />
-            );
+      case 'review':
+        const orderItem = {
+          dish_name: dishName || "Custom Creation",
+          protein: protein || "",
+          sauce: sauce || "",
+          base_type: baseType || "",
+          base_option: baseOption || "",
+          veggies: veggies || [],
+          price: calculateTotal()
+        };
 
-          case 'social_sharing':
-            return (
-              <SocialSharing
-                dishName={dishName || "Custom Creation"}
-                customerName={customerData?.name || "Guest"}
-                onShare={handleSocialShare}
-                onSkip={() => setCurrentStep('complete')}
-                isLoading={isLoading}
-              />
-            );
+        return (
+          <OrderSummary
+            orderItems={[orderItem]}
+            totalPrice={calculateTotal()}
+            onAddAnother={() => {
+              // Reset selections and go back to protein step
+              setProtein('');
+              setSauce('');
+              setBaseType('');
+              setBaseOption('');
+              setVeggies([]);
+              setDishName('');
+              setCurrentStep('protein');
+            }}
+            onComplete={handleCompleteOrder}
+            isLoading={isLoading}
+          />
+        );
 
-        // Add handling for 'complete' step
-        case 'complete':
-            return (
-              <div className="text-center py-8">
-                <div className="text-5xl mb-4">🎉</div>
-                <h2 className="text-2xl font-bold mb-4">Order Complete!</h2>
-                <p className="text-gray-600 mb-6">
-                  Your order has been placed and will be ready shortly.
-                </p>
-                <button
-                  onClick={() => {
-                    // Reset everything
-                    setCurrentStep('start');
-                    setProtein('');
-                    setSauce('');
-                    setBaseType('');
-                    setBaseOption('');
-                    setVeggies([]);
-                    setDishName('');
-                    setOrderData(null);
-                  }}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Start New Order
-                </button>
-              </div>
-            );
+      case 'social_sharing':
+        return (
+          <SocialSharing
+            dishName={dishName || "Custom Creation"}
+            customerName={customerData?.name || "Guest"}
+            onShare={handleSocialShare}
+            onSkip={() => setCurrentStep('complete')}
+            isLoading={isLoading}
+          />
+        );
 
-          default:
-            return <div>Invalid step</div>;
-        }
-      };
+      case 'complete':
+        return (
+          <div className="text-center py-8">
+            <div className="text-5xl mb-4">🎉</div>
+            <h2 className="text-2xl font-bold mb-4">Order Complete!</h2>
+            <p className="text-gray-600 mb-6">
+              Your order has been placed and will be ready shortly.
+            </p>
+            <button
+              onClick={() => {
+                // Reset everything
+                setCurrentStep('start');
+                setProtein('');
+                setSauce('');
+                setBaseType('');
+                setBaseOption('');
+                setVeggies([]);
+                setDishName('');
+                setRecommendations({
+                  proteins: [],
+                  sauces: [],
+                  base_types: [],
+                  veggies: [],
+                  reasoning: ""
+                });
+                setSuggestedDishNames({
+                  name: "",
+                  alternatives: [],
+                  format_used: ""
+                });
+                setOrderData(null);
+              }}
+              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Start New Order
+            </button>
+          </div>
+        );
+
+      default:
+        return <div>Invalid step</div>;
+    }
+  };
 
   // Render progress bar
   const renderProgressBar = () => {
-    if (currentStep === 'start' || currentStep === 'activity') {
+    if (currentStep === 'start' || currentStep === 'activity' || currentStep === 'identify') {
       return null;
     }
 
@@ -726,8 +774,8 @@ const OrderForm = () => {
       { id: 'protein', label: 'Protein' },
       { id: 'base', label: 'Base' },
       { id: 'dishName', label: 'Name' },
-      { id: 'sauce', label: 'Sauce' },
-      { id: 'veggies', label: 'Veggies' },
+      { id: 'sauce_selection', label: 'Sauce' },
+      { id: 'veggie_selection', label: 'Veggies' },
       { id: 'review', label: 'Review' }
     ];
 
@@ -789,7 +837,7 @@ const OrderForm = () => {
       {renderError()}
       {renderProgressBar()}
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md p-6 relative">
         {isLoading && currentStep !== 'start' && (
           <div className="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center z-10">
             <div className="text-center">
