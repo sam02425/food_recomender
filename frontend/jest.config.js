@@ -6,8 +6,9 @@ module.exports = {
     '\\.(gif|ttf|eot|svg|png)$': '<rootDir>/__mocks__/fileMock.js'
   },
   transform: {
-    '^.+\\.(js|jsx)$': 'babel-jest'
-  },
+         "^.+\\.[jt]sx?$": "babel-jest"
+       },
+       testEnvironment: "jsdom",
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.{js,jsx}',
     '<rootDir>/src/**/*.{spec,test}.{js,jsx}'

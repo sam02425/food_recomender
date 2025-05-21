@@ -83,16 +83,24 @@ const MenuSelectionGrid = ({
             <div
               key={itemName}
               onClick={() => handleItemClick(itemName)}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleItemClick(itemName); }}
+              role="button"
+              tabIndex={0}
               className={`
                 relative p-4 rounded-lg border-2 cursor-pointer transition-all
-                ${isSelected ? 'border-blue-500 bg-blue-50' : 'border-gray-200'}
+                ${isSelected ? 'border-blue-500 bg-blue-600 text-white' : 'border-gray-200'}
                 ${isRecommended ? 'border-green-500 shadow-md' : ''}
                 ${isSelected && isRecommended ? 'border-blue-500 shadow-md border-dashed' : ''}
                 hover:border-blue-300
               `}
+              {...(category === 'Protein' ? { 'data-testid': `protein-${itemName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` } : {})}
             >
               <div className="flex justify-between items-center">
-                <span className="font-medium">{itemName}</span>
+                <span
+                  className="font-medium"
+                >
+                  {itemName}
+                </span>
                 {isRecommended && (
                   <span className="text-green-500 ml-2">✓</span>
                 )}

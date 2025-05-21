@@ -46,13 +46,14 @@ const BaseSelectionGrid = memo(({
                 ${isSelected && recommendations.includes(baseType) ? 'border-blue-500 shadow-md border-dashed' : ''}
                 hover:border-blue-300
               `}
+              title={option.description}
             >
               <div className="flex justify-between items-center">
                 <span className="font-medium">{option.name}</span>
                 <span className="text-sm text-gray-600">${option.price.toFixed(2)}</span>
               </div>
 
-              <div className="text-xs text-gray-500 mt-1 truncate" title={option.description}>
+              <div className="text-xs text-gray-500 mt-1 truncate">
                 {option.description}
               </div>
 

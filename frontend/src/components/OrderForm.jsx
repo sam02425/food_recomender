@@ -31,8 +31,8 @@ const OrderForm = () => {
   });
 
   // Selection state
-  const [protein, setProtein] = useState('');
-  const [sauce, setSauce] = useState('');
+  const [protein, setProtein] = useState([]);
+  const [sauce, setSauce] = useState([]);
   const [baseType, setBaseType] = useState('');
   const [baseOption, setBaseOption] = useState('');
   const [veggies, setVeggies] = useState([]);
@@ -243,8 +243,11 @@ const OrderForm = () => {
     try {
       setIsLoading(true);
       const selections = {
-        protein: protein || "Chicken",
+        protein: protein.length ? protein : ["Chicken"],
+        sauce: sauce.length ? sauce : ["Curry Special"],
+        veggies: veggies.length ? veggies : ["Bell Pepper"],
         base_type: baseType || "Bowl",
+        base_option: baseOption || "Bowl",
         customer_name: customerData?.name // Pass customer name for personalization
       };
 
@@ -331,16 +334,15 @@ const OrderForm = () => {
   const handleProteinFeedback = async (response, customValue = null) => {
     if (response === 'accept') {
       const recommendedProtein = recommendations?.proteins?.[0] || "Chicken";
-      setProtein(recommendedProtein);
+      setProtein([recommendedProtein]);
       await handleRecommendationFeedback('health', 'accept');
     } else if (response === 'custom' && customValue) {
-      setProtein(customValue);
+      setProtein([customValue]);
       await handleRecommendationFeedback('health', 'custom', customValue);
     } else {
       await handleRecommendationFeedback('health', 'ignore');
     }
 
-    // Get weather recommendations for next step
     await getWeatherRecommendations();
     setCurrentStep('base');
   };
@@ -541,7 +543,7 @@ const OrderForm = () => {
   const clearSelections = () => {
     // Clear protein
     if (currentStep === 'protein') {
-      setProtein('');
+      setProtein([]);
     }
     // Clear base
     else if (currentStep === 'base') {
@@ -554,7 +556,7 @@ const OrderForm = () => {
     }
     // Clear sauce
     else if (currentStep === 'sauce_selection') {
-      setSauce('');
+      setSauce([]);
     }
     // Clear veggies
     else if (currentStep === 'veggie_selection') {
@@ -683,8 +685,8 @@ const OrderForm = () => {
               {/* Clear/Remove selection button */}
               <button
                 onClick={clearSelections}
-                disabled={!protein}
-                className={`px-6 py-2 ${!protein ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
+                disabled={protein.length === 0 || isLoading}
+                className={`px-6 py-2 ${protein.length === 0 || isLoading ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
               >
                 Clear Selection
               </button>
@@ -692,18 +694,29 @@ const OrderForm = () => {
               {/* Back button to activity selection */}
               <button
                 onClick={goToPreviousStep}
+                disabled={isLoading}
                 className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
               >
                 Back
               </button>
 
-              {protein && (
+              {protein.length > 0 && !isLoading && (
                 <button
-                  onClick={() => handleProteinFeedback('ignore')}
-                  disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+                  onClick={async () => {
+                    await getWeatherRecommendations();
+                    setCurrentStep('base');
+                  }}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
                 >
-                  {isLoading ? 'Loading...' : 'Continue'}
+                  Continue
+                </button>
+              )}
+              {isLoading && (
+                <button
+                  disabled
+                  className="px-6 py-2 bg-gray-400 text-white rounded-md cursor-not-allowed"
+                >
+                  Loading...
                 </button>
               )}
             </div>
@@ -844,8 +857,8 @@ const OrderForm = () => {
               {/* Clear/Remove selection button */}
               <button
                 onClick={clearSelections}
-                disabled={!sauce}
-                className={`px-6 py-2 ${!sauce ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
+                disabled={sauce.length === 0}
+                className={`px-6 py-2 ${sauce.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
               >
                 Clear Selection
               </button>
@@ -858,7 +871,7 @@ const OrderForm = () => {
                 Back
               </button>
 
-              {sauce && (
+              {sauce.length > 0 && (
                 <button
                   onClick={() => setCurrentStep('veggie_selection')}
                   className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -934,8 +947,8 @@ const OrderForm = () => {
             totalPrice={currentOrderItems.reduce((sum, item) => sum + item.price, 0)}
             onAddAnother={() => {
               // Reset selections and go back to protein step
-              setProtein('');
-              setSauce('');
+              setProtein([]);
+              setSauce([]);
               setBaseType('');
               setBaseOption('');
               setVeggies([]);
@@ -950,8 +963,8 @@ const OrderForm = () => {
                 removeOrderItem(index);
               } else {
                 // Reset selections
-                setProtein('');
-                setSauce('');
+                setProtein([]);
+                setSauce([]);
                 setBaseType('');
                 setBaseOption('');
                 setVeggies([]);
@@ -1004,8 +1017,8 @@ const OrderForm = () => {
               onClick={() => {
                 // Reset everything
                 setCurrentStep('start');
-                setProtein('');
-                setSauce('');
+                setProtein([]);
+                setSauce([]);
                 setBaseType('');
                 setBaseOption('');
                 setVeggies([]);
