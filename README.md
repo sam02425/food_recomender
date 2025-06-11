@@ -1,155 +1,349 @@
-# /README.md
-# 🍛 Agents Protin: AI-Powered Food Ordering System
+An intelligent, AI-powered food ordering kiosk system featuring multiple specialized agent components that work together to deliver personalized recommendations and streamline the ordering process. This system demonstrates advanced machine learning concepts through a multi-agent architecture designed to continuously improve through customer feedback.
+🚀 Features
+🤖 Multi-Agent AI System
 
-Agents Protin is an intelligent, AI-powered food ordering kiosk system featuring multiple specialized agent components that work together to deliver personalized recommendations and streamline the ordering process.
+Face Recognition Agent: Identify returning customers and analyze mood
+Health Recommender Agent: Activity-based recommendations (study, gym, work, chilling)
+Weather Recommender Agent: Context-aware suggestions based on weather and time of day
+Entertainer Agent: Creative, personalized dish naming using customer context
+Learner Agent: Reinforcement learning system that improves over time
+Record Keeper Agent: Comprehensive data management and analytics
+Social Agent: Social media sharing integration
+Note Taker Agent: Order management and selection tracking
 
-## 🚀 Features
+🎯 Intelligent Personalization
 
-- **Face Recognition**: Identify returning customers and analyze mood
-- **Health Recommendations**: Based on activity level (study, active/gym, work, chilling)
-- **Weather Recommendations**: Tailored to current weather and time of day
-- **Entertaining Dish Names**: Generate personalized, creative dish names
-- **Social Sharing**: Let customers share their creations on social media
-- **Reinforcement Learning**: System improves over time based on feedback
-- **Customer Data Management**: Track preferences for better recommendations
-- **Interactive UI**: Highlight recommendations for easy selection
+Customer History Integration: Analyzes previous orders for personalized suggestions
+Context-Fusion AI: Combines weather, activity, mood, and preferences
+Dynamic Learning: Each interaction improves future recommendations
+Cross-Agent Coordination: Agents collaborate for cohesive suggestions
 
-## 📋 System Overview
+🍽️ Advanced Menu System
 
-The system uses a multi-agent architecture with specialized components:
+Dynamic pricing with smart veggie calculations
+Nutritional reasoning for health-conscious choices
+Weather-responsive menu filtering
+Custom dish naming with creative AI
 
-1. **Face Recognition Agent**: Identifies customers and analyzes their mood
-2. **Note Taker Agent**: Manages order selections (proteins, sauces, bases, veggies)
-3. **Health Recommender Agent**: Suggests items based on activity level
-4. **Weather Recommender Agent**: Suggests items based on weather and time of day
-5. **Entertainer Agent**: Creates personalized dish names
-6. **Learner Agent**: Improves recommendations through reinforcement learning
-7. **Record Keeper Agent**: Stores and retrieves customer data and preferences
-8. **Social Agent**: Facilitates sharing on social media platforms
+📱 Modern User Experience
 
-## 🌮 Menu Options
+Progressive multi-step ordering interface
+Real-time recommendation highlighting
+Interactive feedback system for continuous learning
+Mobile-responsive design with Tailwind CSS
+Comprehensive error handling and loading states
 
-### Proteins
-- Chicken
-- Egg
-- Paneer/Indian Cheese
-- Soya
-- Potato
-- Pepperoni
+🏗️ System Architecture
+mermaidgraph TD
+    A[React Frontend] --> B[Flask API Server]
+    B --> C[Agent Orchestrator]
+    C --> D[Face Recognition Agent]
+    C --> E[Health Recommender]
+    C --> F[Weather Agent]
+    C --> G[Entertainer Agent]
+    C --> H[Learner Agent]
+    C --> I[Record Keeper]
+    C --> J[Social Agent]
+    
+    H --> K[(Learning Models)]
+    I --> L[(Customer Data)]
+    I --> M[(Order History)]
+    
+    F --> N[Weather API]
+    D --> O[Face Recognition API]
+    G --> P[LLM Service]
+Agent Responsibilities
+AgentPrimary FunctionKey Technologies🔍 Face RecognitionCustomer ID & mood analysisComputer vision, facial recognition💪 Health RecommenderActivity-based nutrition suggestionsML models, nutritional data🌤️ Weather AgentWeather-context recommendationsWeather APIs, contextual AI🎭 EntertainerCreative dish namingNLP, creative AI generation🧠 LearnerContinuous improvement via feedbackReinforcement learning, weight adjustment📊 Record KeeperData management & analyticsCSV processing, customer profiling📱 Social AgentSocial media integrationAPI integration, content generation
+🛠️ Technology Stack
+Backend
 
-### Sauces
-- Curry Special
-- Malai Masala
-- Curry Masala
-- Marinara
-- Yogurt/Raita
-- Red Spicy Sauce
-- Mint Sauce
-- Green Spicy Sauce
+Python 3.8+: Core backend language
+Flask: RESTful API server
+CSV/JSON: Data persistence layer
+Requests: External API integration
+Logging: Comprehensive system logging
 
-### Bases
-- **Biryani**: Rice
-- **Sandwich & Subs**: Sourdough, Ciabatta, White Bread, Hoagie Bun
-- **Wrap**: Naan, Pita
+Frontend
 
-### Veggies
-- Grilled Onion
-- Bell Pepper
-- Tomato
-- Cilantro
-- Avocado ($3)
-- Pineapple
-- Spinach
-- Jalapeño
-- Banana Pepper
-- Fried Onions
-- Corn
-- Cabbage
-- Ghee
-- Mango Chutney
+React 18: Modern UI framework
+TypeScript: Type-safe development
+Tailwind CSS: Utility-first styling
+React Router: Navigation management
+Context API: State management
 
-*Note: First 5 veggies are included, each additional veggie costs $1, Avocado costs $3*
+Testing & Quality
 
-## 🔧 Installation
+Jest: Unit testing framework
+Cypress: End-to-end testing
+ESLint: Code quality enforcement
+GitHub Actions: CI/CD pipeline
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/agents-protin.git
-   cd agents-protin
-   ```
+Development Tools
 
-2. Create a virtual environment and install dependencies:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   pip install -r requirements.txt
-   ```
+PostCSS: CSS processing
+Babel: JavaScript compilation
+Hot Module Replacement: Development efficiency
 
-3. Set up data directories:
-   ```bash
-   mkdir -p data/face_images data/social_media data/receipts
-   ```
+📦 Installation & Setup
+Prerequisites
 
-4. Run the application:
-   ```bash
-   python main.py
-   ```
+Python 3.8 or higher
+Node.js 16 or higher
+npm or yarn package manager
 
-## 📁 Project Structure
+Backend Setup
+bash# Clone the repository
+git clone https://github.com/sam02425/food_recomender.git
+cd food_recomender
 
-```
-agents-protin/
-│
-├── main.py                   # Main application entry point
-├── config.yaml               # Configuration settings
-├── requirements.txt          # Dependencies
-│
-├── agents/                   # Agent components
-│   ├── face_recognition_agent.py
-│   ├── note_taker_agent.py
-│   ├── health_recommender_agent.py
-│   ├── weather_recommender_agent.py
-│   ├── entertainer_agent.py
-│   ├── learner_agent.py
-│   ├── record_keeper_agent.py
-│   └── social_agent.py
-│
-├── ui/                       # User interface components
-│   ├── kiosk_app.py
-│   └── streamlit_components/
-│
-├── components/               # Reusable UI components
-│   └── recommendation_highlight.py
-│
-├── data/                     # Data storage
-│   ├── customers.csv
-│   ├── orders.csv
-│   ├── feedback.csv
-│   ├── menu_items.csv
-│   ├── social_data.json
-│   ├── face_images/
-│   ├── social_media/
-│   └── receipts/
-│
-└── tests/                    # Unit and integration tests
-    ├── test_face_recognition_agent.py
-    ├── test_health_recommender_agent.py
-    ├── test_social_agent.py
-    └── ...
-```
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
 
-## 🧠 Recommendation System
+# Install Python dependencies
+pip install -r requirements.txt
 
-The system provides three types of personalized recommendations:
+# Set up environment variables
+export LLM_API_KEY="your_llm_api_key"
+export WEATHER_API_KEY="your_weather_api_key"
 
-1. **Health-Based**: Based on activity level (study, active/gym, work, chilling)
-2. **Weather-Based**: Tailored to current weather and time of day
-3. **Personalized**: Based on customer order history and preferences
+# Initialize data directories and default data
+python setup.py
+Frontend Setup
+bash# Navigate to frontend directory
+cd frontend
 
-Recommendations are displayed with highlighted options for easy selection:
-- Recommended options are highlighted in green
-- Selected options are highlighted in blue
-- Other options appear slightly dimmed
+# Install Node.js dependencies
+npm install
+
+# Install development dependencies
+npm install --dev
+Environment Configuration
+Create a .env file in the root directory:
+env# API Configuration
+LLM_API_KEY=your_openai_or_llm_api_key
+LLM_API_URL=https://api.openai.com/v1/chat/completions
+WEATHER_API_KEY=your_weather_api_key
+
+# Flask Configuration
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+# Data Paths
+DATA_DIR=./data
+FACE_IMAGES_DIR=./data/face_images
+🚀 Running the Application
+Development Mode
+bash# Terminal 1: Start the Flask API server
+python api_server.py
+# Server runs on http://localhost:5000
+
+# Terminal 2: Start the React development server
+cd frontend
+npm start
+# Frontend runs on http://localhost:3000
+Production Mode
+bash# Build the frontend
+cd frontend
+npm run build
+
+# Start the main application
+python main.py
+Testing
+bash# Run Python tests
+python -m pytest tests/
+
+# Run frontend unit tests
+cd frontend
+npm test
+
+# Run end-to-end tests
+npm run cypress:run
+📋 Usage Guide
+Basic Ordering Flow
+
+Customer Identification
+
+Enter phone number for returning customers
+Optional: Face recognition for mood analysis
+New customers can create profiles
+
+
+Activity Selection
+
+Choose current activity: Study, Gym, Work, or Chilling
+System generates health-based recommendations
+
+
+Menu Selection with AI Assistance
+
+Protein Selection: Health-based suggestions with reasoning
+Base Selection: Weather-informed recommendations
+Creative Naming: AI-generated personalized dish names
+Sauce & Vegetables: Comprehensive selection with pricing
+
+
+Feedback & Learning
+
+Accept, ignore, or customize each recommendation
+System learns from feedback for future improvements
+
+
+Order Review & Social Sharing
+
+Review complete order with pricing
+Optional social media sharing
+Order completion with receipt generation
+
+
+
+Example API Usage
+python# Get health recommendations
+import requests
+
+response = requests.post('http://localhost:5000/api/health-recommendations', 
+    json={
+        'activity_level': 'gym',
+        'customer_phone': '+1234567890'
+    }
+)
+
+recommendations = response.json()
+print(f"Recommended proteins: {recommendations['recommendations']['proteins']}")
+🧠 Machine Learning Features
+Reinforcement Learning System
+The Learner Agent implements a sophisticated feedback processing system:
+python# Weight adjustment based on feedback
+if feedback == "accept":
+    model["weights"][context] *= 1.05  # Increase preference
+elif feedback == "custom":
+    model["weights"][context] *= 1.1   # Strong preference signal
+elif feedback == "ignore":
+    model["weights"][context] *= 0.98  # Decrease preference
+Personalization Algorithm
+
+Customer Profiling: Individual preference matrices
+Context Integration: Weather + activity + mood + history
+Dynamic Adaptation: Real-time model updates
+Cross-Agent Learning: Feedback affects multiple recommendation types
+
+Data Science Features
+
+A/B Testing Framework: Compare recommendation strategies
+Analytics Dashboard: Customer behavior insights
+Preference Mining: Extract patterns from order history
+Predictive Modeling: Anticipate customer preferences
+
+🔧 API Documentation
+Core Endpoints
+EndpointMethodDescription/api/start-orderPOSTInitialize new order session/api/health-recommendationsPOSTGet activity-based recommendations/api/weather-recommendationsPOSTGet weather-context suggestions/api/dish-namePOSTGenerate creative dish names/api/recommendation-feedbackPOSTProcess user feedback/api/add-itemPOSTAdd item to current order/api/complete-orderPOSTFinalize order and generate receipt/api/customer-ordersGETRetrieve customer order history/api/menu-dataGETGet current menu and pricing
+Request/Response Examples
+json// Health Recommendations Request
+{
+  "activity_level": "study",
+  "customer_phone": "+1234567890"
+}
+
+// Health Recommendations Response
+{
+  "success": true,
+  "recommendations": {
+    "proteins": ["Egg", "Paneer/Indian Cheese"],
+    "sauces": ["Mint Sauce", "Yogurt/Raita"],
+    "reasoning": "Brain-boosting nutrients for sustained mental energy",
+    "personalized": true
+  }
+}
+🧪 Testing Strategy
+Unit Tests
+
+Agent functionality testing
+API endpoint validation
+Data processing verification
+Error handling coverage
+
+Integration Tests
+
+Multi-agent coordination
+End-to-end order flow
+Database operations
+External API interactions
+
+Performance Tests
+
+Recommendation generation speed
+Concurrent user handling
+Memory usage optimization
+API response times
+
+User Experience Tests
+
+Accessibility compliance
+Mobile responsiveness
+Error state handling
+Loading state management
+
+📊 Data Management
+Customer Data Schema
+csvcustomer_id,name,phone_number,face_id,visit_count,last_visit,created_at
+CUST123,John Doe,+1234567890,FACE456,5,2023-12-01T10:30:00,2023-10-15T09:00:00
+Order Data Schema
+csvorder_id,customer_id,timestamp,items,total_price,weather,activity,mood
+ORD789,CUST123,2023-12-01T10:30:00,"[{""protein"":""Chicken""}]",12.99,sunny,gym,happy
+Learning Data Schema
+json{
+  "models": {
+    "health": {
+      "activity_weights": {"gym": 1.05, "study": 0.98},
+      "feedback_count": 150,
+      "acceptance_rate": 78.5
+    }
+  },
+  "customer_preferences": {
+    "CUST123": {
+      "preferred_proteins": {"Chicken": 5, "Egg": 3}
+    }
+  }
+}
+🤝 Contributing
+We welcome contributions! Please follow these guidelines:
+Development Workflow
+
+Fork the repository
+Create a feature branch: git checkout -b feature/amazing-feature
+Make your changes with tests
+Run the test suite: npm test && python -m pytest
+Commit changes: git commit -m 'Add amazing feature'
+Push to branch: git push origin feature/amazing-feature
+Submit a Pull Request
+
+Code Standards
+
+Python: Follow PEP 8 style guidelines
+JavaScript/React: ESLint configuration enforced
+Commit Messages: Use conventional commit format
+Documentation: Update README for new features
+Testing: Maintain >80% code coverage
+
+Areas for Contribution
+
+🔍 New AI Agents: Dietary restriction agent, allergy management
+🌐 API Integrations: Payment processing, inventory management
+📱 Mobile Features: Native mobile app, push notifications
+🧠 ML Improvements: Advanced recommendation algorithms
+🎨 UI/UX: Accessibility improvements, animation enhancements
+📊 Analytics: Advanced reporting and insights dashboard
+
+🚀 Deployment
+Docker Deployment
+dockerfile# Coming soon: Docker configuration for easy deployment
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 5000
+CMD ["python", "api_server.py"]
 
 ## 🤝 Contributing
 
