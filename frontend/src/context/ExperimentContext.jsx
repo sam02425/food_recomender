@@ -6,13 +6,183 @@ export const useExperiment = () => useContext(ExperimentContext);
 
 export const ExperimentProvider = ({ children }) => {
   const [stepData, setStepData] = useState({});
+  const [experimentConfig, setExperimentConfig] = useState(null);
+  const [participantData, setParticipantData] = useState(null);
+  const [currentTrial, setCurrentTrial] = useState(1);
+  const [trialResults, setTrialResults] = useState([]);
+
   const timerRef = useRef({});
-  const moodRef = useRef({}); // To track last mood and its start time for each step
+  const moodRef = useRef({});
+
+  // Initialize experiment configuration
+  const initializeExperiment = (config) => {
+    const experimentSetup = {
+      participantId: config.participantId || `P${Date.now()}`,
+      trialType: config.trialType, // 'A' for baseline, 'B' for emotion-responsive
+      totalTrials: 5,
+      startTime: new Date().toISOString(),
+      ...config
+    };
+
+    setExperimentConfig(experimentSetup);
+    setCurrentTrial(1);
+    setTrialResults([]);
+
+    // Generate trial schedule (3 free choice + 2 specific order)
+    const trialSchedule = generateTrialSchedule();
+    experimentSetup.trialSchedule = trialSchedule;
+
+    return experimentSetup;
+  };
+
+  // Generate randomized trial schedule
+  const generateTrialSchedule = () => {
+    const trials = [];
+
+    // 3 free choice trials, 2 specific order trials
+    for (let i = 1; i <= 5; i++) {
+      trials.push({
+        trialNumber: i,
+        isSpecificOrder: i > 3, // Last 2 trials are specific order
+        orderType: i > 3 ? 'specific' : 'free'
+      });
+    }
+
+    return trials;
+  };
+
+  // Get current trial configuration
+  const getCurrentTrialConfig = () => {
+    if (!experimentConfig) return null;
+
+    const trialSchedule = experimentConfig.trialSchedule || [];
+    const trialInfo = trialSchedule.find(t => t.trialNumber === currentTrial) || {};
+
+    return {
+      ...experimentConfig,
+      ...trialInfo,
+      trialNumber: currentTrial
+    };
+  };
+
+  // Start a new trial
+  const startTrial = (trialNumber = null) => {
+    const trialNum = trialNumber || currentTrial;
+    const trialConfig = getCurrentTrialConfig();
+
+    console.log(`Starting Trial ${trialNum}:`, trialConfig);
+
+    // Reset step data for new trial
+    setStepData({});
+    timerRef.current = {};
+    moodRef.current = {};
+
+    return trialConfig;
+  };
+
+  // Complete current trial and record results
+  const completeTrial = (trialData) => {
+    const trialConfig = getCurrentTrialConfig();
+
+    const trialResult = {
+      ...trialConfig,
+      trialNumber: currentTrial,
+      completedAt: new Date().toISOString(),
+      stepData: { ...stepData },
+      trialData: trialData,
+      participantFollowedSuggestion: trialData?.followedSuggestion || null,
+      orderPlaced: trialData?.orderItems || [],
+      totalTime: calculateTotalTrialTime(),
+      moodProgression: extractMoodProgression()
+    };
+
+    setTrialResults(prev => [...prev, trialResult]);
+
+    // Move to next trial
+    if (currentTrial < 5) {
+      setCurrentTrial(prev => prev + 1);
+    }
+
+    return trialResult;
+  };
+
+  // Calculate total time spent in current trial
+  const calculateTotalTrialTime = () => {
+    return Object.values(stepData).reduce((total, step) => {
+      return total + (step.time || 0);
+    }, 0);
+  };
+
+  // Extract mood progression for analysis
+  const extractMoodProgression = () => {
+    const moodTimeline = [];
+
+    Object.entries(stepData).forEach(([step, data]) => {
+      if (data.moodTimeline) {
+        moodTimeline.push({
+          step,
+          timeline: data.moodTimeline
+        });
+      }
+    });
+
+    return moodTimeline;
+  };
+
+  // Export experiment results for analysis
+  const exportExperimentData = () => {
+    return {
+      experimentConfig,
+      participantData,
+      trialResults,
+      completedTrials: trialResults.length,
+      totalExperimentTime: trialResults.reduce((total, trial) => total + (trial.totalTime || 0), 0),
+      exportTimestamp: new Date().toISOString(),
+      summary: generateExperimentSummary()
+    };
+  };
+
+  // Generate experiment summary
+  const generateExperimentSummary = () => {
+    const isTrialA = experimentConfig?.trialType === 'A';
+    const specificOrderTrials = trialResults.filter(t => t.isSpecificOrder);
+    const freeChoiceTrials = trialResults.filter(t => !t.isSpecificOrder);
+
+    return {
+      trialType: experimentConfig?.trialType,
+      isBaseline: isTrialA,
+      totalTrials: trialResults.length,
+      specificOrderTrialsCompleted: specificOrderTrials.length,
+      freeChoiceTrialsCompleted: freeChoiceTrials.length,
+      averageTrialTime: trialResults.length > 0
+        ? trialResults.reduce((sum, t) => sum + (t.totalTime || 0), 0) / trialResults.length
+        : 0,
+      participantFollowedSuggestions: specificOrderTrials.filter(t => t.participantFollowedSuggestion).length,
+      baselineMode: isTrialA,
+      emotionResponseMode: !isTrialA
+    };
+  };
+
+  // Check if experiment is complete
+  const isExperimentComplete = () => {
+    return currentTrial > 5 || trialResults.length >= 5;
+  };
+
+  // Record participant decision on suggestions
+  const recordSuggestionDecision = (followedSuggestion, customOrder = null) => {
+    setStepData(prev => ({
+      ...prev,
+      suggestionDecision: {
+        followed: followedSuggestion,
+        customOrder: customOrder,
+        timestamp: new Date().toISOString()
+      }
+    }));
+  };
 
   // Start timer for a step
   const startStep = (step) => {
     timerRef.current[step] = Date.now();
-    // Start mood tracking for this step
     moodRef.current[step] = { mood: 'neutral', startTime: Date.now() };
     setStepData((prev) => ({
       ...prev,
@@ -39,6 +209,7 @@ export const ExperimentProvider = ({ children }) => {
       }));
       timerRef.current[step] = null;
     }
+
     // End the last mood interval
     if (moodRef.current[step]) {
       setStepData((prev) => {
@@ -58,19 +229,21 @@ export const ExperimentProvider = ({ children }) => {
     }
   };
 
-  // Add a mood change for a step, recording the previous mood's end time
+  // Add a mood change for a step
   const addMoodChange = (step, newMood) => {
     setStepData((prev) => {
       const timeline = prev[step]?.moodTimeline ? [...prev[step].moodTimeline] : [];
       const now = Date.now();
+
       // End previous mood interval
       if (timeline.length > 0 && !timeline[timeline.length - 1].endTime) {
         timeline[timeline.length - 1].endTime = now;
       }
+
       // Start new mood interval
       timeline.push({ mood: newMood, startTime: now });
-      // Update ref for next change
       moodRef.current[step] = { mood: newMood, startTime: now };
+
       return {
         ...prev,
         [step]: {
@@ -81,11 +254,37 @@ export const ExperimentProvider = ({ children }) => {
     });
   };
 
-  // Export data
+  // Legacy export for backward compatibility
   const exportData = () => stepData;
 
+  const contextValue = {
+    // Experiment management
+    experimentConfig,
+    participantData,
+    currentTrial,
+    trialResults,
+
+    // Trial management
+    initializeExperiment,
+    startTrial,
+    completeTrial,
+    getCurrentTrialConfig,
+    isExperimentComplete,
+
+    // Data collection
+    recordSuggestionDecision,
+    exportExperimentData,
+
+    // Step and mood tracking (legacy)
+    stepData,
+    startStep,
+    stopStep,
+    addMoodChange,
+    exportData
+  };
+
   return (
-    <ExperimentContext.Provider value={{ stepData, startStep, stopStep, addMoodChange, exportData }}>
+    <ExperimentContext.Provider value={contextValue}>
       {children}
     </ExperimentContext.Provider>
   );

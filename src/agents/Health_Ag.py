@@ -70,6 +70,29 @@ class HealthRecommenderAgent:
             }
         }
 
+        self.health_scores = {}
+        self.activity_levels = {}
+        self.health_achievements = {
+            "health_novice": {
+                "title": "Health Novice",
+                "description": "Order 3 healthy meals",
+                "requirement": 3,
+                "icon": "🥗"
+            },
+            "fitness_enthusiast": {
+                "title": "Fitness Enthusiast",
+                "description": "Match 5 meals with your activity level",
+                "requirement": 5,
+                "icon": "💪"
+            },
+            "wellness_warrior": {
+                "title": "Wellness Warrior",
+                "description": "Maintain healthy eating streak for 7 days",
+                "requirement": 7,
+                "icon": "🌟"
+            }
+        }
+
         logger.info("Health recommender agent initialized")
 
     def _load_health_data(self) -> Dict[str, Any]:
@@ -711,3 +734,111 @@ class HealthRecommenderAgent:
             result["processed"] = False
             result["message"] = f"Error processing feedback: {str(e)}"
             return result
+
+    def calculate_health_score(self, dish_data: Dict) -> float:
+        """Calculate health score for a dish based on ingredients and nutrition"""
+        base_score = 0.5
+        health_modifiers = {
+            "vegetables": 0.2,
+            "fruits": 0.2,
+            "lean protein": 0.15,
+            "whole grains": 0.15,
+            "processed": -0.1,
+            "high sugar": -0.15,
+            "high fat": -0.1
+        }
+
+        for ingredient in dish_data.get("ingredients", []):
+            for keyword, modifier in health_modifiers.items():
+                if keyword in ingredient.lower():
+                    base_score += modifier
+
+        return max(0.0, min(1.0, base_score))
+
+    def get_activity_based_recommendations(self, user_id: str, activity_level: str) -> List[Dict]:
+        """Get dish recommendations based on activity level"""
+        recommendations = []
+
+        if activity_level == "high":
+            recommendations.extend([
+                {
+                    "type": "protein_rich",
+                    "description": "High-protein meal for muscle recovery",
+                    "points": 30
+                },
+                {
+                    "type": "energy_boost",
+                    "description": "Energy-dense meal for active lifestyle",
+                    "points": 25
+                }
+            ])
+        elif activity_level == "moderate":
+            recommendations.extend([
+                {
+                    "type": "balanced",
+                    "description": "Balanced meal with moderate portions",
+                    "points": 20
+                },
+                {
+                    "type": "nutrient_rich",
+                    "description": "Nutrient-rich meal for sustained energy",
+                    "points": 20
+                }
+            ])
+        else:  # low activity
+            recommendations.extend([
+                {
+                    "type": "light",
+                    "description": "Light meal with essential nutrients",
+                    "points": 15
+                },
+                {
+                    "type": "low_calorie",
+                    "description": "Low-calorie option for less active days",
+                    "points": 15
+                }
+            ])
+
+        return recommendations
+
+    def check_health_achievements(self, user_id: str, order_history: List[Dict]) -> List[Dict]:
+        """Check and update health-related achievements"""
+        achievements = []
+        health_stats = self.calculate_health_stats(order_history)
+
+        # Check for Health Novice achievement
+        if health_stats["healthy_meals"] >= self.health_achievements["health_novice"]["requirement"]:
+            achievements.append(self.health_achievements["health_novice"])
+
+        # Check for Fitness Enthusiast achievement
+        if health_stats["activity_matches"] >= self.health_achievements["fitness_enthusiast"]["requirement"]:
+            achievements.append(self.health_achievements["fitness_enthusiast"])
+
+        # Check for Wellness Warrior achievement
+        if health_stats["healthy_streak"] >= self.health_achievements["wellness_warrior"]["requirement"]:
+            achievements.append(self.health_achievements["wellness_warrior"])
+
+        return achievements
+
+    def calculate_health_stats(self, order_history: List[Dict]) -> Dict:
+        """Calculate various health-related statistics from order history"""
+        stats = {
+            "healthy_meals": 0,
+            "activity_matches": 0,
+            "healthy_streak": 0,
+            "current_streak": 0
+        }
+
+        for order in order_history:
+            if order.get("health_score", 0) >= 0.7:
+                stats["healthy_meals"] += 1
+                stats["current_streak"] += 1
+            else:
+                stats["current_streak"] = 0
+
+            if order.get("activity_match", False):
+                stats["activity_matches"] += 1
+
+            stats["healthy_streak"] = max(stats["healthy_streak"], stats["current_streak"])
+
+        return stats

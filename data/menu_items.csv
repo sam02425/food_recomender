@@ -1,31 +1,11 @@
-category,item,price,description,attributes
-proteins,Chicken,4.50,"Grilled chicken pieces","{""spice_level"": 2, ""allergens"": [""poultry""]}"
-proteins,Egg,3.00,"Boiled or fried egg","{""spice_level"": 1, ""allergens"": [""egg""]}"
-proteins,Paneer/Indian Cheese,4.00,"Fresh Indian cheese cubes","{""spice_level"": 1, ""allergens"": [""dairy""]}"
-proteins,Soya,3.50,"Marinated soya chunks","{""spice_level"": 2, ""allergens"": [""soy""]}"
-proteins,Potato,2.50,"Spiced potato cubes","{""spice_level"": 2, ""allergens"": []}"
-proteins,Pepperoni,4.50,"Sliced pepperoni","{""spice_level"": 3, ""allergens"": [""pork""]}"
-sauces,Curry Special,1.50,"House special curry sauce","{""spice_level"": 3, ""allergens"": [""mustard""]}"
-sauces,Malai Masala,1.50,"Creamy masala sauce","{""spice_level"": 2, ""allergens"": [""dairy""]}"
-sauces,Curry Masala,1.50,"Traditional curry masala","{""spice_level"": 4, ""allergens"": []}"
-sauces,Marinara,1.00,"Classic tomato sauce","{""spice_level"": 2, ""allergens"": []}"
-sauces,Yogurt/Raita,1.00,"Cooling yogurt sauce","{""spice_level"": 1, ""allergens"": [""dairy""]}"
-sauces,Red Spicy Sauce,1.00,"Hot chili sauce","{""spice_level"": 5, ""allergens"": []}"
-sauces,Mint Sauce,1.00,"Fresh mint sauce","{""spice_level"": 1, ""allergens"": []}"
-sauces,Green Spicy Sauce,1.00,"Spicy green chili sauce","{""spice_level"": 4, ""allergens"": []}"
-bases,Rice,2.00,"Fragrant basmati rice","{""base_type"": ""Biryani"", ""allergens"": []}"
-bases,Sourdough,2.50,"Tangy artisan bread","{""base_type"": ""Sandwich & Subs"", ""allergens"": [""gluten""]}"
-bases,Ciabatta,2.50,"Italian white bread","{""base_type"": ""Sandwich & Subs"", ""allergens"": [""gluten""]}"
-bases,White Bread,2.00,"Classic soft bread","{""base_type"": ""Sandwich & Subs"", ""allergens"": [""gluten""]}"
-bases,Hoagie Bun,2.50,"Submarine sandwich roll","{""base_type"": ""Sandwich & Subs"", ""allergens"": [""gluten""]}"
-bases,Naan,2.00,"Traditional Indian flatbread","{""base_type"": ""Wrap"", ""allergens"": [""gluten"", ""dairy""]}"
-bases,Pita,2.00,"Mediterranean pocket bread","{""base_type"": ""Wrap"", ""allergens"": [""gluten""]}"
-bases,Bowl,2.00,"Served in a bowl, no bread","{""base_type"": ""Bowl"", ""allergens"": []}"
-veggies,Grilled Onion,0.50,"Caramelized grilled onions","{""premium"": false, ""health_index"": 3}"
-veggies,Bell Pepper,0.50,"Colorful bell peppers","{""premium"": false, ""health_index"": 4}"
-veggies,Tomato,0.50,"Fresh sliced tomatoes","{""premium"": false, ""health_index"": 4}"
-veggies,Cilantro,0.50,"Fresh cilantro/coriander","{""premium"": false, ""health_index"": 3}"
-veggies,Avocado,3.00,"Fresh avocado slices","{""premium"": true, ""health_index"": 5}"
-veggies,Pineapple,1.00,"Sweet pineapple pieces","{""premium"": false, ""health_index"": 4}"
-veggies,Spinach,1.00,"Fresh spinach leaves","{""premium"": false, ""health_index"": 5}"
-veggies,Jalapeño,0.50,"Spicy jalapeño slices","{""premium"": false, ""health_index"": 3}"
+item_id,name,category,price,calories,description,ingredients
+1,Chicken,protein,4.50,250,Tender marinated chicken,chicken breast
+2,Paneer,protein,4.50,220,Fresh cottage cheese,paneer
+3,Egg,protein,3.50,180,Farm fresh eggs,eggs
+4,Curry Special,sauce,0.00,120,Signature curry sauce,spices
+5,Malai Masala,sauce,0.00,150,Creamy cashew sauce,cashew cream
+6,Rice,base,0.00,300,Basmati rice,rice
+7,Naan,base,0.00,280,Soft flatbread,flour
+8,Bell Pepper,veggie,0.00,30,Fresh bell peppers,bell pepper
+9,Tomato,veggie,0.00,25,Fresh tomatoes,tomato
+10,Cilantro,veggie,0.00,5,Fresh coriander,cilantro

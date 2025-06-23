@@ -1,11 +1,9 @@
 {
-  "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.27.1",
-    "@babel/preset-env": "^7.27.2",
-    "@babel/preset-react": "^7.27.1",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
-    "identity-obj-proxy": "^3.0.0",
-    "jest-environment-jsdom": "^29.7.0"
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^7.1.0",
+    "@mui/system": "^7.1.0",
+    "typescript": "^5.8.3"
   }
 }

@@ -1,4 +1,11 @@
 # /requirements.txt
+fastapi
+uvicorn
+boto3
+python-dotenv
+pydantic
+smtplib
+email
 streamlit
 pandas
 numpy
@@ -13,5 +20,4 @@ pytest-cov
 flake8
 build
 twine
-pydantic
-
+email-validator==2.1.1

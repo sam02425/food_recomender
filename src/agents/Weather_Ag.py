@@ -12,6 +12,14 @@ import requests
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 
+# Import LLM client for intelligent insights
+try:
+    from src.utils.llm_client import get_llm_response
+except ImportError:
+    # Fallback if import fails
+    def get_llm_response(prompt: str, max_tokens: int = 150, temperature: float = 0.7) -> Optional[str]:
+        return None
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -20,7 +28,7 @@ logging.basicConfig(
 logger = logging.getLogger("weather_recommender_agent")
 
 class WeatherRecommenderAgent:
-    """Agent for making weather-based food recommendations."""
+    """Agent for making weather-based food recommendations with intelligent LLM insights."""
 
     def __init__(self, weather_data_path: str):
         """
@@ -31,64 +39,86 @@ class WeatherRecommenderAgent:
         """
         self.weather_data_path = weather_data_path
         self.weather_data = self._load_weather_data()
+        self.api_key = os.getenv("OPENWEATHER_API_KEY")
+        self.weather_cache = {}
+        self.weather_dish_scores = {
+            "Clear": {
+                "salad": 0.9,
+                "grilled": 0.8,
+                "ice cream": 0.9,
+                "cold": 0.8
+            },
+            "Rain": {
+                "soup": 0.9,
+                "hot": 0.8,
+                "stew": 0.9,
+                "comfort food": 0.8
+            },
+            "Snow": {
+                "hot chocolate": 0.9,
+                "soup": 0.8,
+                "warm": 0.9,
+                "hearty": 0.8
+            }
+        }
 
-        # Default weather-based recommendations
+        # Default weather-based recommendations with enhanced reasoning
         self.default_recommendations = {
             "rainy": {
                 "proteins": ["Chicken", "Paneer/Indian Cheese"],
                 "sauces": ["Curry Special", "Malai Masala"],
                 "base_types": ["Bowl", "Biryani"],
-                "reasoning": "Warm, comforting options perfect for rainy weather."
+                "reasoning": "🌧️ Perfect for a rainy day! Warm, hearty options that provide comfort while you stay cozy indoors."
             },
             "cold": {
                 "proteins": ["Chicken", "Paneer/Indian Cheese"],
                 "sauces": ["Curry Masala", "Red Spicy Sauce"],
                 "base_types": ["Bowl", "Biryani"],
-                "reasoning": "Warming, spicier options to help maintain body temperature in cold weather."
+                "reasoning": "🥶 Beat the cold! Spicy, warming combinations that help maintain body temperature and boost metabolism."
             },
             "hot": {
                 "proteins": ["Chicken", "Paneer/Indian Cheese", "Potato"],
                 "sauces": ["Yogurt/Raita", "Mint Sauce"],
                 "base_types": ["Bowl", "Wrap"],
-                "reasoning": "Cooling options with refreshing flavors for hot weather."
+                "reasoning": "🔥 Stay cool in the heat! Light, refreshing options with cooling sauces that won't weigh you down."
             },
             "sunny": {
                 "proteins": ["Chicken", "Egg", "Soya"],
                 "sauces": ["Mint Sauce", "Curry Special"],
                 "base_types": ["Wrap", "Sandwich"],
-                "reasoning": "Fresh, balanced options to enjoy in sunny weather."
+                "reasoning": "☀️ Sunny day perfection! Fresh, balanced options perfect for enjoying beautiful weather."
             },
             "cloudy": {
                 "proteins": ["Chicken", "Egg", "Paneer/Indian Cheese"],
                 "sauces": ["Curry Special", "Malai Masala"],
                 "base_types": ["Bowl", "Sandwich"],
-                "reasoning": "Comforting yet not too heavy, perfect for cloudy weather."
+                "reasoning": "☁️ Cloudy day comfort! Balanced options that aren't too heavy - perfect for unpredictable weather."
             }
         }
 
-        # Time of day recommendations
+        # Time of day recommendations with enhanced reasoning
         self.time_recommendations = {
             "morning": {
                 "proteins": ["Egg", "Paneer/Indian Cheese"],
                 "sauces": ["Mint Sauce", "Yogurt/Raita"],
                 "base_types": ["Wrap", "Sandwich"],
-                "reasoning": "Lighter options with protein for a great start to your day."
+                "reasoning": "🌅 Morning energy boost! Light proteins and fresh flavors to start your day right."
             },
             "afternoon": {
                 "proteins": ["Chicken", "Paneer/Indian Cheese", "Soya"],
                 "sauces": ["Curry Special", "Malai Masala"],
                 "base_types": ["Bowl", "Biryani"],
-                "reasoning": "Balanced, substantial meal to fuel your afternoon."
+                "reasoning": "🌞 Midday fuel! Substantial, balanced meals to power through your afternoon."
             },
             "evening": {
                 "proteins": ["Chicken", "Paneer/Indian Cheese", "Potato"],
                 "sauces": ["Curry Masala", "Malai Masala"],
                 "base_types": ["Bowl", "Wrap"],
-                "reasoning": "Flavorful, comforting options for your evening meal."
+                "reasoning": "🌆 Evening satisfaction! Flavorful, comforting options to unwind with."
             }
         }
 
-        logger.info("Weather recommender agent initialized")
+        logger.info("Weather recommender agent initialized with LLM-powered insights")
 
     def _load_weather_data(self) -> Dict[str, Any]:
         """
@@ -235,156 +265,150 @@ class WeatherRecommenderAgent:
         except Exception as e:
             logger.error(f"Error initializing weather data: {e}")
 
-    def get_current_weather(self, lat: float = 40.7128, lon: float = -74.0060) -> Dict[str, Any]:
+    def get_current_weather(self, location: str = "San Francisco,US") -> Dict[str, Any]:
         """
-        Get current weather data for a location.
-
-        For demo purposes, this uses a simplified API call and provides
-        fallback random weather if API is unavailable.
+        Get current weather data from OpenWeather API.
 
         Args:
-            lat: Latitude (default: New York City)
-            lon: Longitude (default: New York City)
+            location: Location string (city,country or lat,lon)
 
         Returns:
-            Weather data
+            Weather data dictionary
         """
-        try:
-            # Try to get weather data from a free API
-            # Note: In a production system, you'd use a proper weather API with an API key
-            api_url = f"https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current=temperature,rain,snowfall,cloud_cover,wind_speed"
+        if not self.api_key:
+            # Generate realistic random weather for demo/testing
+            conditions = ["sunny", "cloudy", "rainy", "snowy", "windy"]
+            temp_ranges = {
+                "sunny": (18, 35),
+                "cloudy": (10, 25),
+                "rainy": (8, 22),
+                "snowy": (-5, 8),
+                "windy": (5, 20)
+            }
 
-            response = requests.get(api_url, timeout=5)
+            condition = random.choice(conditions)
+            temp_min, temp_max = temp_ranges[condition]
+            temperature = round(random.uniform(temp_min, temp_max), 1)
+
+            weather_data = {
+                "condition": condition,
+                "temperature": temperature,
+                "humidity": random.randint(30, 90),
+                "wind_speed": round(random.uniform(0, 20), 1),
+                "description": f"{condition.title()} weather",
+                "location": location,
+                "source": "simulated"
+            }
+
+            logger.info(f"Generated random weather: {condition}, {temperature}°C")
+            return weather_data
+
+        try:
+            # Use OpenWeather API for real weather data
+            base_url = "http://api.openweathermap.org/data/2.5/weather"
+            params = {
+                "q": location,
+                "appid": self.api_key,
+                "units": "metric"  # Celsius temperature
+            }
+
+            response = requests.get(base_url, params=params, timeout=10)
 
             if response.status_code == 200:
                 data = response.json()
-                current = data.get("current", {})
 
-                # Check if current data is available
-                if current and "temperature" in current:
-                    temperature = current.get("temperature")
-                    rain = current.get("rain", 0)
-                    snowfall = current.get("snowfall", 0)
-                    cloud_cover = current.get("cloud_cover", 0)
-                    wind_speed = current.get("wind_speed", 0)
+                # Map OpenWeather conditions to our simplified conditions
+                condition_mapping = {
+                    "clear": "sunny",
+                    "clouds": "cloudy",
+                    "rain": "rainy",
+                    "drizzle": "rainy",
+                    "thunderstorm": "rainy",
+                    "snow": "snowy",
+                    "mist": "cloudy",
+                    "fog": "cloudy",
+                    "haze": "cloudy"
+                }
 
-                    # Determine weather condition
-                    condition = self._determine_condition(temperature, rain, snowfall, cloud_cover, wind_speed)
+                weather_condition = data["weather"][0]["main"].lower()
+                mapped_condition = condition_mapping.get(weather_condition, "cloudy")
 
-                    logger.info(f"Retrieved current weather: {condition}, {temperature}°C")
+                weather_data = {
+                    "condition": mapped_condition,
+                    "temperature": round(data["main"]["temp"], 1),
+                    "humidity": data["main"]["humidity"],
+                    "wind_speed": round(data["wind"]["speed"], 1),
+                    "description": data["weather"][0]["description"],
+                    "location": f"{data['name']}, {data['sys']['country']}",
+                    "source": "openweather_api"
+                }
 
-                    return {
-                        "temperature": temperature,
-                        "condition": condition,
-                        "rain": rain,
-                        "snowfall": snowfall,
-                        "cloud_cover": cloud_cover,
-                        "wind_speed": wind_speed,
-                        "timestamp": datetime.now().isoformat(),
-                        "source": "api"
-                    }
+                # Cache the result
+                self.weather_cache[location] = {
+                    "data": weather_data,
+                    "timestamp": datetime.now().timestamp()
+                }
 
-            # Fallback to random weather if API call fails
-            return self._get_random_weather()
+                logger.info(f"Retrieved weather from API: {mapped_condition}, {weather_data['temperature']}°C in {weather_data['location']}")
+                return weather_data
+
+            else:
+                logger.error(f"OpenWeather API error: {response.status_code}")
+                # Fall back to random weather
+                return self.get_current_weather()
 
         except Exception as e:
-            logger.error(f"Error getting current weather: {e}")
-            return self._get_random_weather()
+            logger.error(f"Error fetching weather data: {e}")
+            # Fall back to random weather
+            return self.get_current_weather()
 
-    def _get_random_weather(self) -> Dict[str, Any]:
+    def get_cached_weather(self, location: str = "San Francisco,US", cache_duration: int = 600) -> Optional[Dict[str, Any]]:
         """
-        Generate random weather data for demo purposes.
-
-        Returns:
-            Random weather data
-        """
-        # Generate random temperature between -5°C and 35°C
-        temperature = round(random.uniform(-5, 35), 1)
-
-        # Random values for other parameters
-        rain = random.uniform(0, 5) if temperature > 0 else 0
-        snowfall = random.uniform(0, 5) if temperature < 2 else 0
-        cloud_cover = random.uniform(0, 100)
-        wind_speed = random.uniform(0, 30)
-
-        # Determine condition
-        condition = self._determine_condition(temperature, rain, snowfall, cloud_cover, wind_speed)
-
-        logger.info(f"Generated random weather: {condition}, {temperature}°C")
-
-        return {
-            "temperature": temperature,
-            "condition": condition,
-            "rain": rain,
-            "snowfall": snowfall,
-            "cloud_cover": cloud_cover,
-            "wind_speed": wind_speed,
-            "timestamp": datetime.now().isoformat(),
-            "source": "random"
-        }
-
-    def _determine_condition(self, temperature: float, rain: float, snowfall: float,
-                           cloud_cover: float, wind_speed: float) -> str:
-        """
-        Determine weather condition from parameters.
+        Get weather from cache if available and not expired.
 
         Args:
-            temperature: Temperature in °C
-            rain: Rain in mm
-            snowfall: Snowfall in cm
-            cloud_cover: Cloud cover percentage
-            wind_speed: Wind speed in km/h
+            location: Location string
+            cache_duration: Cache duration in seconds (default 10 minutes)
 
         Returns:
-            Weather condition
+            Cached weather data or None if expired/unavailable
         """
-        if snowfall > 0:
-            return "snowy"
-        elif rain > 0:
-            return "rainy"
-        elif cloud_cover > 80:
-            return "cloudy"
-        elif cloud_cover > 30:
-            return "partly_cloudy"
-        else:
-            if temperature > 25:
-                return "hot"
-            elif temperature < 5:
-                return "cold"
+        if location in self.weather_cache:
+            cached = self.weather_cache[location]
+            age = datetime.now().timestamp() - cached["timestamp"]
+
+            if age < cache_duration:
+                logger.info(f"Using cached weather data for {location}")
+                return cached["data"]
             else:
-                return "sunny"
+                # Remove expired cache
+                del self.weather_cache[location]
+
+        return None
 
     def get_recommendations(self, weather_data: Dict[str, Any], time_of_day: str,
                           customer_id: Optional[str] = None,
-                          mood: str = "neutral") -> Dict[str, Any]:
+                          mood: str = "neutral",
+                          customer_history: Optional[List[Dict]] = None) -> Dict[str, Any]:
         """
-        Get weather-based food recommendations.
+        Get weather-based food recommendations with intelligent LLM insights.
 
         Args:
-            weather_data: Current weather data
+            weather_data: Current weather information
             time_of_day: Time of day (morning, afternoon, evening)
-            customer_id: Optional customer ID for personalization
-            mood: Customer's current mood
+            customer_id: Customer identifier for personalization
+            mood: Customer mood for recommendation adjustment
+            customer_history: Customer's previous order history for personalization
 
         Returns:
-            Weather-based recommendations
+            Weather-based food recommendations with intelligent insights
         """
-        # Extract condition from weather data
+        # Extract weather parameters
+        temperature = weather_data.get("temperature", 20.0)
+        humidity = weather_data.get("humidity", 50.0)
         condition = weather_data.get("condition", "sunny")
-        temperature = weather_data.get("temperature", 20)
 
-        # Normalize time of day
-        if time_of_day.lower() in ["morning", "breakfast", "am"]:
-            time_of_day = "morning"
-        elif time_of_day.lower() in ["afternoon", "lunch", "noon", "midday"]:
-            time_of_day = "afternoon"
-        elif time_of_day.lower() in ["evening", "night", "dinner", "pm"]:
-            time_of_day = "evening"
-        else:
-            # Default to afternoon
-            time_of_day = "afternoon"
-
-        # Get recommendations from loaded data
+        # Initialize recommendation containers
         weather_recs = {}
         time_recs = {}
 
@@ -450,13 +474,12 @@ class WeatherRecommenderAgent:
         # Combine weather and time recommendations (60% weather, 40% time)
         combined_recs = {}
 
-        # Choose the best protein from each source
+        # Combine proteins
         if "proteins" in weather_recs and "proteins" in time_recs:
             combined_recs["proteins"] = [
-                weather_recs["proteins"][0],  # Top weather protein
-                time_recs["proteins"][0]  # Top time protein
+                weather_recs["proteins"][0],
+                time_recs["proteins"][0]
             ]
-            # Add additional unique proteins
             for protein in weather_recs["proteins"][1:] + time_recs["proteins"][1:]:
                 if protein not in combined_recs["proteins"]:
                     combined_recs["proteins"].append(protein)
@@ -467,7 +490,7 @@ class WeatherRecommenderAgent:
         elif "proteins" in time_recs:
             combined_recs["proteins"] = time_recs["proteins"][:3]
 
-        # Similarly for sauces and base types
+        # Combine sauces
         if "sauces" in weather_recs and "sauces" in time_recs:
             combined_recs["sauces"] = [
                 weather_recs["sauces"][0],
@@ -483,6 +506,7 @@ class WeatherRecommenderAgent:
         elif "sauces" in time_recs:
             combined_recs["sauces"] = time_recs["sauces"][:3]
 
+        # Combine base types
         if "base_types" in weather_recs and "base_types" in time_recs:
             combined_recs["base_types"] = [
                 weather_recs["base_types"][0],
@@ -498,27 +522,50 @@ class WeatherRecommenderAgent:
         elif "base_types" in time_recs:
             combined_recs["base_types"] = time_recs["base_types"][:3]
 
-        # Combine reasoning
-        weather_reason = weather_recs.get("reasoning", "")
-        time_reason = time_recs.get("reasoning", "")
-
-        if weather_reason and time_reason:
-            combined_recs["reasoning"] = f"{weather_reason} {time_reason}"
-        elif weather_reason:
-            combined_recs["reasoning"] = weather_reason
-        elif time_reason:
-            combined_recs["reasoning"] = time_reason
+        # Get top suggestion for base
+        if "base_types" in combined_recs and combined_recs["base_types"]:
+            combined_recs["suggested_base"] = combined_recs["base_types"][0]
+        else:
+            combined_recs["suggested_base"] = "Bowl"  # Default option
 
         # Add weather and time information
         combined_recs["weather_condition"] = condition
         combined_recs["temperature"] = temperature
         combined_recs["time_of_day"] = time_of_day
 
-        # Get top suggestion for base
-        if "base_types" in combined_recs and combined_recs["base_types"]:
-            combined_recs["suggested_base"] = combined_recs["base_types"][0]
-        else:
-            combined_recs["suggested_base"] = "Bowl"  # Default option
+        # Get current location for enhanced recommendations
+        current_location = self.get_user_location()
+        combined_recs["location"] = weather_data.get("location", current_location)
+
+        # Generate intelligent LLM-powered insights with location context
+        try:
+            intelligent_reasoning = self.generate_llm_insights(
+                weather_condition=condition,
+                temperature=temperature,
+                time_of_day=time_of_day,
+                recommended_combination=combined_recs,
+                customer_history=customer_history,
+                location=current_location
+            )
+            combined_recs["reasoning"] = intelligent_reasoning
+            combined_recs["llm_powered"] = True
+            combined_recs["location_aware"] = True
+        except Exception as e:
+            logger.error(f"Error generating LLM insights, using fallback: {e}")
+            # Combine basic reasoning as fallback
+            weather_reason = weather_recs.get("reasoning", "")
+            time_reason = time_recs.get("reasoning", "")
+
+            if weather_reason and time_reason:
+                combined_recs["reasoning"] = f"{weather_reason} {time_reason}"
+            elif weather_reason:
+                combined_recs["reasoning"] = weather_reason
+            elif time_reason:
+                combined_recs["reasoning"] = time_reason
+            else:
+                combined_recs["reasoning"] = "Recommended combination based on current weather and time."
+            combined_recs["llm_powered"] = False
+            combined_recs["location_aware"] = False
 
         # Add timestamp
         combined_recs["timestamp"] = datetime.now().isoformat()
@@ -780,3 +827,315 @@ class WeatherRecommenderAgent:
             "cold": "🥶"
         }
         return weather_emojis.get(condition, "🌤️")
+
+    def calculate_weather_match_score(self, dish_description: str, weather_condition: str) -> float:
+        """Calculate how well a dish matches the current weather"""
+        if weather_condition not in self.weather_dish_scores:
+            return 0.5  # neutral score for unknown weather
+
+        weather_preferences = self.weather_dish_scores[weather_condition]
+        score = 0.5  # base score
+
+        # Check if dish matches any weather preferences
+        for keyword, keyword_score in weather_preferences.items():
+            if keyword.lower() in dish_description.lower():
+                score = max(score, keyword_score)
+
+        return score
+
+    def get_weather_challenge_progress(self, user_orders: List[Dict]) -> Dict:
+        """Calculate progress towards weather-related challenges"""
+        weather_matches = 0
+        perfect_matches = 0
+
+        for order in user_orders:
+            if "weather_match_score" in order:
+                if order["weather_match_score"] >= 0.7:
+                    weather_matches += 1
+                if order["weather_match_score"] >= 0.9:
+                    perfect_matches += 1
+
+        return {
+            "weather_matches": weather_matches,
+            "perfect_matches": perfect_matches,
+            "weather_master_progress": min(weather_matches / 5, 1.0),  # Progress towards Weather Master achievement
+            "perfect_match_progress": min(perfect_matches / 3, 1.0)   # Progress towards Perfect Match achievement
+        }
+
+    def get_weather_based_challenges(self, current_weather: str) -> List[Dict]:
+        """Generate weather-specific challenges based on current conditions"""
+        challenges = []
+
+        if current_weather == "Clear":
+            challenges.append({
+                "id": "sunshine_seeker",
+                "title": "Sunshine Seeker",
+                "description": "Order a refreshing dish perfect for sunny weather",
+                "points": 25,
+                "weather_condition": current_weather
+            })
+        elif current_weather == "Rain":
+            challenges.append({
+                "id": "rainy_day_comfort",
+                "title": "Rainy Day Comfort",
+                "description": "Order a comforting dish that pairs well with rain",
+                "points": 25,
+                "weather_condition": current_weather
+            })
+        elif current_weather == "Snow":
+            challenges.append({
+                "id": "winter_warmer",
+                "title": "Winter Warmer",
+                "description": "Order a warming dish perfect for snowy weather",
+                "points": 25,
+                "weather_condition": current_weather
+            })
+
+        return challenges
+
+    def get_user_location(self) -> str:
+        """
+        Get user's current location using IP geolocation.
+        Fallback to default location if unable to detect.
+
+        Returns:
+            Location string in format "City,Country"
+        """
+        try:
+            # Try to get location from IP geolocation service
+            response = requests.get("http://ip-api.com/json/", timeout=5)
+
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("status") == "success":
+                    city = data.get("city", "")
+                    country = data.get("countryCode", "")
+                    location = f"{city},{country}" if city and country else "San Francisco,US"
+                    logger.info(f"Detected user location: {location}")
+                    return location
+
+            # Fallback if API fails
+            logger.warning("Could not detect location, using default")
+            return "San Francisco,US"
+
+        except Exception as e:
+            logger.error(f"Error detecting location: {e}")
+            return "San Francisco,US"
+
+    def generate_llm_insights(self, weather_condition: str, temperature: float,
+                            time_of_day: str, recommended_combination: Dict[str, Any],
+                            customer_history: Optional[List[Dict]] = None,
+                            location: Optional[str] = None) -> str:
+        """
+        Generate intelligent insights using LLM for why specific combinations are recommended.
+
+        Args:
+            weather_condition: Current weather condition
+            temperature: Current temperature
+            time_of_day: Time of day
+            recommended_combination: The recommended food combination
+            customer_history: Customer's previous order history
+            location: User's current location
+
+        Returns:
+            Intelligent explanation for the recommendation
+        """
+        try:
+            # Build context for LLM
+            base = recommended_combination.get("suggested_base", "Bowl")
+            proteins = ", ".join(recommended_combination.get("proteins", [])[:2])
+            sauces = ", ".join(recommended_combination.get("sauces", [])[:2])
+
+            # Add location context
+            location_context = ""
+            if location:
+                location_context = f"Location: {location}\n"
+
+            # Analyze customer history for personalization
+            history_context = ""
+            if customer_history:
+                liked_items = []
+                disliked_items = []
+                for order in customer_history[-5:]:  # Last 5 orders
+                    feedback = order.get("feedback_score", 3)
+                    if feedback >= 4:
+                        liked_items.extend([order.get("protein", ""), order.get("sauce", "")])
+                    elif feedback <= 2:
+                        disliked_items.extend([order.get("protein", ""), order.get("sauce", "")])
+
+                if liked_items:
+                    history_context = f"Customer preferences: Previously enjoyed {', '.join(filter(None, liked_items[:3]))}. "
+                if disliked_items:
+                    history_context += f"Tends to avoid: {', '.join(filter(None, disliked_items[:2]))}. "
+
+            # Create enhanced LLM prompt for intelligent insights
+            prompt = f"""As a food science expert and culinary advisor, explain why this combination is perfect for the current conditions:
+
+{location_context}Weather: {weather_condition} weather, {temperature}°C
+Time: {time_of_day}
+Recommendation: {base} with {proteins} and {sauces}
+{history_context}
+
+Provide a brief, engaging explanation (60-90 words) covering:
+1. Why this base/protein/sauce combo works for {weather_condition} weather at {temperature}°C
+2. How it suits {time_of_day} dining in this location
+3. Nutritional or comfort benefits specific to these conditions
+4. Make it personal, appetizing, and scientifically informed
+
+Use food science principles and keep it conversational like a knowledgeable chef's recommendation."""
+
+            llm_insight = get_llm_response(prompt, max_tokens=150)
+
+            if llm_insight:
+                # Add location-specific insight if available
+                if location:
+                    from src.utils.llm_client import get_location_based_insight
+                    location_insight = get_location_based_insight(location, {
+                        "condition": weather_condition,
+                        "temperature": temperature
+                    })
+                    return f"{llm_insight} {location_insight}"
+                return llm_insight
+            else:
+                # Fallback to enhanced contextual reasoning
+                return self._generate_enhanced_fallback(weather_condition, temperature, time_of_day,
+                                                      base, proteins, sauces, location)
+
+        except Exception as e:
+            logger.error(f"Error generating LLM insights: {e}")
+            return self._generate_enhanced_fallback(weather_condition, temperature, time_of_day,
+                                                  recommended_combination.get("suggested_base", "Bowl"),
+                                                  ", ".join(recommended_combination.get("proteins", [])[:2]),
+                                                  ", ".join(recommended_combination.get("sauces", [])[:2]),
+                                                  location)
+
+    def _generate_enhanced_fallback(self, weather_condition: str, temperature: float,
+                                  time_of_day: str, base: str, proteins: str, sauces: str,
+                                  location: Optional[str] = None) -> str:
+        """Generate enhanced contextual fallback reasoning with location awareness."""
+
+        # Weather-specific benefits with temperature context
+        if weather_condition == "hot" or temperature > 28:
+            weather_benefit = f"offers cooling relief in {temperature}°C heat with refreshing flavors"
+            science_note = "The cooling ingredients help regulate body temperature naturally."
+        elif weather_condition == "cold" or temperature < 5:
+            weather_benefit = f"provides warming comfort in {temperature}°C cold with heat-generating spices"
+            science_note = "The warming spices boost circulation and metabolic heat production."
+        elif weather_condition == "rainy":
+            weather_benefit = "delivers mood-boosting comfort on this rainy day"
+            science_note = "Comfort foods release serotonin, naturally improving mood."
+        elif weather_condition == "snowy":
+            weather_benefit = f"provides hearty warmth perfect for snowy {temperature}°C weather"
+            science_note = "Rich, satisfying foods help maintain energy in cold conditions."
+        else:
+            weather_benefit = f"provides balanced nutrition perfect for {weather_condition} weather at {temperature}°C"
+            science_note = "This combination delivers optimal nutrition for current conditions."
+
+        # Time-specific benefits
+        time_benefits = {
+            "morning": "energizes your start with sustained-release nutrients",
+            "afternoon": "fuels peak performance with balanced macronutrients",
+            "evening": "provides satisfying comfort to help you unwind"
+        }
+        time_benefit = time_benefits.get(time_of_day, "suits your dining needs perfectly")
+
+        # Base-specific benefits
+        base_benefits = {
+            "Bowl": "allows flavors to meld beautifully while keeping everything warm",
+            "Wrap": "provides perfect portability and optimal flavor ratios",
+            "Biryani": "delivers complex carbohydrates for sustained energy",
+            "Sandwich": "offers convenient nutrition in perfectly balanced bites"
+        }
+        base_benefit = base_benefits.get(base, "delivers exceptional taste and nutrition")
+
+        # Location context
+        location_note = ""
+        if location:
+            if "san francisco" in location.lower():
+                location_note = " Perfect for the Bay Area's dynamic climate!"
+            elif "new york" in location.lower():
+                location_note = " Ideal for city life energy needs!"
+            elif any(city in location.lower() for city in ["miami", "los angeles", "phoenix"]):
+                location_note = " Great for warm climate dining!"
+            elif any(city in location.lower() for city in ["chicago", "boston", "seattle"]):
+                location_note = " Perfect for cooler climate comfort!"
+
+        return f"🌟 This {base.lower()} with {proteins} and {sauces} {weather_benefit}. The combination {time_benefit} during {time_of_day}, while the {base.lower()} format {base_benefit}. {science_note}{location_note}"
+
+    def get_live_weather_recommendations(self, time_of_day: str,
+                                       customer_id: Optional[str] = None,
+                                       mood: str = "neutral",
+                                       customer_history: Optional[List[Dict]] = None,
+                                       location: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Get live weather-based recommendations using current location and real-time weather data.
+
+        Args:
+            time_of_day: Time of day (morning, afternoon, evening)
+            customer_id: Customer identifier for personalization
+            mood: Customer mood for recommendation adjustment
+            customer_history: Customer's previous order history for personalization
+            location: Optional specific location (otherwise auto-detects)
+
+        Returns:
+            Live weather-based food recommendations with intelligent insights
+        """
+        try:
+            # Get current location if not provided
+            if not location:
+                location = self.get_user_location()
+                logger.info(f"Auto-detected location: {location}")
+
+            # Check cache first
+            cached_weather = self.get_cached_weather(location)
+            if cached_weather:
+                logger.info(f"Using cached weather data for {location}")
+                weather_data = cached_weather
+            else:
+                # Get current weather for location
+                weather_data = self.get_current_weather(location)
+                logger.info(f"Fetched live weather data for {location}: {weather_data.get('condition', 'unknown')} at {weather_data.get('temperature', 'unknown')}°C")
+
+            # Get recommendations with the live weather data
+            recommendations = self.get_recommendations(
+                weather_data=weather_data,
+                time_of_day=time_of_day,
+                customer_id=customer_id,
+                mood=mood,
+                customer_history=customer_history
+            )
+
+            # Add live weather indicators
+            recommendations["live_weather"] = True
+            recommendations["weather_source"] = weather_data.get("source", "unknown")
+            recommendations["last_updated"] = datetime.now().isoformat()
+
+            # Add weather emoji for visual appeal
+            recommendations["weather_emoji"] = self.get_weather_emoji(weather_data.get("condition", "cloudy"))
+
+            logger.info(f"Generated live weather recommendations for {location}")
+            return recommendations
+
+        except Exception as e:
+            logger.error(f"Error getting live weather recommendations: {e}")
+            # Fallback to default weather
+            fallback_weather = {
+                "condition": "cloudy",
+                "temperature": 20.0,
+                "location": location or "Unknown",
+                "source": "fallback"
+            }
+
+            recommendations = self.get_recommendations(
+                weather_data=fallback_weather,
+                time_of_day=time_of_day,
+                customer_id=customer_id,
+                mood=mood,
+                customer_history=customer_history
+            )
+
+            recommendations["live_weather"] = False
+            recommendations["weather_source"] = "fallback"
+            recommendations["error"] = "Could not fetch live weather data"
+
+            return recommendations

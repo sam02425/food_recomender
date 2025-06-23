@@ -1,5 +1,260 @@
+# Python Virtual Environments
 foodEnv/
+backend/venv/
+venv/
+env/
+ENV/
+
+# Node.js Dependencies
 frontend/package-lock.json
 frontend/package.json
 frontend/node_modules/*
-src/agents/__pycache__/*
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python Cache and Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ============= CONFIDENTIAL EXPERIMENTAL DATA =============
+# CRITICAL: These files contain sensitive research participant data
+
+# Compliance Package (contains ALL sensitive data)
+compliance_package/
+EXPERIMENTAL_DATA_COMPLIANCE_PACKAGE.md
+COMPLIANCE_INVENTORY.md
+COMPLIANCE_SUMMARY.md
+
+# Experimental Data Files
+data/experimental_trials.csv
+data/experiments.csv
+data/orders.csv
+data/customers.csv
+data/analytics_events.csv
+
+# Face Recognition Data (contains biometric participant data)
+data/face_images/
+data/face_images/*
+*.jpg
+*.jpeg
+*.png
+face_*.jpg
+face_*.json
+
+# Social Media and Personal Data
+data/social_media/
+data/receipts/
+
+# Measurement Data (contains participant psychological assessments)
+data/measurements/
+data/measurements/*.csv
+measurements/
+nasa_tlx.csv
+sus.csv
+satisfaction.csv
+
+# ============= SENSITIVE CONFIGURATION & CREDENTIALS =============
+
+# Environment Variables and API Keys
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+backend/temp_repo/.env
+
+# API Keys and Secrets (prevent credential exposure)
+*api_key*
+*secret*
+*password*
+*token*
+config/secrets.json
+
+# AWS Credentials
+.aws/
+aws-credentials.json
+
+# ============= LOG FILES (may contain sensitive runtime data) =============
+
+# Application Logs
+logs/
+*.log
+app_*.log
+human_experiments_*.log
+debug_experiment_*.log
+kiosk_system.log
+
+# Backend Application Logs
+backend/logs/
+backend/logs/**/*.log
+
+# System Logs
+system.log
+error.log
+access.log
+
+# ============= AUTONOMOUS SYSTEM FILES =============
+# Human Experiment System Files (Autonomous System Generated)
+# These are ignored in the main repository but preserved in removed/ folder for reference
+
+# Main experiment system files (ignore if generated outside removed/ folder)
+/human_experiment_system.py
+/run_human_experiments.py
+/test_human_experiment.py
+/demo_experiment.py
+/debug_experiment.py
+/analyze_results.py
+
+# Human experiment documentation and info files (ignore if generated outside removed/ folder)
+/HUMAN_EXPERIMENT_README.md
+/HUMAN_EXPERIMENT_SYSTEM_READY.md
+/EXPERIMENT_SUMMARY.md
+/MEASUREMENT_SYSTEM_SUMMARY.md
+/ORGANIZATION_SUMMARY.md
+/setup_and_run_experiments.sh
+/monitor_measurements.sh
+/test_measurement_flow.sh
+
+# Human experiment data directory (ignore if generated outside removed/ folder)
+/data/human_experiments/
+
+# ============= OPERATING SYSTEM FILES =============
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ============= IDE AND EDITOR FILES =============
+
+# VSCode
+.vscode/
+.history/
+
+# PyCharm
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ============= DATABASE FILES =============
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Database dumps
+*.sql
+*.dump
+
+# ============= TEMPORARY FILES =============
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
+.cache/
+
+# Backup files
+*.bak
+*.backup
+*.orig
+
+# ============= TESTING AND CI FILES =============
+
+# Test coverage
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# ============= PRESERVE REFERENCE FILES =============
+# Preserve removed/ folder for reference
+# The removed/ folder and its contents are tracked for reference purposes
+!/removed/
+!/removed/**
+
+# ============= DOCUMENTATION EXCEPTIONS =============
+# Allow essential documentation
+!README.md
+!docs/
+!docs/**
+!LICENSE
+!CONTRIBUTING.md

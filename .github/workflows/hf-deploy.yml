@@ -1,0 +1,26 @@
+name: Hugging Face Spaces Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+      - name: Lint
+        run: |
+          pip install flake8
+          flake8 .
+      # Optionally, add tests here
+      - name: Push to Hugging Face Spaces
+        run: |
+          echo "Push your code to your Hugging Face Space's git repo"

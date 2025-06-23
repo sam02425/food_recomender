@@ -39,14 +39,14 @@ const MenuSelectionGrid = ({
     if (!maxFreeSelections) return null;
 
     if (premiumItems.includes(item)) {
-      return `$${premiumPrice.toFixed(2)}`;
+      return `$${(premiumPrice || 0).toFixed(2)}`;
     }
 
     // For regular items, show pricing only if it's an extra item
     if (isMultiSelect && maxFreeSelections) {
       const itemIndex = selectedItems.indexOf(item);
       if (itemIndex >= 0 && itemIndex >= maxFreeSelections) {
-        return `$${extraPrice.toFixed(2)}`;
+        return `$${(extraPrice || 0).toFixed(2)}`;
       }
     }
 
@@ -61,8 +61,8 @@ const MenuSelectionGrid = ({
       {maxFreeSelections && (
         <div className="mb-4 p-3 bg-blue-50 rounded-md text-sm">
           <p>First {maxFreeSelections} {category.toLowerCase()} are included</p>
-          {extraPrice > 0 && <p>Each additional: ${extraPrice.toFixed(2)}</p>}
-          {premiumItems.length > 0 && <p>{premiumItems.join(', ')}: ${premiumPrice.toFixed(2)} each</p>}
+          {extraPrice > 0 && <p>Each additional: ${(extraPrice || 0).toFixed(2)}</p>}
+          {premiumItems.length > 0 && <p>{premiumItems.join(', ')}: ${(premiumPrice || 0).toFixed(2)} each</p>}
         </div>
       )}
 
@@ -107,7 +107,7 @@ const MenuSelectionGrid = ({
               </div>
 
               {/* Display the price if protein item */}
-              {itemPrice !== null && (
+              {itemPrice !== null && itemPrice !== undefined && (
                 <div className="text-sm text-gray-600 mt-1 font-medium">
                   ${itemPrice.toFixed(2)}
                 </div>
