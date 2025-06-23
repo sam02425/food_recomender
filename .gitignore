@@ -2,7 +2,7 @@
 foodEnv/
 backend/venv/
 venv/
-env/
+.env/
 ENV/
 
 # Node.js Dependencies
@@ -13,6 +13,11 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+removed/*
+package-lock.json
+package.json
+node_modules/*
 
 # Python Cache and Compiled Files
 __pycache__/

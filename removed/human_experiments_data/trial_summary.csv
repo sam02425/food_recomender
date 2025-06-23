@@ -1,3 +1,0 @@
-condition,participant_count,total_trials,avg_completion_time,avg_satisfaction,avg_nasa_tlx,avg_sus_score,avg_recommendation_acceptance
-baseline,50,250,6.8,5.2,68.7,72.4,N/A
-adaptive,50,250,6.9,6.4,47.3,88.2,0.847
