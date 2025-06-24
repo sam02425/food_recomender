@@ -23,7 +23,7 @@ const MeasurementDemo = () => {
 
   const submitNASATLX = async (nasaTlxData) => {
     try {
-      const response = await fetch('/api/measurements/nasa-tlx', {
+      const response = await fetch('http://localhost:8000/api/measurements/nasa-tlx', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ const MeasurementDemo = () => {
 
   const submitSUS = async (susData) => {
     try {
-      const response = await fetch('/api/measurements/sus', {
+      const response = await fetch('http://localhost:8000/api/measurements/sus', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ const MeasurementDemo = () => {
 
   const submitTaskCompletion = async (taskData) => {
     try {
-      const response = await fetch('/api/measurements/task-completion', {
+      const response = await fetch('http://localhost:8000/api/measurements/task-completion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const MeasurementDemo = () => {
 
   const submitSatisfaction = async (satisfactionData) => {
     try {
-      const response = await fetch('/api/measurements/satisfaction', {
+      const response = await fetch('http://localhost:8000/api/measurements/satisfaction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ const MeasurementDemo = () => {
 
   const submitError = async (errorData) => {
     try {
-      const response = await fetch('/api/measurements/error-tracking', {
+      const response = await fetch('http://localhost:8000/api/measurements/error-tracking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

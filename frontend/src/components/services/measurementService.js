@@ -93,7 +93,7 @@ class MeasurementService {
     if (!this.isTracking || !this.taskStartTime) return;
 
     try {
-      const response = await fetch('/api/measurements/task-completion', {
+      const response = await fetch('http://localhost:8000/api/measurements/task-completion', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ class MeasurementService {
 
   async submitErrorTracking(errorData) {
     try {
-      const response = await fetch('/api/measurements/error-tracking', {
+      const response = await fetch('http://localhost:8000/api/measurements/error-tracking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ class MeasurementService {
 
   async submitDecisionChange(changeData) {
     try {
-      const response = await fetch('/api/measurements/decision-change', {
+      const response = await fetch('http://localhost:8000/api/measurements/decision-change', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -174,7 +174,7 @@ class MeasurementService {
     const simulatedTLX = this.generateSimulatedNASATLX();
 
     try {
-      const response = await fetch('/api/measurements/nasa-tlx', {
+      const response = await fetch('http://localhost:8000/api/measurements/nasa-tlx', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -201,7 +201,7 @@ class MeasurementService {
     const simulatedSUS = this.generateSimulatedSUS();
 
     try {
-      const response = await fetch('/api/measurements/sus', {
+      const response = await fetch('http://localhost:8000/api/measurements/sus', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -228,7 +228,7 @@ class MeasurementService {
     const simulatedSatisfaction = this.generateSimulatedSatisfaction();
 
     try {
-      const response = await fetch('/api/measurements/satisfaction', {
+      const response = await fetch('http://localhost:8000/api/measurements/satisfaction', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -5,6 +5,13 @@
 This document provides comprehensive methodological details for conducting controlled experiments comparing baseline and emotion-responsive food ordering interfaces. The methodology has been validated through a completed study with 50 participants and 500 total trials.
 
 ## Experimental Design
+Expriment	Trial A - baseline	Trial B - AI BASED
+1	Order is given 	order as you like but ai provided suggestions based on user selection of activity temperature at location, and learned from previous order.
+2	Order is given	order as you like but ai provided suggestions based on user selection of activity temperature at location, and learned from previous order.
+3	Order is given	Order is given to perform the task - but ai provided suggestions based on user selection of activity temperature at location, and learned from previous order.
+4	Order is given	order as you like but ai provided suggestions based on user selection of activity temperature at location, and learned from previous order.
+5	Order is given	Order is given to perform the task - but ai provided suggestions based on user selection of activity temperature at location, and learned from previous order.
+
 
 ### Study Type
 - **Design**: Within-subjects controlled experiment

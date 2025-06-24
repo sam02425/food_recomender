@@ -18,7 +18,16 @@ import measurementService from './services/measurementService';
  * Enhanced order form component that manages the entire ordering flow.
  * Added ability to go back, remove items, and improved navigation.
  */
-const OrderForm = ({ experimentConfig = null }) => {
+const OrderForm = ({
+  experimentConfig = null,
+  onExperimentOrderComplete = null,
+  experimentCycleActive = false,
+  currentPhase = null,
+  currentTrialInPhase = 1,
+  aiRecommendations = [],
+  orderInstructions = null,
+  orderType = 'standard'
+}) => {
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
   const { getCurrentTrialConfig, startTrial, completeTrial, recordSuggestionDecision } = useExperiment();
 
@@ -128,6 +137,68 @@ const OrderForm = ({ experimentConfig = null }) => {
     'Crispy Onions', 'Fresh Cilantro', 'Pomegranate Seeds', 'Toasted Almonds'
   ];
 
+  // State for tracking task compliance
+  const [taskInstructions, setTaskInstructions] = useState(null);
+  const [taskCompliance, setTaskCompliance] = useState({
+    instructed: {},
+    selected: {},
+    compliance: {}
+  });
+
+  // Update task instructions when orderInstructions change
+  useEffect(() => {
+    if (orderInstructions?.tasks) {
+      setTaskInstructions(orderInstructions.tasks);
+      setTaskCompliance({
+        instructed: orderInstructions.tasks,
+        selected: {},
+        compliance: {}
+      });
+    } else {
+      setTaskInstructions(null);
+      setTaskCompliance({
+        instructed: {},
+        selected: {},
+        compliance: {}
+      });
+    }
+  }, [orderInstructions]);
+
+  // Track selection compliance
+  const trackSelectionCompliance = useCallback((category, selectedValue) => {
+    if (taskInstructions) {
+      setTaskCompliance(prev => {
+        const newSelected = { ...prev.selected, [category]: selectedValue };
+        const newCompliance = { ...prev.compliance };
+
+        // Check compliance for each category
+        if (category === 'protein') {
+          newCompliance.protein = selectedValue === taskInstructions.protein;
+        } else if (category === 'base') {
+          newCompliance.base = selectedValue === taskInstructions.base;
+        } else if (category === 'sauce') {
+          newCompliance.sauce = selectedValue === taskInstructions.sauce;
+        } else if (category === 'veggies') {
+          const instructedVeggies = taskInstructions.veggies || [];
+          const selectedVeggies = Array.isArray(selectedValue) ? selectedValue : [];
+          newCompliance.veggies = instructedVeggies.length === selectedVeggies.length &&
+            instructedVeggies.every(veggie => selectedVeggies.includes(veggie));
+        } else if (category === 'garnishes') {
+          const instructedGarnishes = taskInstructions.garnishes || [];
+          const selectedGarnishes = Array.isArray(selectedValue) ? selectedValue : [];
+          newCompliance.garnishes = instructedGarnishes.length === selectedGarnishes.length &&
+            instructedGarnishes.every(garnish => selectedGarnishes.includes(garnish));
+        }
+
+        return {
+          ...prev,
+          selected: newSelected,
+          compliance: newCompliance
+        };
+      });
+    }
+  }, [taskInstructions]);
+
   // Initialize order on component mount
   useEffect(() => {
     const initializeOrder = async () => {
@@ -203,9 +274,11 @@ const OrderForm = ({ experimentConfig = null }) => {
     if (type === baseType && option === baseOption) {
       setBaseType('');
       setBaseOption('');
+      trackSelectionCompliance('base', '');
     } else {
       setBaseType(type);
       setBaseOption(option);
+      trackSelectionCompliance('base', `${type} - ${option}`);
 
       // If we're on the base step, move to the next step after selection
       if (currentStep === 'base') {
@@ -334,6 +407,12 @@ const OrderForm = ({ experimentConfig = null }) => {
       final_order_details: finalOrder,
       dish_name_agent_suggestions: dishNameData,
       final_dish_name: dishName,
+      // Task compliance data
+      task_instructions: taskInstructions,
+      task_compliance: taskCompliance,
+      order_type: orderType,
+      experiment_phase: currentPhase,
+      trial_number: currentTrialInPhase
     };
 
     try {
@@ -362,6 +441,11 @@ const OrderForm = ({ experimentConfig = null }) => {
       // Show measurement modal after order completion
       setShowMeasurementModal(true);
       setMeasurementStep('nasa_tlx');
+
+      // Call onExperimentOrderComplete if it's provided
+      if (onExperimentOrderComplete) {
+        onExperimentOrderComplete(finalOrder);
+      }
     } catch (err) {
       setError('Error completing order.');
       console.error(err);
@@ -843,7 +927,10 @@ const OrderForm = ({ experimentConfig = null }) => {
             <MenuSelectionGrid
               items={proteins}
               selectedItems={protein}
-              onSelect={setProtein}
+              onSelect={(selectedProtein) => {
+                setProtein(selectedProtein);
+                trackSelectionCompliance('protein', selectedProtein[0] || '');
+              }}
               recommendations={recommendations.proteins}
               maxSelections={1}
             />
@@ -890,7 +977,10 @@ const OrderForm = ({ experimentConfig = null }) => {
             <MenuSelectionGrid
               items={sauces.map(name => ({ name }))}
               selectedItems={sauce}
-              onSelect={setSauce}
+              onSelect={(selectedSauce) => {
+                setSauce(selectedSauce);
+                trackSelectionCompliance('sauce', selectedSauce[0] || '');
+              }}
               recommendations={recommendations.sauces}
               maxSelections={1}
             />
@@ -933,7 +1023,10 @@ const OrderForm = ({ experimentConfig = null }) => {
             <MenuSelectionGrid
               items={veggieOptions.map(name => ({ name }))}
               selectedItems={veggies}
-              onSelect={setVeggies}
+              onSelect={(selectedVeggies) => {
+                setVeggies(selectedVeggies);
+                trackSelectionCompliance('veggies', selectedVeggies);
+              }}
               recommendations={recommendations.veggies}
               premiumItems={premiumVeggies}
             />
@@ -974,7 +1067,10 @@ const OrderForm = ({ experimentConfig = null }) => {
             <MenuSelectionGrid
               items={garnishOptions.map(name => ({ name }))}
               selectedItems={garnishes}
-              onSelect={setGarnishes}
+              onSelect={(selectedGarnishes) => {
+                setGarnishes(selectedGarnishes);
+                trackSelectionCompliance('garnishes', selectedGarnishes);
+              }}
               recommendations={recommendations.garnishes}
             />
             <div className="mt-4 flex justify-between">
@@ -1531,6 +1627,12 @@ const OrderForm = ({ experimentConfig = null }) => {
           setMeasurementData(prev => ({ ...prev, satisfaction: satisfactionData }));
           setShowMeasurementModal(false);
           console.log('All measurements completed and saved to CSV!');
+
+          // If we're in experiment cycle mode, call the completion handler
+          if (onExperimentOrderComplete) {
+            onExperimentOrderComplete();
+          }
+
           return true;
         }
       } catch (error) {
@@ -1577,6 +1679,99 @@ const OrderForm = ({ experimentConfig = null }) => {
         <h1 className="text-3xl font-bold text-orange-700">Curry Creations</h1>
         <p className="text-gray-600">Create your perfect meal!</p>
       </div>
+
+      {/* Display experiment cycle information */}
+      {experimentCycleActive && (
+        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+          <div className="flex justify-between items-center mb-3">
+            <div>
+              <h3 className="font-semibold text-gray-800">
+                {currentPhase === 'trial_a' ? '🔬 Trial A: Baseline Interface' : '🤖 Trial B: AI-Powered Interface'}
+              </h3>
+              <p className="text-sm text-gray-600">
+                Order {currentTrialInPhase} of 5 - Please complete your order to continue the experiment
+              </p>
+            </div>
+            <div className="text-right">
+              <div className="text-sm text-gray-500">Experiment Progress</div>
+              <div className="text-lg font-bold text-blue-600">
+                {currentPhase === 'trial_a' ? currentTrialInPhase : 5 + currentTrialInPhase}/10
+              </div>
+            </div>
+          </div>
+
+          {/* Order Instructions */}
+          {orderInstructions && (
+            <div className={`p-3 rounded-lg border-l-4 ${
+              orderType === 'given_task'
+                ? 'bg-orange-50 border-orange-400'
+                : currentPhase === 'trial_b'
+                  ? 'bg-purple-50 border-purple-400'
+                  : 'bg-blue-50 border-blue-400'
+            }`}>
+              <h4 className={`font-semibold text-sm ${
+                orderType === 'given_task'
+                  ? 'text-orange-800'
+                  : currentPhase === 'trial_b'
+                    ? 'text-purple-800'
+                    : 'text-blue-800'
+              }`}>
+                {orderInstructions.title}
+              </h4>
+              <p className={`text-xs mt-1 ${
+                orderType === 'given_task'
+                  ? 'text-orange-700'
+                  : currentPhase === 'trial_b'
+                    ? 'text-purple-700'
+                    : 'text-blue-700'
+              }`}>
+                {orderInstructions.description}
+              </p>
+
+              {/* Display specific task instructions */}
+              {taskInstructions && (
+                <div className="mt-3 space-y-2">
+                  <div className="text-xs font-semibold text-orange-800">Required Selections:</div>
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div className="bg-white p-2 rounded border">
+                      <span className="font-medium">Protein:</span>
+                      <span className={`ml-1 ${taskCompliance.compliance.protein === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
+                        {taskInstructions.protein}
+                      </span>
+                    </div>
+                    <div className="bg-white p-2 rounded border">
+                      <span className="font-medium">Base:</span>
+                      <span className={`ml-1 ${taskCompliance.compliance.base === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
+                        {taskInstructions.base}
+                      </span>
+                    </div>
+                    <div className="bg-white p-2 rounded border">
+                      <span className="font-medium">Sauce:</span>
+                      <span className={`ml-1 ${taskCompliance.compliance.sauce === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
+                        {taskInstructions.sauce}
+                      </span>
+                    </div>
+                    <div className="bg-white p-2 rounded border">
+                      <span className="font-medium">Veggies:</span>
+                      <span className={`ml-1 ${taskCompliance.compliance.veggies === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
+                        {taskInstructions.veggies?.join(', ') || 'None'}
+                      </span>
+                    </div>
+                  </div>
+                  {taskInstructions.garnishes && taskInstructions.garnishes.length > 0 && (
+                    <div className="bg-white p-2 rounded border text-xs">
+                      <span className="font-medium">Garnishes:</span>
+                      <span className={`ml-1 ${taskCompliance.compliance.garnishes === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
+                        {taskInstructions.garnishes.join(', ')}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Display trial information and instructions */}
       <TrialHeader experimentConfig={currentTrialConfig} />
