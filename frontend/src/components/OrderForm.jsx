@@ -26,7 +26,8 @@ const OrderForm = ({
   currentTrialInPhase = 1,
   aiRecommendations = [],
   orderInstructions = null,
-  orderType = 'standard'
+  orderType = 'standard',
+  participantName = null
 }) => {
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
   const { getCurrentTrialConfig, startTrial, completeTrial, recordSuggestionDecision } = useExperiment();
@@ -144,6 +145,36 @@ const OrderForm = ({
     selected: {},
     compliance: {}
   });
+
+  // Auto-select AI recommendations in Trial B
+  useEffect(() => {
+    if (experimentCycleActive && currentPhase === 'trial_b' && aiRecommendations.length > 0 && orderType === 'free_choice') {
+      aiRecommendations.forEach(rec => {
+        if (rec.type === 'protein' && protein.length === 0) {
+          setProtein([rec.item]);
+          trackSelectionCompliance('protein', rec.item);
+        } else if (rec.type === 'base' && !baseType) {
+          // Handle base selection based on recommendation
+          if (rec.item === 'Rice Bowl') {
+            setBaseType('Bowl');
+            setBaseOption('Bowl');
+            trackSelectionCompliance('base', 'Bowl - Bowl');
+          } else if (rec.item === 'Naan Wrap') {
+            setBaseType('Wrap');
+            setBaseOption('Naan');
+            trackSelectionCompliance('base', 'Wrap - Naan');
+          } else if (rec.item === 'Salad Bowl') {
+            setBaseType('Bowl');
+            setBaseOption('Bowl');
+            trackSelectionCompliance('base', 'Bowl - Bowl');
+          }
+        } else if (rec.type === 'sauce' && sauce.length === 0) {
+          setSauce([rec.item]);
+          trackSelectionCompliance('sauce', rec.item);
+        }
+      });
+    }
+  }, [aiRecommendations, currentPhase, experimentCycleActive, orderType, protein.length, baseType, sauce.length, trackSelectionCompliance]);
 
   // Update task instructions when orderInstructions change
   useEffect(() => {
@@ -1095,7 +1126,7 @@ const OrderForm = ({
         return (
           <>
             <div className="w-full mb-6">
-              <h2 className="text-xl font-bold mb-3">Your Personalized Dish Name</h2>
+                              <h2 className="text-xl font-bold mb-3">Your Personalized Dish Name: {suggestedDishNames?.name || dishName || "Custom Creation"}</h2>
 
               <div className="mb-6 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-100 text-center">
                 <h3 className="text-2xl font-bold text-orange-700 mb-2">🎉 {suggestedDishNames?.name || "Custom Creation"}</h3>
@@ -1277,7 +1308,7 @@ const OrderForm = ({
             </p>
             {customerData && (
               <div className="bg-green-50 p-4 rounded-lg mb-6 inline-block">
-                <p className="text-green-800 font-medium">Thank you, {customerData.name || "valued customer"}!</p>
+                                  <p className="text-green-800 font-medium">Thank you, {experimentCycleActive && participantName ? participantName : (customerData.name || "valued customer")}!</p>
                 <p className="text-green-600">We'll use your preferences for better recommendations next time.</p>
               </div>
             )}

@@ -378,7 +378,7 @@ function App() {
                               startExperimentCycle(name.trim());
                             }
                           }}
-                          className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-semibold text-sm animate-pulse"
+                          className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold text-base animate-pulse shadow-lg border-2 border-purple-400"
                         >
                           🧪 Start Experiment Cycle
                         </button>
@@ -537,6 +537,7 @@ function App() {
                     aiRecommendations={aiRecommendations}
                     orderInstructions={experimentCycleActive ? getOrderInstructions() : null}
                     orderType={experimentCycleActive ? getCurrentOrderType() : 'standard'}
+                    participantName={participantName}
                   />
                 } />
                 <Route path="/report" element={<ExperimentReport />} />
