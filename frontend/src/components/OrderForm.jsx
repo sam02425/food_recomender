@@ -146,55 +146,6 @@ const OrderForm = ({
     compliance: {}
   });
 
-  // Auto-select AI recommendations in Trial B
-  useEffect(() => {
-    if (experimentCycleActive && currentPhase === 'trial_b' && aiRecommendations.length > 0 && orderType === 'free_choice') {
-      aiRecommendations.forEach(rec => {
-        if (rec.type === 'protein' && protein.length === 0) {
-          setProtein([rec.item]);
-          trackSelectionCompliance('protein', rec.item);
-        } else if (rec.type === 'base' && !baseType) {
-          // Handle base selection based on recommendation
-          if (rec.item === 'Rice Bowl') {
-            setBaseType('Bowl');
-            setBaseOption('Bowl');
-            trackSelectionCompliance('base', 'Bowl - Bowl');
-          } else if (rec.item === 'Naan Wrap') {
-            setBaseType('Wrap');
-            setBaseOption('Naan');
-            trackSelectionCompliance('base', 'Wrap - Naan');
-          } else if (rec.item === 'Salad Bowl') {
-            setBaseType('Bowl');
-            setBaseOption('Bowl');
-            trackSelectionCompliance('base', 'Bowl - Bowl');
-          }
-        } else if (rec.type === 'sauce' && sauce.length === 0) {
-          setSauce([rec.item]);
-          trackSelectionCompliance('sauce', rec.item);
-        }
-      });
-    }
-  }, [aiRecommendations, currentPhase, experimentCycleActive, orderType, protein.length, baseType, sauce.length, trackSelectionCompliance]);
-
-  // Update task instructions when orderInstructions change
-  useEffect(() => {
-    if (orderInstructions?.tasks) {
-      setTaskInstructions(orderInstructions.tasks);
-      setTaskCompliance({
-        instructed: orderInstructions.tasks,
-        selected: {},
-        compliance: {}
-      });
-    } else {
-      setTaskInstructions(null);
-      setTaskCompliance({
-        instructed: {},
-        selected: {},
-        compliance: {}
-      });
-    }
-  }, [orderInstructions]);
-
   // Track selection compliance
   const trackSelectionCompliance = useCallback((category, selectedValue) => {
     if (taskInstructions) {
@@ -230,6 +181,127 @@ const OrderForm = ({
     }
   }, [taskInstructions]);
 
+  // Update task instructions when orderInstructions change
+  useEffect(() => {
+    if (orderInstructions?.tasks) {
+      setTaskInstructions(orderInstructions.tasks);
+      setTaskCompliance({
+        instructed: orderInstructions.tasks,
+        selected: {},
+        compliance: {}
+      });
+    } else {
+      setTaskInstructions(null);
+      setTaskCompliance({
+        instructed: {},
+        selected: {},
+        compliance: {}
+      });
+    }
+  }, [orderInstructions]);
+
+  // Auto-select AI recommendations in Trial B
+  useEffect(() => {
+    // Only apply auto-selection if we're in Trial B free choice mode and have recommendations
+    if (experimentCycleActive && currentPhase === 'trial_b' && aiRecommendations.length > 0 && orderType === 'free_choice') {
+      console.log('=== AI AUTO-SELECTION STARTING ===');
+      console.log('Current step:', currentStep);
+      console.log('AI recommendations:', aiRecommendations);
+
+      // Apply auto-selections with a small delay to ensure state is ready
+      setTimeout(() => {
+        let hasChanges = false;
+
+        aiRecommendations.forEach((rec, index) => {
+          console.log(`Processing recommendation ${index + 1}:`, rec);
+
+          // Auto-select protein
+          if (rec.type === 'protein' && protein.length === 0) {
+            console.log('🔄 Auto-selecting protein:', rec.item);
+            setProtein([rec.item]);
+            trackSelectionCompliance('protein', rec.item);
+            hasChanges = true;
+          }
+
+          // Auto-select base
+          if (rec.type === 'base' && !baseType) {
+            console.log('🔄 Auto-selecting base:', rec.item);
+
+            if (rec.item === 'Rice Bowl') {
+              setBaseType('Bowl');
+              setBaseOption('Bowl');
+              trackSelectionCompliance('base', 'Bowl - Bowl');
+            } else if (rec.item === 'Naan Wrap') {
+              setBaseType('Wrap');
+              setBaseOption('Naan');
+              trackSelectionCompliance('base', 'Wrap - Naan');
+            } else if (rec.item === 'Salad Bowl') {
+              setBaseType('Salad');
+              setBaseOption('Mixed Greens');
+              trackSelectionCompliance('base', 'Salad - Mixed Greens');
+            } else if (rec.item.includes('Sandwich')) {
+              setBaseType('Sandwich & Subs');
+              setBaseOption('Sourdough');
+              trackSelectionCompliance('base', 'Sandwich & Subs - Sourdough');
+            } else if (rec.item.includes('Biryani')) {
+              setBaseType('Biryani');
+              setBaseOption('Rice');
+              trackSelectionCompliance('base', 'Biryani - Rice');
+            } else {
+              setBaseType('Bowl');
+              setBaseOption('Bowl');
+              trackSelectionCompliance('base', 'Bowl - Bowl');
+            }
+            hasChanges = true;
+          }
+
+          // Auto-select sauce
+          if (rec.type === 'sauce' && sauce.length === 0) {
+            console.log('🔄 Auto-selecting sauce:', rec.item);
+            setSauce([rec.item]);
+            trackSelectionCompliance('sauce', rec.item);
+            hasChanges = true;
+          }
+
+          // Auto-select veggies
+          if (rec.type === 'veggies' && veggies.length === 0 && rec.items) {
+            console.log('🔄 Auto-selecting veggies:', rec.items);
+            setVeggies(rec.items);
+            trackSelectionCompliance('veggies', rec.items);
+            hasChanges = true;
+          }
+
+          // Auto-select garnishes
+          if (rec.type === 'garnishes' && garnishes.length === 0 && rec.items) {
+            console.log('🔄 Auto-selecting garnishes:', rec.items);
+            setGarnishes(rec.items);
+            trackSelectionCompliance('garnishes', rec.items);
+            hasChanges = true;
+          }
+        });
+
+        if (hasChanges) {
+          console.log('✅ AI auto-selections applied successfully');
+          console.log('Current selections:', {
+            protein,
+            baseType,
+            baseOption,
+            sauce,
+            veggies,
+            garnishes
+          });
+        }
+      }, 1000); // 1 second delay to ensure everything is ready
+    } else {
+      console.log('❌ Auto-selection conditions not met:', {
+        experimentCycleActive,
+        currentPhase,
+        aiRecommendationsLength: aiRecommendations.length,
+        orderType
+      });
+    }
+  }, [aiRecommendations, currentPhase, experimentCycleActive, orderType]);
+
   // Initialize order on component mount
   useEffect(() => {
     const initializeOrder = async () => {
@@ -239,6 +311,19 @@ const OrderForm = ({
         // Start measurement tracking
         measurementService.startTracking();
         setMeasurementData(prev => ({ ...prev, taskStartTime: new Date() }));
+
+        // In experiment mode, set up mock customer data automatically
+        if (experimentCycleActive && participantName) {
+          setCustomerData({
+            name: participantName,
+            phoneNumber: 'experiment-user',
+            customerId: `exp-${Date.now()}`,
+            recognized: false
+          });
+          setCurrentStep('activity');
+        } else {
+          setCurrentStep('start');
+        }
 
         // Start a new order
         const orderResponse = await apiService.startOrder();
@@ -261,7 +346,7 @@ const OrderForm = ({
     };
 
     initializeOrder();
-  }, []);
+  }, [experimentCycleActive, participantName]);
 
   // Handle customer identification
   const handleCustomerIdentified = async (customerInfo) => {
@@ -376,8 +461,23 @@ const OrderForm = ({
   }, [activity, customerData, API_URL, isTrialA]);
 
   const getDishName = useCallback(async () => {
-    if (!baseType || !customerData) return;
+    if (!baseType) return;
+
+    // Use participant name if in experiment mode, otherwise use customer data
+    const customerName = experimentCycleActive && participantName ?
+      participantName :
+      (customerData?.name || 'Guest');
+
     try {
+      console.log('Generating dish name with:', {
+        protein,
+        baseType,
+        veggies,
+        sauce,
+        garnishes,
+        customerName
+      });
+
       const response = await fetch(`${API_URL}/api/dish-name`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -388,26 +488,60 @@ const OrderForm = ({
             veggies,
             sauce,
             garnishes,
-            customer_name: customerData.name,
+            customer_name: customerName,
           },
         }),
       });
       const data = await response.json();
+      console.log('Dish name response:', data);
+
       setDishName(data.primary);
+      setSuggestedDishNames({
+        name: data.primary,
+        alternatives: data.alternatives || [],
+        format_used: data.format_used || ""
+      });
       setDishNameData(data);
     } catch (err) {
       console.error('Error fetching dish name:', err);
+      // Fallback to a simple generated name
+      const fallbackName = `${customerName}'s Special Creation`;
+      setDishName(fallbackName);
+      setSuggestedDishNames({
+        name: fallbackName,
+        alternatives: [`Custom ${protein[0] || 'Protein'} Bowl`, `${customerName}'s Delight`],
+        format_used: "fallback"
+      });
     }
-  }, [protein, baseType, veggies, sauce, garnishes, customerData, API_URL]);
+  }, [protein, baseType, veggies, sauce, garnishes, customerData, API_URL, experimentCycleActive, participantName]);
 
   useEffect(() => {
     if (currentStep === 'base' && activity) {
       getRecommendations();
     }
-    if (currentStep === 'summary') { // Assuming summary is the step before complete
+    // Generate dish name when we have enough selections (in any step)
+    if (baseType && protein.length > 0 && !dishName) {
+      console.log('Triggering dish name generation...');
       getDishName();
     }
-  }, [currentStep, activity, getRecommendations, getDishName]);
+  }, [currentStep, activity, getRecommendations, getDishName, baseType, protein, dishName]);
+
+  // Additional effect for experiment mode dish name generation
+  useEffect(() => {
+    // In experiment mode, generate dish name as soon as we have basic selections
+    if (experimentCycleActive && baseType && protein.length > 0 && sauce.length > 0 && !dishName) {
+      console.log('Experiment mode: Generating dish name with selections:', {
+        baseType,
+        protein,
+        sauce,
+        veggies,
+        garnishes
+      });
+      setTimeout(() => {
+        getDishName();
+      }, 500); // Small delay to ensure all auto-selections are complete
+    }
+  }, [experimentCycleActive, baseType, protein, sauce, veggies, garnishes, dishName, getDishName]);
 
   const handleCompleteOrder = async () => {
     const orderId = `ORD-${Date.now()}`;
