@@ -277,31 +277,14 @@ class WeatherRecommenderAgent:
         """
         if not self.api_key:
             # Generate realistic random weather for demo/testing
-            conditions = ["sunny", "cloudy", "rainy", "snowy", "windy"]
-            temp_ranges = {
-                "sunny": (18, 35),
-                "cloudy": (10, 25),
-                "rainy": (8, 22),
-                "snowy": (-5, 8),
-                "windy": (5, 20)
-            }
-
-            condition = random.choice(conditions)
-            temp_min, temp_max = temp_ranges[condition]
-            temperature = round(random.uniform(temp_min, temp_max), 1)
-
-            weather_data = {
-                "condition": condition,
-                "temperature": temperature,
-                "humidity": random.randint(30, 90),
-                "wind_speed": round(random.uniform(0, 20), 1),
-                "description": f"{condition.title()} weather",
+            # NO SIMULATION - RETURN ERROR FOR EXPERIMENT INTEGRITY
+            logger.error("Cannot provide simulated weather data for experiment")
+            return {
+                "success": False,
+                "error": "Real weather API required for experiment - no simulation allowed",
                 "location": location,
-                "source": "simulated"
+                "source": "error"
             }
-
-            logger.info(f"Generated random weather: {condition}, {temperature}°C")
-            return weather_data
 
         try:
             # Use OpenWeather API for real weather data

@@ -17,6 +17,12 @@ import logging
 from fastapi.security.api_key import APIKeyHeader
 from fastapi import Security
 from agents.Game_Engine_Ag import GameEngineAgent, PlayerState, Challenge, Achievement
+import cv2
+import numpy as np
+from fer import FER
+import base64
+import io
+from PIL import Image
 
 # Import ML recommendations
 from backend.api.ml_recommendations import router as ml_router
@@ -1540,3 +1546,161 @@ async def toggle_adventure_mode(user_id: str, request: AdventureModeRequest):
         player.current_challenges.extend(adventure_challenges)
 
     return {"success": True, "game_state": game_engine.get_game_state(user_id)}
+
+# Add this near other Pydantic models
+class MoodDetectionRequest(BaseModel):
+    image_data: str  # Base64 encoded image
+
+class MoodDetectionResponse(BaseModel):
+    success: bool
+    mood: str
+    confidence: float
+    emotions: Optional[Dict[str, float]] = None
+    error: Optional[str] = None
+
+# Initialize emotion detector globally
+emotion_detector = None
+
+def initialize_emotion_detector():
+    """Initialize the FER emotion detection model"""
+    global emotion_detector
+    try:
+        emotion_detector = FER(mtcnn=True)  # Use MTCNN for better face detection
+        logger.info("✅ FER emotion detection model initialized successfully")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize emotion detector: {e}")
+        return False
+
+# Initialize emotion detector on startup
+if not initialize_emotion_detector():
+    logger.warning("⚠️ Emotion detection will use fallback mode")
+
+def base64_to_opencv_image(base64_string):
+    """Convert base64 string to OpenCV image"""
+    try:
+        # Remove data URL prefix if present
+        if base64_string.startswith('data:image'):
+            base64_string = base64_string.split(',')[1]
+
+        # Decode base64
+        image_data = base64.b64decode(base64_string)
+
+        # Convert to PIL Image
+        pil_image = Image.open(io.BytesIO(image_data))
+
+        # Convert PIL to OpenCV format
+        opencv_image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+
+        return opencv_image
+    except Exception as e:
+        logger.error(f"Error converting base64 to OpenCV image: {e}")
+        return None
+
+def detect_emotion_with_fer(image):
+    """Detect emotion using FER library"""
+    global emotion_detector
+
+    if emotion_detector is None:
+        return None
+
+    try:
+        # Detect emotions
+        emotions = emotion_detector.detect_emotions(image)
+
+        if not emotions:
+            return {
+                'mood': 'neutral',
+                'confidence': 0.5,
+                'emotions': {'neutral': 1.0}
+            }
+
+        # Get the first (most prominent) face
+        face_emotions = emotions[0]['emotions']
+
+        # Find dominant emotion
+        dominant_emotion = max(face_emotions.items(), key=lambda x: x[1])
+        mood = dominant_emotion[0]
+        confidence = dominant_emotion[1]
+
+        logger.info(f"🧠 FER detected emotion: {mood} with confidence {confidence:.3f}")
+        logger.debug(f"All emotions: {face_emotions}")
+
+        return {
+            'mood': mood,
+            'confidence': confidence,
+            'emotions': face_emotions
+        }
+
+    except Exception as e:
+        logger.error(f"Error in FER emotion detection: {e}")
+        return None
+
+@app.post("/api/mood-detection", response_model=MoodDetectionResponse)
+async def detect_mood(request: MoodDetectionRequest):
+    """
+    Detect mood/emotion from facial image using ML models
+    """
+    try:
+        logger.info("🧠 Starting ML-based mood detection...")
+
+        # Convert base64 image to OpenCV format
+        image = base64_to_opencv_image(request.image_data)
+
+        if image is None:
+            return MoodDetectionResponse(
+                success=False,
+                mood="neutral",
+                confidence=0.0,
+                error="Failed to process image data"
+            )
+
+        # Try FER emotion detection first
+        fer_result = detect_emotion_with_fer(image)
+
+        if fer_result:
+            return MoodDetectionResponse(
+                success=True,
+                mood=fer_result['mood'],
+                confidence=fer_result['confidence'],
+                emotions=fer_result['emotions']
+            )
+
+        # Fallback: Use enhanced face agent simulation with all emotions
+        from src.agents.Face_Ag import EnhancedFaceRecognitionAgent
+
+        face_agent = EnhancedFaceRecognitionAgent(
+            customer_data_path=os.path.join(data_path, "customers.csv"),
+            face_images_dir=face_images_path
+        )
+
+        # Convert OpenCV image to bytes for face agent
+        _, img_encoded = cv2.imencode('.jpg', image)
+        img_bytes = img_encoded.tobytes()
+
+        mood_result = face_agent.analyze_mood(img_bytes)
+
+        if mood_result.get('mood'):
+            return MoodDetectionResponse(
+                success=True,
+                mood=mood_result['mood'],
+                confidence=mood_result.get('confidence', 0.7),
+                emotions={mood_result['mood']: mood_result.get('confidence', 0.7)}
+            )
+
+        # Final fallback
+        return MoodDetectionResponse(
+            success=False,
+            mood="neutral",
+            confidence=0.5,
+            error="All emotion detection methods failed"
+        )
+
+    except Exception as e:
+        logger.error(f"Mood detection error: {str(e)}")
+        return MoodDetectionResponse(
+            success=False,
+            mood="neutral",
+            confidence=0.0,
+            error=f"Mood detection failed: {str(e)}"
+        )

@@ -21,3 +21,11 @@ flake8
 build
 twine
 email-validator==2.1.1
+# ML packages for emotion detection
+fer==22.5.1
+torch
+torchvision
+mtcnn-pytorch
+tensorflow==2.13.1
+dlib
+face-recognition

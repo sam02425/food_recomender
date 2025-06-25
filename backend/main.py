@@ -17,6 +17,20 @@ from temp_repo.src.utils.experiment_logger import ExperimentLogger
 import csv
 import json
 
+# ML libraries for emotion detection
+try:
+    import cv2
+    import numpy as np
+    from fer import FER
+    import base64
+    import io
+    from PIL import Image
+    ML_AVAILABLE = True
+    logger.info("✅ ML libraries loaded successfully")
+except ImportError as e:
+    ML_AVAILABLE = False
+    logger.warning(f"⚠️ ML libraries not available: {e}")
+
 # Add the temp_repo directory to Python path
 sys.path.append(os.path.join(os.path.dirname(__file__), 'temp_repo'))
 sys.path.append(os.path.join(os.path.dirname(__file__), 'temp_repo', 'src'))
@@ -162,6 +176,13 @@ async def on_startup():
             print("Database tables created successfully")
         else:
             print("Database tables already exist")
+
+        # Initialize emotion detector
+        if initialize_emotion_detector():
+            logger.info("🧠 Emotion detection system ready")
+        else:
+            logger.warning("⚠️ Emotion detection will use fallback mode")
+
     except Exception as e:
         print(f"Error creating database tables: {e}")
         raise
@@ -311,6 +332,100 @@ class ExperimentData(BaseModel):
     final_order_details: dict
     dish_name_agent_suggestions: Optional[dict] = None
     final_dish_name: Optional[str] = None
+
+# Add these new Pydantic models after the existing ones
+class MoodDetectionRequest(BaseModel):
+    image_data: str  # Base64 encoded image
+
+class MoodDetectionResponse(BaseModel):
+    success: bool
+    mood: str
+    confidence: float
+    emotions: Optional[Dict[str, float]] = None
+    error: Optional[str] = None
+
+# Initialize emotion detector globally
+emotion_detector = None
+
+def initialize_emotion_detector():
+    """Initialize the FER emotion detection model"""
+    global emotion_detector
+    if not ML_AVAILABLE:
+        return False
+
+    try:
+        emotion_detector = FER(mtcnn=True)  # Use MTCNN for better face detection
+        logger.info("✅ FER emotion detection model initialized successfully")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Failed to initialize emotion detector: {e}")
+        return False
+
+def base64_to_opencv_image(base64_string):
+    """Convert base64 string to OpenCV image"""
+    if not ML_AVAILABLE:
+        return None
+
+    try:
+        # Remove data URL prefix if present
+        if base64_string.startswith('data:image'):
+            base64_string = base64_string.split(',')[1]
+
+        # Decode base64
+        image_data = base64.b64decode(base64_string)
+
+        # Convert to PIL Image
+        pil_image = Image.open(io.BytesIO(image_data))
+
+        # Convert PIL to OpenCV format
+        opencv_image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
+
+        return opencv_image
+    except Exception as e:
+        logger.error(f"Error converting base64 to OpenCV image: {e}")
+        return None
+
+def detect_emotion_with_fer(image):
+    """Detect emotion using FER library"""
+    global emotion_detector
+
+    if emotion_detector is None or not ML_AVAILABLE:
+        return None
+
+    try:
+        # Detect emotions
+        emotions = emotion_detector.detect_emotions(image)
+
+        if not emotions:
+            return {
+                'mood': 'neutral',
+                'confidence': 0.5,
+                'emotions': {'neutral': 1.0}
+            }
+
+        # Get the first (most prominent) face
+        face_emotions = emotions[0]['emotions']
+
+        # Find dominant emotion
+        dominant_emotion = max(face_emotions.items(), key=lambda x: x[1])
+        mood = dominant_emotion[0]
+        confidence = dominant_emotion[1]
+
+        logger.info(f"🧠 FER detected emotion: {mood} with confidence {confidence:.3f}")
+        logger.debug(f"All emotions: {face_emotions}")
+
+        return {
+            'mood': mood,
+            'confidence': confidence,
+            'emotions': face_emotions
+        }
+
+    except Exception as e:
+        logger.error(f"Error in FER emotion detection: {e}")
+        return None
+
+# Initialize emotion detector on startup (after agent initialization)
+# We'll do this in the startup event
 
 @app.get("/")
 async def root():
@@ -689,30 +804,33 @@ async def get_menu_data():
 
 @app.post("/api/health-recommendations")
 async def get_health_recommendations(request: dict):
-    """Get health-based recommendations"""
+    """Get health-based recommendations with dietary restrictions"""
     try:
-        update_agent_activity("health_agent", "Generating health recommendations")
+        update_agent_activity("health_agent", "Generating health recommendations with dietary constraints")
 
         activity_level = request.get("activity_level", "moderate")
         customer_id = request.get("customer_id")
         previous_orders = request.get("previous_orders", [])
         mood = request.get("mood", "neutral")
+        dietary_restrictions = request.get("dietary_restrictions", [])
+        allergens = request.get("allergens", [])
+
+        logger.info(f"Health recommendations requested with dietary restrictions: {dietary_restrictions}, allergens: {allergens}")
 
         if health_agent is not None:
             recommendations = health_agent.get_recommendations(
                 activity_level=activity_level,
                 customer_id=customer_id,
                 previous_orders=previous_orders,
-                mood=mood
+                mood=mood,
+                dietary_restrictions=dietary_restrictions,
+                allergens=allergens
             )
         else:
-            # Fallback when agent is not available
-            recommendations = {
-                "proteins": ["Chicken", "Paneer/Indian Cheese"],
-                "sauces": ["Curry Masala", "Mint Sauce"],
-                "base_types": ["Bowl", "Sandwich & Subs"],
-                "veggies": ["Bell Pepper", "Tomato", "Cilantro"],
-                "reasoning": "Balanced options for moderate activity (default)"
+            # NO FALLBACK - RETURN ERROR FOR EXPERIMENT INTEGRITY
+            return {
+                "success": False,
+                "error": "Health agent not available - experiment requires real health recommendations"
             }
 
         update_agent_activity("health_agent", "Health recommendations completed")
@@ -722,23 +840,17 @@ async def get_health_recommendations(request: dict):
         }
     except Exception as e:
         logger.error(f"Health recommendations error: {str(e)}")
-        # Fallback to default recommendations
+        # NO FALLBACK - RETURN ERROR FOR EXPERIMENT INTEGRITY
         return {
-            "success": True,
-            "recommendations": {
-                "proteins": ["Chicken", "Paneer/Indian Cheese"],
-                "sauces": ["Curry Masala", "Mint Sauce"],
-                "base_types": ["Bowl", "Sandwich & Subs"],
-                "veggies": ["Bell Pepper", "Tomato", "Cilantro"],
-                "reasoning": "Balanced options for moderate activity"
-            }
+            "success": False,
+            "error": f"Health recommendation system failed: {str(e)}"
         }
 
 @app.post("/api/weather-recommendations")
 async def get_weather_recommendations(request: dict):
     """Get weather-based recommendations with live weather and location"""
     try:
-        update_agent_activity("weather_agent", "Generating intelligent weather recommendations")
+        update_agent_activity("weather_agent", "Generating intelligent weather recommendations with dietary constraints")
 
         weather_data = request.get("weather_data", {})
         time_of_day = request.get("time_of_day", "afternoon")
@@ -746,6 +858,10 @@ async def get_weather_recommendations(request: dict):
         mood = request.get("mood", "neutral")
         location = request.get("location")  # Optional specific location
         use_live_weather = request.get("use_live_weather", True)  # Default to live weather
+        dietary_restrictions = request.get("dietary_restrictions", [])
+        allergens = request.get("allergens", [])
+
+        logger.info(f"Weather recommendations requested with dietary restrictions: {dietary_restrictions}, allergens: {allergens}")
 
         if weather_agent is not None:
             # Use live weather recommendations if requested
@@ -770,17 +886,10 @@ async def get_weather_recommendations(request: dict):
                 )
                 update_agent_activity("weather_agent", "Weather recommendations generated")
         else:
-            # Fallback when agent is not available
-            recommendations = {
-                "proteins": ["Chicken", "Egg"],
-                "sauces": ["Curry Special", "Yogurt/Raita"],
-                "base_types": ["Bowl", "Wrap"],
-                "veggies": ["Tomato", "Cilantro", "Bell Pepper"],
-                "reasoning": "🌟 Weather-appropriate options carefully selected for your dining pleasure. These combinations provide balanced nutrition suitable for any weather conditions.",
-                "llm_powered": False,
-                "location_aware": False,
-                "live_weather": False,
-                "weather_source": "fallback"
+            # NO FALLBACK - RETURN ERROR FOR EXPERIMENT INTEGRITY
+            return {
+                "success": False,
+                "error": "Weather agent not available - experiment requires real weather recommendations"
             }
 
         return {
@@ -789,21 +898,10 @@ async def get_weather_recommendations(request: dict):
         }
     except Exception as e:
         logger.error(f"Weather recommendations error: {str(e)}")
-        # Enhanced fallback with better reasoning
+        # NO FALLBACK - RETURN ERROR FOR EXPERIMENT INTEGRITY
         return {
-            "success": True,
-            "recommendations": {
-                "proteins": ["Chicken", "Paneer/Indian Cheese"],
-                "sauces": ["Curry Special", "Malai Masala"],
-                "base_types": ["Bowl", "Sandwich & Subs"],
-                "veggies": ["Bell Pepper", "Spinach", "Tomato"],
-                "reasoning": "🌟 Comforting options thoughtfully selected for any weather conditions. These balanced combinations provide excellent nutrition and satisfying flavors to enhance your dining experience.",
-                "llm_powered": False,
-                "location_aware": False,
-                "live_weather": False,
-                "weather_source": "error_fallback",
-                "error": str(e)
-            }
+            "success": False,
+            "error": f"Weather recommendation system failed: {str(e)}"
         }
 
 @app.post("/api/dish-name")
@@ -1210,3 +1308,53 @@ async def get_trial_statistics():
             "success": False,
             "error": str(e)
         }
+
+@app.post("/api/mood-detection", response_model=MoodDetectionResponse)
+async def detect_mood(request: MoodDetectionRequest):
+    """
+    Detect mood/emotion from facial image using ML models
+    """
+    try:
+        logger.info("🧠 Starting ML-based mood detection...")
+
+        # Convert base64 image to OpenCV format
+        image = base64_to_opencv_image(request.image_data)
+
+        if image is None:
+            return MoodDetectionResponse(
+                success=False,
+                mood="neutral",
+                confidence=0.0,
+                error="Failed to process image data"
+            )
+
+        # Try FER emotion detection first
+        fer_result = detect_emotion_with_fer(image)
+
+        if fer_result:
+            return MoodDetectionResponse(
+                success=True,
+                mood=fer_result['mood'],
+                confidence=fer_result['confidence'],
+                emotions=fer_result['emotions']
+            )
+
+                # NO FALLBACK SIMULATIONS - EXPERIMENT INTEGRITY REQUIREMENT
+        # If ML detection fails, return error instead of fake data
+        logger.error("ML emotion detection failed - cannot provide simulated data for experiment")
+
+        return MoodDetectionResponse(
+            success=False,
+            mood="",
+            confidence=0.0,
+            error="ML emotion detection not available - experiment requires real detection only"
+        )
+
+    except Exception as e:
+        logger.error(f"Mood detection error: {str(e)}")
+        return MoodDetectionResponse(
+            success=False,
+            mood="neutral",
+            confidence=0.0,
+            error=f"Mood detection failed: {str(e)}"
+        )

@@ -646,60 +646,36 @@ class EnhancedFaceRecognitionAgent:
 
     def analyze_mood(self, image_data: bytes) -> Dict[str, Any]:
         """
-        Analyze facial expression to determine mood.
+        Analyze facial expression to determine mood using ML models ONLY.
+        NO FALLBACK SIMULATIONS - experiment integrity requirement.
 
         Args:
             image_data: Binary image data
 
         Returns:
-            Mood analysis result
+            Mood analysis result or error if ML detection fails
         """
         try:
-            # In a real implementation, we would:
-            # 1. Use computer vision to detect facial features
-            # 2. Apply a mood classification model
-            # 3. Return the detected mood with confidence
+            # REAL ML IMPLEMENTATION ONLY - NO SIMULATIONS FOR EXPERIMENT
+            # This method should only use actual computer vision models
+            # If no ML models are available, return error instead of fake data
 
-            # For demo purposes, simulate mood detection
-            # Weight moods differently - happy and neutral more common
-            mood_weights = {
-                "happy": 0.3,
-                "neutral": 0.3,
-                "tired": 0.15,
-                "stressed": 0.1,
-                "sad": 0.1,
-                "surprised": 0.03,
-                "angry": 0.02
-            }
-
-            # Random selection with weights
-            mood = random.choices(
-                list(mood_weights.keys()),
-                weights=list(mood_weights.values()),
-                k=1
-            )[0]
-
-            # Random confidence
-            confidence = random.uniform(0.65, 0.95)
-
-            # Get recommendations for food based on mood
-            food_recs = self._get_mood_food_recommendations(mood)
-
-            logger.info(f"Analyzed mood: {mood} with {confidence:.2f} confidence")
+            logger.error("Real ML mood detection not implemented - cannot return simulated data for experiment")
 
             return {
-                "mood": mood,
-                "confidence": confidence,
+                "success": False,
+                "error": "ML mood detection not available - experiment requires real detection",
                 "timestamp": datetime.now().isoformat(),
-                "recommendations": food_recs
+                "ml_available": False
             }
 
         except Exception as e:
             logger.error(f"Error analyzing mood: {e}")
             return {
-                "mood": "neutral",  # Default to neutral on error
+                "success": False,
                 "error": str(e),
-                "timestamp": datetime.now().isoformat()
+                "timestamp": datetime.now().isoformat(),
+                "ml_available": False
             }
 
     def _get_mood_food_recommendations(self, mood: str) -> Dict[str, Any]:

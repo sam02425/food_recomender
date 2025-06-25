@@ -12,34 +12,63 @@ const expressionMap = {
   neutral: '😐',
   focused: '🧐',
   excited: '🤩',
-  relaxed: '😌'
+  relaxed: '😌',
+  tired: '😴',
+  stressed: '😰',
+  disappointed: '😞',
+  confused: '😕'
 };
 
-// Simulate mood detection based on movement and randomness
-const simulateMoodDetection = () => {
-  const moods = ['happy', 'neutral', 'focused', 'excited', 'relaxed'];
-  const weights = [0.3, 0.4, 0.15, 0.1, 0.05]; // Weighted random selection
+// Real ML-based mood detection using backend API
+const detectMoodWithML = async (imageData) => {
+  try {
+    const response = await fetch('http://localhost:8000/api/mood-detection', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        image_data: imageData
+      })
+    });
 
-  const random = Math.random();
-  let cumWeight = 0;
-
-  for (let i = 0; i < moods.length; i++) {
-    cumWeight += weights[i];
-    if (random <= cumWeight) {
-      return moods[i];
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  }
 
-  return 'neutral';
+    const result = await response.json();
+
+    if (result.success) {
+      return {
+        mood: result.mood,
+        confidence: result.confidence,
+        success: true
+      };
+    } else {
+      throw new Error(result.error || 'Mood detection failed');
+    }
+  } catch (error) {
+    console.error('ML mood detection error:', error);
+    // NO FALLBACK FOR EXPERIMENT INTEGRITY - RETURN ERROR STATE
+    return {
+      mood: "",
+      confidence: 0.0,
+      success: false,
+      error: error.message,
+      ml_available: false
+    };
+  }
 };
 
 const FaceMoodCapture = ({ step, onFaceDetectionChange }) => {
   const webcamRef = useRef(null);
   const [mood, setMoodState] = useState('neutral');
+  const [confidence, setConfidence] = useState(0);
   const [cameraError, setCameraError] = useState(null);
   const [faceDetected, setFaceDetected] = useState(false);
   const [detectionCount, setDetectionCount] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [lastAnalysis, setLastAnalysis] = useState(null);
   const { setMood } = useExperiment();
 
   useEffect(() => {
@@ -49,21 +78,52 @@ const FaceMoodCapture = ({ step, onFaceDetectionChange }) => {
     const startAnalysis = () => {
       setIsAnalyzing(true);
 
-      interval = setInterval(() => {
+      interval = setInterval(async () => {
         if (webcamRef.current && webcamRef.current.video) {
           const video = webcamRef.current.video;
 
           // Check if video is playing (face likely present)
           if (video.readyState === 4 && video.videoWidth > 0) {
-            // Simulate face detection
-            const detectedMood = simulateMoodDetection();
-            setMoodState(detectedMood);
-            setMood(step, detectedMood);
-            setFaceDetected(true);
-            setDetectionCount(prev => prev + 1);
+            try {
+              // Capture image from webcam
+              const imageSrc = webcamRef.current.getScreenshot();
 
-            if (onFaceDetectionChange) {
-              onFaceDetectionChange(true, detectedMood);
+              if (imageSrc) {
+                console.log('🧠 Analyzing facial expression with ML...');
+
+                // Use real ML-based mood detection
+                const result = await detectMoodWithML(imageSrc);
+
+                                if (result.success && result.mood) {
+                  console.log(`✅ ML Detected mood: ${result.mood} (confidence: ${(result.confidence * 100).toFixed(1)}%)`);
+                  setMoodState(result.mood);
+                  setConfidence(result.confidence);
+                  setMood(step, result.mood);
+                  setFaceDetected(true);
+                  setDetectionCount(prev => prev + 1);
+                  setLastAnalysis(new Date().toLocaleTimeString());
+
+                  if (onFaceDetectionChange) {
+                    onFaceDetectionChange(true, result.mood);
+                  }
+                } else {
+                  console.log(`❌ ML detection failed: ${result.error || 'No mood detected'}`);
+                  // NO MOOD DATA - EXPERIMENT INTEGRITY REQUIREMENT
+                  setMoodState("");
+                  setConfidence(0.0);
+                  setFaceDetected(false);
+
+                  if (onFaceDetectionChange) {
+                    onFaceDetectionChange(false, null);
+                  }
+                }
+              }
+            } catch (error) {
+              console.error('Face analysis error:', error);
+              setFaceDetected(false);
+              if (onFaceDetectionChange) {
+                onFaceDetectionChange(false, null);
+              }
             }
           } else {
             setFaceDetected(false);
@@ -72,7 +132,7 @@ const FaceMoodCapture = ({ step, onFaceDetectionChange }) => {
             }
           }
         }
-      }, 2000); // Check every 2 seconds for smoother experience
+      }, 3000); // Analyze every 3 seconds to allow processing time
     };
 
     // Start after a brief delay
@@ -110,8 +170,8 @@ const FaceMoodCapture = ({ step, onFaceDetectionChange }) => {
       return (
         <div className="flex flex-col items-center justify-center h-32 bg-blue-50 border-2 border-blue-200 rounded-lg p-4">
           <div className="text-blue-600 text-2xl mb-2">🔄</div>
-          <div className="text-blue-700 text-sm text-center font-medium">Initializing AI Analysis...</div>
-          <div className="text-blue-600 text-xs text-center mt-1">Preparing emotion detection</div>
+          <div className="text-blue-700 text-sm text-center font-medium">Initializing ML Analysis...</div>
+          <div className="text-blue-600 text-xs text-center mt-1">Preparing emotion detection AI</div>
         </div>
       );
     }
@@ -134,7 +194,7 @@ const FaceMoodCapture = ({ step, onFaceDetectionChange }) => {
             <div className="text-center">
               <div className="text-yellow-600 text-2xl mb-1">👤❓</div>
               <div className="text-yellow-700 text-xs font-medium">Position yourself in view</div>
-              <div className="text-yellow-600 text-xs">AI is ready to detect your mood</div>
+              <div className="text-yellow-600 text-xs">ML AI is ready to detect your mood</div>
             </div>
           </div>
         </div>
@@ -164,20 +224,34 @@ const FaceMoodCapture = ({ step, onFaceDetectionChange }) => {
           {faceDetected ? expressionMap[mood] || '😐' : '😐'}
         </div>
         <div className="text-sm text-gray-600">
-          {faceDetected ? (
-            <>Detected: <span className="font-medium capitalize">{mood}</span></>
+          {faceDetected && mood ? (
+            <>
+              Detected: <span className="font-medium capitalize">{mood}</span>
+              {confidence > 0 && (
+                <span className="text-xs text-gray-500 ml-2">
+                  ({(confidence * 100).toFixed(1)}% confidence)
+                </span>
+              )}
+            </>
+          ) : mood === "" ? (
+            <span className="text-red-600">⚠️ ML Detection Unavailable</span>
           ) : (
-            'Analyzing your expression...'
+            'Analyzing your expression with AI...'
           )}
         </div>
         {faceDetected && (
           <div className="text-xs text-green-600 mt-1">
-            ✅ AI emotion detection active
+            ✅ ML emotion detection active
+            {lastAnalysis && (
+              <div className="text-xs text-gray-400">
+                Last scan: {lastAnalysis}
+              </div>
+            )}
           </div>
         )}
         {isAnalyzing && !faceDetected && (
           <div className="text-xs text-blue-600 mt-1">
-            🧠 AI scanning for facial expressions...
+            🧠 ML AI scanning for facial expressions...
           </div>
         )}
       </div>

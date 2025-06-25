@@ -221,26 +221,16 @@ class SocialAgent:
         results = {}
         share_id = uuid.uuid4().hex
 
+        # NO SIMULATION FOR EXPERIMENT INTEGRITY
         for platform in platforms:
             if platform in self.platforms and self.platforms[platform]["enabled"]:
-                # Simulate API call with random success rate
-                success = random.random() > 0.1  # 90% success rate
-
-                if success:
-                    result = {
-                        "success": True,
-                        "platform": platform,
-                        "share_id": f"{platform}_{share_id}",
-                        "timestamp": datetime.now().isoformat()
-                    }
-                else:
-                    result = {
-                        "success": False,
-                        "platform": platform,
-                        "error": "Simulated sharing error",
-                        "timestamp": datetime.now().isoformat()
-                    }
-
+                # Real social media integration required - no fake success for experiment
+                result = {
+                    "success": False,
+                    "platform": platform,
+                    "error": "Real social media API integration not available - experiment requires actual sharing",
+                    "timestamp": datetime.now().isoformat()
+                }
                 results[platform] = result
 
         # Record the sharing attempt
