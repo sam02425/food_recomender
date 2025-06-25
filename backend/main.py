@@ -59,7 +59,7 @@ app.add_middleware(
 )
 
 # Define data paths
-data_path = "/app/data"
+data_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
 face_images_path = os.path.join(data_path, "face_images")
 health_data_path = os.path.join(data_path, "health_data.csv")
 weather_data_path = os.path.join(data_path, "weather_data.csv")
@@ -70,7 +70,7 @@ os.makedirs(face_images_path, exist_ok=True)
 os.makedirs(data_path, exist_ok=True)
 
 # Initialize the experiment logger
-experiment_logger = ExperimentLogger(file_path="/app/data/experiments.csv", logger_instance=logger)
+experiment_logger = ExperimentLogger(file_path=os.path.join(data_path, "experiments.csv"), logger_instance=logger)
 
 # Initialize agents with individual error handling
 # Face Agent
@@ -171,6 +171,30 @@ app.include_router(auth_router)
 app.include_router(orders_router)
 app.include_router(locations_router)
 app.include_router(measurements_router)
+
+# Include ML recommendations router
+try:
+    from api.ml_recommendations import router as ml_router
+    app.include_router(ml_router)
+    print("ML recommendations router included successfully")
+except Exception as e:
+    print(f"Warning: Could not include ML recommendations router: {e}")
+
+# Include dietary restrictions router
+try:
+    from api.dietary_restrictions import router as dietary_router
+    app.include_router(dietary_router)
+    print("Dietary restrictions router included successfully")
+except Exception as e:
+    print(f"Warning: Could not include dietary restrictions router: {e}")
+
+# Include master recommendation coordinator router
+try:
+    from api.master_recommendations import router as master_router
+    app.include_router(master_router)
+    print("Master recommendation coordinator router included successfully")
+except Exception as e:
+    print(f"Warning: Could not include master recommendation coordinator router: {e}")
 
 # Menu data (for /api/menu)
 class MenuItem(BaseModel):

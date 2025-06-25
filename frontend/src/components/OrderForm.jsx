@@ -3,16 +3,19 @@ import MenuSelectionGrid from './MenuSelectionGrid';
 import BaseSelectionGrid from './BaseSelectionGrid';
 import RecommendationFeedback from './RecommendationFeedback';
 import * as apiService from './services/api';
+import { getSmartRecommendations, submitMLFeedback, getUserMLPreferences } from './services/api';
 import CustomerIdentification from './CustomerIdentification';
 import ActivitySelection from './ActivitySelection';
 import OrderSummary from './OrderSummary';
 import SocialSharing from './SocialSharing';
 import CalorieCalculator from './CalorieCalculator';
 import TrialHeader from './TrialHeader';
-import { useOrder } from './OrderContext';
-import { CustomerProvider, useCustomer } from './context/CustomerContext';
+import MLRecommendationStatus from './MLRecommendationStatus';
+import DietaryRestrictionsPanel from './DietaryRestrictionsPanel';
+import MasterRecommendationPanel from './MasterRecommendationPanel';
 import { useExperiment } from '../context/ExperimentContext';
 import measurementService from './services/measurementService';
+import FaceMoodCapture from './FaceMoodCapture';
 
 /**
  * Enhanced order form component that manages the entire ordering flow.
@@ -42,6 +45,54 @@ const OrderForm = ({
   const isTrialA = currentTrialConfig?.trialType === 'A';
   const isTrialB = currentTrialConfig?.trialType === 'B';
 
+  // Get dietary preferences functions from context
+  const {
+    setDietaryPreferences,
+    getDietaryPreferences,
+    hasDietaryPreferences
+  } = useExperiment();
+
+  // Load persistent dietary preferences on component mount and when customer changes
+  useEffect(() => {
+    const loadCustomerDietaryPreferences = async () => {
+      // Try to load from global experiment context first
+      const persistentPrefs = getDietaryPreferences();
+      if (persistentPrefs.restrictions?.length > 0 || persistentPrefs.allergens?.length > 0) {
+        setUserDietaryRestrictions(persistentPrefs.restrictions || []);
+        setUserAllergens(persistentPrefs.allergens || []);
+        return;
+      }
+
+      // If we have customer data, try to load their specific preferences
+      if (customerData?.customerId || customerData?.phoneNumber) {
+        try {
+          const identifier = customerData.customerId || customerData.phoneNumber;
+          const response = await fetch(`${API_URL}/api/dietary/profile/${identifier}`);
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.data) {
+              const { dietary_restrictions = [], allergens = [] } = result.data;
+              setUserDietaryRestrictions(dietary_restrictions);
+              setUserAllergens(allergens);
+
+              // Also save to experiment context for session persistence
+              setDietaryPreferences(dietary_restrictions, allergens);
+
+              console.log(`Loaded dietary preferences for customer ${identifier}:`, {
+                restrictions: dietary_restrictions,
+                allergens: allergens
+              });
+            }
+          }
+        } catch (error) {
+          console.error('Error loading customer dietary preferences:', error);
+        }
+      }
+    };
+
+    loadCustomerDietaryPreferences();
+  }, [getDietaryPreferences, customerData, setDietaryPreferences, API_URL]);
+
   // Order data
   const [orderData, setOrderData] = useState(null);
 
@@ -58,6 +109,22 @@ const OrderForm = ({
   const [dishNameData, setDishNameData] = useState(null);
   const [activity, setActivity] = useState('');
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+
+  // ML-powered recommendation state
+  const [mlRecommendations, setMlRecommendations] = useState(null);
+  const [userPreferences, setUserPreferences] = useState(null);
+  const [recommendationMode, setRecommendationMode] = useState('smart'); // 'smart', 'ml_only', 'traditional_only'
+  const [mlConfidence, setMlConfidence] = useState(0);
+  const [recommendationExplanations, setRecommendationExplanations] = useState({});
+
+  // Dietary restrictions state
+  const [showDietaryPanel, setShowDietaryPanel] = useState(false);
+  const [userDietaryRestrictions, setUserDietaryRestrictions] = useState([]);
+  const [userAllergens, setUserAllergens] = useState([]);
+
+  // Master recommendation panel state
+  const [showMasterPanel, setShowMasterPanel] = useState(false);
+  const [masterRecommendations, setMasterRecommendations] = useState([]);
 
   // Selection state
   const [protein, setProtein] = useState([]);
@@ -350,27 +417,35 @@ const OrderForm = ({
 
   // Handle customer identification
   const handleCustomerIdentified = async (customerInfo) => {
-    setIsLoading(true);
+    setCustomerData(customerInfo);
 
-    try {
-      // Save the customer data
-      setCustomerData(customerInfo);
+    // Auto-load dietary preferences for this customer
+    if (customerInfo.customerId || customerInfo.phoneNumber) {
+      const identifier = customerInfo.customerId || customerInfo.phoneNumber;
+      try {
+        const response = await fetch(`${API_URL}/api/dietary/profile/${identifier}`);
+        if (response.ok) {
+          const result = await response.json();
+          if (result.success && result.data) {
+            const { dietary_restrictions = [], allergens = [] } = result.data;
+            setUserDietaryRestrictions(dietary_restrictions);
+            setUserAllergens(allergens);
+            setDietaryPreferences(dietary_restrictions, allergens);
 
-      // Fetch previous orders for this customer if we have a phone number
-      if (customerInfo.phoneNumber) {
-        // This would be a new API call to get customer's previous orders
-        const response = await apiService.getCustomerPreviousOrders(customerInfo.phoneNumber);
-        if (response?.success) {
-          setPreviousOrders(response.orders || []);
+            console.log(`Auto-loaded dietary preferences for customer ${identifier}`);
+          }
         }
+      } catch (error) {
+        console.error('Error auto-loading dietary preferences:', error);
       }
+    }
 
+    // For Trial B, go to dietary restrictions step first
+    if (isTrialB) {
+      setCurrentStep('dietary');
+    } else {
+      // For Trial A, go directly to activity selection
       setCurrentStep('activity');
-    } catch (error) {
-      setError("Failed to retrieve customer data.");
-      console.error("Customer data error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -624,19 +699,89 @@ const OrderForm = ({
     }
   };
 
-  // Handle recommendation feedback
+  // Enhanced ML feedback handler
+  const handleMLFeedback = async (feedbackData) => {
+    if (!customerData) return false;
+
+    try {
+      setIsLoading(true);
+
+      const context = {
+        activityLevel: activity,
+        mood: 'neutral',
+        weatherCondition: 'sunny',
+        timeOfDay: new Date().getHours() < 12 ? 'morning' :
+                   new Date().getHours() < 17 ? 'afternoon' : 'evening'
+      };
+
+      const response = await submitMLFeedback(
+        customerData.phoneNumber || customerData.customerId,
+        feedbackData,
+        context
+      );
+
+      if (response.success) {
+        console.log('✅ ML feedback submitted successfully:', response);
+
+        // Update user preferences if available
+        if (response.updated_preferences) {
+          setUserPreferences(response.updated_preferences);
+        }
+      }
+
+      return response.success;
+    } catch (error) {
+      console.error('Error submitting ML feedback:', error);
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle recommendation feedback with ML integration
   const handleRecommendationFeedback = async (type, feedback, customValue = null) => {
     try {
       setIsLoading(true);
 
-      const response = await apiService.submitRecommendationFeedback(
+      // Submit to both ML and traditional systems
+      const mlFeedbackData = {
+        type: 'explicit',
+        explicitRatings: {
+          [type]: feedback === 'accept' ? 5 : feedback === 'ignore' ? 2 : 3
+        },
+        selections: {
+          protein: protein[0] || '',
+          base: `${baseType} - ${baseOption}`,
+          sauce: sauce[0] || '',
+          veggies: veggies,
+          garnishes: garnishes
+        },
+        textFeedback: customValue || '',
+        orderDetails: {
+          activity: activity,
+          step: currentStep
+        }
+      };
+
+      // Submit to ML system
+      const mlSuccess = await handleMLFeedback(mlFeedbackData);
+
+      // Submit to traditional system for backward compatibility
+      const traditionalResponse = await apiService.submitRecommendationFeedback(
         type,
         feedback,
         customValue,
-        customerData?.phoneNumber // Pass phone number to associate feedback with customer
+        customerData?.phoneNumber
       );
 
-      return response?.success || false;
+      console.log('🔄 Feedback submitted:', {
+        mlSuccess,
+        traditionalSuccess: traditionalResponse?.success,
+        type,
+        feedback
+      });
+
+      return mlSuccess || traditionalResponse?.success || false;
     } catch (error) {
       setError(`Failed to process ${type} feedback.`);
       console.error("Feedback submission error:", error);
@@ -868,6 +1013,122 @@ const OrderForm = ({
   };
 
   // Handle activity selection
+  // Load ML-powered recommendations
+  const loadMLRecommendations = async (selectedActivity) => {
+    if (!customerData) return null;
+
+    setLoadingRecommendations(true);
+    try {
+      const context = {
+        activityLevel: selectedActivity,
+        mood: 'neutral', // Could be enhanced with mood detection
+        weatherCondition: 'sunny', // Could be enhanced with weather API
+        timeOfDay: new Date().getHours() < 12 ? 'morning' :
+                   new Date().getHours() < 17 ? 'afternoon' : 'evening',
+        customerHistory: previousOrders
+      };
+
+      const mlResults = await getSmartRecommendations(
+        customerData.phoneNumber || customerData.customerId,
+        context,
+        {
+          nRecommendations: 8,
+          preferML: recommendationMode !== 'traditional_only'
+        }
+      );
+
+      if (mlResults.success) {
+        setMlRecommendations(mlResults);
+        setMlConfidence(mlResults.confidence || 0.8);
+        setRecommendationExplanations(mlResults.explanations || {});
+
+        // Convert ML recommendations to the existing recommendation format
+        const convertedRecs = {
+          proteins: [],
+          sauces: [],
+          base_types: [],
+          veggies: [],
+          garnishes: []
+        };
+
+        mlResults.recommendations.forEach(rec => {
+          const category = rec.category === 'base' ? 'base_types' :
+                          rec.category === 'protein' ? 'proteins' :
+                          rec.category === 'sauce' ? 'sauces' :
+                          rec.category === 'vegetables' ? 'veggies' :
+                          rec.category === 'garnish' ? 'garnishes' : rec.category;
+
+          if (convertedRecs[category] && !convertedRecs[category].includes(rec.item)) {
+            convertedRecs[category].push(rec.item);
+          }
+        });
+
+        setRecommendations(convertedRecs);
+
+        console.log('🤖 ML Recommendations loaded:', {
+          mlResults,
+          convertedRecs,
+          confidence: mlResults.confidence,
+          source: mlResults.source
+        });
+      } else {
+        console.warn('ML recommendations failed, using traditional fallback');
+        // Fall back to traditional recommendations
+        await loadTraditionalRecommendations(selectedActivity);
+      }
+
+      return mlResults;
+    } catch (error) {
+      console.error('Error loading ML recommendations:', error);
+      // Fall back to traditional recommendations
+      await loadTraditionalRecommendations(selectedActivity);
+      return null;
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
+
+  // Load traditional recommendations as fallback
+  const loadTraditionalRecommendations = async (selectedActivity) => {
+    try {
+      const [healthRecs, weatherRecs] = await Promise.all([
+        apiService.getHealthRecommendations(selectedActivity, customerData?.phoneNumber),
+        apiService.getWeatherRecommendations(customerData?.phoneNumber)
+      ]);
+
+      setHealthRecommendations(healthRecs);
+      setWeatherRecommendations(weatherRecs);
+
+      // Convert to unified format
+      const traditionalRecommendations = {
+        proteins: healthRecs.proteins || [],
+        sauces: healthRecs.sauces || [],
+        base_types: [...(healthRecs.base_types || []), ...(weatherRecs.base_types || [])],
+        veggies: healthRecs.veggies || [],
+        garnishes: []
+      };
+
+      setRecommendations(traditionalRecommendations);
+      console.log('🏛️ Traditional recommendations loaded:', traditionalRecommendations);
+    } catch (error) {
+      console.error('Error loading traditional recommendations:', error);
+    }
+  };
+
+  // Handle recommendation mode changes
+  const handleModeChange = async (newMode) => {
+    setRecommendationMode(newMode);
+
+    // Reload recommendations with new mode if activity is already selected
+    if (activity) {
+      if (newMode === 'traditional_only') {
+        await loadTraditionalRecommendations(activity);
+      } else {
+        await loadMLRecommendations(activity);
+      }
+    }
+  };
+
   const handleActivitySelection = async (selectedActivity) => {
     setActivity(selectedActivity);
 
@@ -883,8 +1144,31 @@ const OrderForm = ({
       return;
     }
 
-    // For Trial B or non-experiment mode, proceed with recommendations
+    // Load recommendations based on mode
+    if (recommendationMode === 'traditional_only') {
+      await loadTraditionalRecommendations(selectedActivity);
+    } else {
+      // Try ML first, fall back to traditional if needed
+      await loadMLRecommendations(selectedActivity);
+    }
+
+    // After activity selection, go to protein (dietary is already handled)
     setCurrentStep('protein');
+  };
+
+  // Handler for master recommendation changes
+  const handleMasterRecommendationsChange = (newRecommendations) => {
+    setMasterRecommendations(newRecommendations);
+
+    // Auto-apply top recommendations if user wants
+    if (newRecommendations.length > 0) {
+      const topRec = newRecommendations[0];
+      if (topRec.category === 'protein' && !protein.includes(topRec.item)) {
+        setProtein(prev => [...prev, topRec.item]);
+      } else if (topRec.category === 'sauce' && !sauce.includes(topRec.item)) {
+        setSauce(prev => [...prev, topRec.item]);
+      }
+    }
   };
 
   // Start order button
@@ -964,8 +1248,15 @@ const OrderForm = ({
 
   const goToPreviousStep = () => {
     switch (currentStep) {
-      case 'activity':
+      case 'dietary':
         setCurrentStep('customer');
+        break;
+      case 'activity':
+        if (isTrialB) {
+          setCurrentStep('dietary');
+        } else {
+          setCurrentStep('customer');
+        }
         break;
       case 'protein':
         setCurrentStep('activity');
@@ -1038,6 +1329,160 @@ const OrderForm = ({
           />
         );
 
+      case 'dietary':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🥗 Dietary Preferences & Allergies</h2>
+
+            {/* AI Mood Detection for Trial B */}
+            {isTrialB && (
+              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                <h3 className="text-lg font-medium mb-3">📷 AI Mood Detection</h3>
+                <p className="text-sm text-gray-600 mb-3">
+                  Our AI will analyze your facial expressions to provide personalized food recommendations.
+                </p>
+                <FaceMoodCapture
+                  step="dietary"
+                  onFaceDetectionChange={(detected, mood) => {
+                    if (detected && mood) {
+                      console.log(`Mood detected during dietary selection: ${mood}`);
+                    }
+                  }}
+                />
+              </div>
+            )}
+
+            {/* Dietary Restrictions */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-3">Dietary Restrictions</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[
+                  { key: 'vegan', label: '🌱 Vegan' },
+                  { key: 'vegetarian', label: '🥬 Vegetarian' },
+                  { key: 'halal', label: '☪️ Halal' },
+                  { key: 'no_beef', label: '🚫🥩 No Beef' },
+                  { key: 'no_pork', label: '🚫🥓 No Pork' }
+                ].map(restriction => (
+                  <button
+                    key={restriction.key}
+                    onClick={() => {
+                      const newRestrictions = userDietaryRestrictions.includes(restriction.key)
+                        ? userDietaryRestrictions.filter(r => r !== restriction.key)
+                        : [...userDietaryRestrictions, restriction.key];
+                      setUserDietaryRestrictions(newRestrictions);
+
+                      // Save to persistent storage immediately
+                      setDietaryPreferences(newRestrictions, userAllergens);
+
+                      // Save to backend for this customer
+                      saveDietaryPreferencesToBackend(newRestrictions, userAllergens);
+                    }}
+                    className={`p-3 rounded-lg border-2 transition-colors ${
+                      userDietaryRestrictions.includes(restriction.key)
+                        ? 'border-green-500 bg-green-50 text-green-700'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-green-300'
+                    }`}
+                  >
+                    {restriction.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Allergies */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-3">Food Allergies</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[
+                  { key: 'dairy', label: '🥛 Dairy' },
+                  { key: 'eggs', label: '🥚 Eggs' },
+                  { key: 'nuts', label: '🥜 Tree Nuts' },
+                  { key: 'peanuts', label: '🥜 Peanuts' },
+                  { key: 'soy', label: '🫘 Soy' },
+                  { key: 'gluten', label: '🌾 Gluten' },
+                  { key: 'shellfish', label: '🦐 Shellfish' },
+                  { key: 'fish', label: '🐟 Fish' },
+                  { key: 'sesame', label: '🌰 Sesame' }
+                ].map(allergen => (
+                  <button
+                    key={allergen.key}
+                    onClick={() => {
+                      const newAllergens = userAllergens.includes(allergen.key)
+                        ? userAllergens.filter(a => a !== allergen.key)
+                        : [...userAllergens, allergen.key];
+                      setUserAllergens(newAllergens);
+
+                      // Save to persistent storage immediately
+                      setDietaryPreferences(userDietaryRestrictions, newAllergens);
+
+                      // Save to backend for this customer
+                      saveDietaryPreferencesToBackend(userDietaryRestrictions, newAllergens);
+                    }}
+                    className={`p-3 rounded-lg border-2 transition-colors ${
+                      userAllergens.includes(allergen.key)
+                        ? 'border-red-500 bg-red-50 text-red-700'
+                        : 'border-gray-300 bg-white text-gray-700 hover:border-red-300'
+                    }`}
+                  >
+                    {allergen.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Selected Summary */}
+            {(userDietaryRestrictions.length > 0 || userAllergens.length > 0) && (
+              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                <h4 className="font-medium text-blue-800 mb-2">Selected Preferences:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {userDietaryRestrictions.map(restriction => (
+                    <span key={restriction} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
+                      {restriction}
+                    </span>
+                  ))}
+                  {userAllergens.map(allergen => (
+                    <span key={allergen} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
+                      {allergen}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-2 text-sm text-blue-600">
+                  ✅ These preferences will be remembered for future trials
+                </div>
+              </div>
+            )}
+
+            {/* Persistence Notice */}
+            <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-sm text-green-700">
+                <strong>🧠 Smart Memory:</strong> Once you set your dietary preferences,
+                they'll be automatically applied to all future AI recommendations during this experiment session.
+                You can always come back to modify them.
+              </p>
+            </div>
+
+            <div className="mt-4 flex justify-between">
+              <button
+                onClick={goToPreviousStep}
+                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Back
+              </button>
+              <button
+                onClick={() => {
+                  // Final save before proceeding
+                  setDietaryPreferences(userDietaryRestrictions, userAllergens);
+                  saveDietaryPreferencesToBackend(userDietaryRestrictions, userAllergens);
+                  setCurrentStep('activity');
+                }}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Continue to Activity Selection
+              </button>
+            </div>
+          </div>
+        );
+
       case 'base':
         return (
           <div>
@@ -1072,8 +1517,14 @@ const OrderForm = ({
               {baseType && baseOption && (
                 <button
                   onClick={async () => {
-                    await getDishName();
-                    setCurrentStep('dishName');
+                    if (isTrialB) {
+                      // For Trial B, go to protein selection after base
+                      setCurrentStep('protein');
+                    } else {
+                      // For Trial A, go to dish name after base
+                      await getDishName();
+                      setCurrentStep('dishName');
+                    }
                   }}
                   disabled={isLoading}
                   className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
@@ -1123,7 +1574,14 @@ const OrderForm = ({
                 <button
                   onClick={async () => {
                     await getRecommendations();
-                    setCurrentStep('base');
+                    if (isTrialB) {
+                      // For Trial B, go to dish name after protein
+                      await getDishName();
+                      setCurrentStep('dishName');
+                    } else {
+                      // For Trial A, go to base after protein
+                      setCurrentStep('base');
+                    }
                   }}
                   disabled={isLoading}
                   className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
@@ -1409,16 +1867,53 @@ const OrderForm = ({
 
       case 'summary':
         return (
-          <OrderSummary
-            orderItems={orderItems}
-            totalPrice={calculateTotal()}
-            onAddAnother={() => {
-              clearSelections();
-              setCurrentStep('protein');
-            }}
-            onComplete={handleCompleteOrder}
-            isLoading={isLoading}
-          />
+          <div>
+            <OrderSummary
+              orderItems={orderItems}
+              totalPrice={calculateTotal()}
+              onAddAnother={() => {
+                clearSelections();
+                setCurrentStep('protein');
+              }}
+              onComplete={handleCompleteOrder}
+              isLoading={isLoading}
+            />
+
+            {/* Master AI Recommendations Panel */}
+            <div className="mt-6 border-t pt-6">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold">🤖 AI Recommendation Engine</h3>
+                <button
+                  onClick={() => setShowMasterPanel(!showMasterPanel)}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
+                >
+                  {showMasterPanel ? 'Hide AI Panel' : 'Show AI Recommendations'}
+                </button>
+              </div>
+
+              {showMasterPanel && (
+                <MasterRecommendationPanel
+                  userId={customerData?.customerId || 'guest'}
+                  onRecommendationsChange={handleMasterRecommendationsChange}
+                />
+              )}
+
+              {/* Show current master recommendations */}
+              {masterRecommendations.length > 0 && !showMasterPanel && (
+                <div className="bg-purple-50 p-4 rounded-lg">
+                  <h4 className="font-medium text-purple-800 mb-2">Latest AI Suggestions:</h4>
+                  <div className="space-y-2">
+                    {masterRecommendations.slice(0, 3).map((rec, index) => (
+                      <div key={index} className="flex justify-between items-center">
+                        <span className="text-sm">{rec.category}: {rec.item}</span>
+                        <span className="text-xs text-purple-600">{(rec.confidence * 100).toFixed(0)}% confident</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
         );
 
       case 'social_sharing':
@@ -1836,6 +2331,46 @@ const OrderForm = ({
         </div>
       </div>
     );
+  };
+
+  // Save dietary preferences to backend when they change
+  const saveDietaryPreferencesToBackend = async (restrictions, allergens) => {
+    if (customerData?.customerId || customerData?.phoneNumber) {
+      const identifier = customerData.customerId || customerData.phoneNumber;
+
+      try {
+        // Save restrictions
+        if (restrictions.length > 0) {
+          await fetch(`${API_URL}/api/dietary/restrictions/set`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: identifier,
+              restrictions: restrictions
+            })
+          });
+        }
+
+        // Save allergens
+        if (allergens.length > 0) {
+          await fetch(`${API_URL}/api/dietary/allergens/set`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              user_id: identifier,
+              allergens: allergens
+            })
+          });
+        }
+
+        console.log(`Saved dietary preferences for customer ${identifier}:`, {
+          restrictions,
+          allergens
+        });
+      } catch (error) {
+        console.error('Error saving dietary preferences to backend:', error);
+      }
+    }
   };
 
   return (

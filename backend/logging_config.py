@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 
 # Create logs directory if it doesn't exist
-LOGS_DIR = '/app/logs/backend'
+LOGS_DIR = os.path.join(os.path.dirname(__file__), 'logs')
 os.makedirs(LOGS_DIR, exist_ok=True)
 
 # Configure logging

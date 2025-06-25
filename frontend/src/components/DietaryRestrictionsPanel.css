@@ -1,0 +1,394 @@
+.dietary-panel {
+    background: #ffffff;
+    border: 1px solid #e1e5e9;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dietary-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 30px;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.dietary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f0f2f5;
+}
+
+.dietary-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.clear-all-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.clear-all-btn:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+
+.clear-all-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.loading-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    gap: 10px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.no-customer-warning {
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.no-customer-warning p {
+    margin: 0;
+    color: #856404;
+    font-weight: 500;
+}
+
+.restrictions-section, .allergens-section {
+    margin-bottom: 25px;
+}
+
+.restrictions-section h4, .allergens-section h4 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.2rem;
+    font-weight: 600;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ecf0f1;
+}
+
+.allergen-warning {
+    background: #fef9e7;
+    border: 1px solid #f39c12;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    color: #d68910;
+    font-weight: 500;
+}
+
+.options-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.restriction-item, .allergen-item {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    transition: all 0.3s ease;
+}
+
+.restriction-item:hover, .allergen-item:hover {
+    background: #e3f2fd;
+    border-color: #2196f3;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.15);
+}
+
+.restriction-checkbox, .allergen-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 8px;
+}
+
+.restriction-checkbox input, .allergen-checkbox input {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    border: 2px solid #bdc3c7;
+    border-radius: 4px;
+    margin-right: 10px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.allergen-checkmark {
+    border-color: #e74c3c;
+    border-radius: 50%;
+}
+
+.restriction-checkbox input:checked ~ .checkmark {
+    background: #27ae60;
+    border-color: #27ae60;
+}
+
+.allergen-checkbox input:checked ~ .allergen-checkmark {
+    background: #e74c3c;
+    border-color: #e74c3c;
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.restriction-checkbox input:checked ~ .checkmark:after,
+.allergen-checkbox input:checked ~ .allergen-checkmark:after {
+    display: block;
+}
+
+.restriction-label, .allergen-label {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 1rem;
+}
+
+.restriction-description {
+    font-size: 0.85rem;
+    color: #7f8c8d;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.allowed-proteins {
+    background: #d5f4e6;
+    border: 1px solid #27ae60;
+    border-radius: 6px;
+    padding: 8px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: #1e6f3f;
+}
+
+.ingredient-info-btn {
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.ingredient-info-btn:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.ingredient-details {
+    background: #fff5f5;
+    border: 1px solid #e74c3c;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+.ingredient-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 8px;
+}
+
+.ingredient-tag {
+    background: #e74c3c;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.profile-summary {
+    background: #f1f8ff;
+    border: 1px solid #3498db;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 25px;
+}
+
+.profile-summary h4 {
+    margin: 0 0 15px 0;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.summary-section {
+    margin-bottom: 15px;
+}
+
+.summary-section strong {
+    color: #34495e;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.restriction-tag {
+    background: #27ae60;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.allergen-tag {
+    background: #e74c3c;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.last-updated {
+    font-size: 0.8rem;
+    color: #7f8c8d;
+    margin-top: 10px;
+    font-style: italic;
+}
+
+.safety-notice {
+    background: #e8f6f3;
+    border: 1px solid #1abc9c;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 25px;
+}
+
+.safety-notice h4 {
+    margin: 0 0 12px 0;
+    color: #16a085;
+    font-size: 1.1rem;
+}
+
+.safety-notice p {
+    margin: 8px 0;
+    color: #2c3e50;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dietary-panel, .dietary-modal {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .dietary-header {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .options-grid {
+        gap: 10px;
+    }
+    
+    .restriction-item, .allergen-item {
+        padding: 12px;
+    }
+    
+    .tag-list {
+        justify-content: center;
+    }
+}
+
+/* Accessibility */
+.restriction-checkbox:focus-within .checkmark,
+.allergen-checkbox:focus-within .checkmark {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+.restriction-checkbox input:disabled ~ .checkmark,
+.allergen-checkbox input:disabled ~ .checkmark {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Animation for new restrictions */
+.restriction-item.newly-added,
+.allergen-item.newly-added {
+    animation: highlight 0.5s ease-in-out;
+}
+
+@keyframes highlight {
+    0% { background: #fff3cd; }
+    100% { background: #f8f9fa; }
+}

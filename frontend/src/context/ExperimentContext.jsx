@@ -11,6 +11,14 @@ export const ExperimentProvider = ({ children }) => {
   const [currentTrial, setCurrentTrial] = useState(1);
   const [trialResults, setTrialResults] = useState([]);
 
+  // Persistent dietary preferences across trials
+  const [persistentDietaryPreferences, setPersistentDietaryPreferences] = useState({
+    restrictions: [],
+    allergens: [],
+    setInTrial: null, // Track which trial they were first set
+    lastUpdated: null
+  });
+
   const timerRef = useRef({});
   const moodRef = useRef({});
 
@@ -33,6 +41,68 @@ export const ExperimentProvider = ({ children }) => {
     experimentSetup.trialSchedule = trialSchedule;
 
     return experimentSetup;
+  };
+
+  // Set dietary preferences (persistent across trials)
+  const setDietaryPreferences = (restrictions = [], allergens = []) => {
+    const preferences = {
+      restrictions,
+      allergens,
+      setInTrial: currentTrial,
+      lastUpdated: new Date().toISOString()
+    };
+
+    setPersistentDietaryPreferences(preferences);
+
+    // Also store in localStorage for browser session persistence
+    try {
+      localStorage.setItem('foodapp_dietary_preferences', JSON.stringify(preferences));
+    } catch (error) {
+      console.warn('Could not save dietary preferences to localStorage:', error);
+    }
+
+    return preferences;
+  };
+
+  // Get dietary preferences
+  const getDietaryPreferences = () => {
+    // Try to load from localStorage if we don't have any set
+    if (!persistentDietaryPreferences.setInTrial) {
+      try {
+        const stored = localStorage.getItem('foodapp_dietary_preferences');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          setPersistentDietaryPreferences(parsed);
+          return parsed;
+        }
+      } catch (error) {
+        console.warn('Could not load dietary preferences from localStorage:', error);
+      }
+    }
+
+    return persistentDietaryPreferences;
+  };
+
+  // Check if dietary preferences have been set
+  const hasDietaryPreferences = () => {
+    const prefs = getDietaryPreferences();
+    return prefs.restrictions.length > 0 || prefs.allergens.length > 0;
+  };
+
+  // Clear dietary preferences
+  const clearDietaryPreferences = () => {
+    setPersistentDietaryPreferences({
+      restrictions: [],
+      allergens: [],
+      setInTrial: null,
+      lastUpdated: null
+    });
+
+    try {
+      localStorage.removeItem('foodapp_dietary_preferences');
+    } catch (error) {
+      console.warn('Could not remove dietary preferences from localStorage:', error);
+    }
   };
 
   // Generate randomized trial schedule
@@ -280,7 +350,13 @@ export const ExperimentProvider = ({ children }) => {
     startStep,
     stopStep,
     addMoodChange,
-    exportData
+    exportData,
+
+    // Dietary preferences
+    setDietaryPreferences,
+    getDietaryPreferences,
+    hasDietaryPreferences,
+    clearDietaryPreferences
   };
 
   return (

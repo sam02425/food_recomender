@@ -18,6 +18,9 @@ from fastapi.security.api_key import APIKeyHeader
 from fastapi import Security
 from agents.Game_Engine_Ag import GameEngineAgent, PlayerState, Challenge, Achievement
 
+# Import ML recommendations
+from backend.api.ml_recommendations import router as ml_router
+
 # Environment variables
 from dotenv import load_dotenv
 load_dotenv()
@@ -47,6 +50,9 @@ if USE_S3:
     )
 
 app = FastAPI(title="Curry Creations API", docs_url="/docs", redoc_url="/redoc")
+
+# Include ML recommendation routes
+app.include_router(ml_router)
 
 # CORS
 app.add_middleware(
