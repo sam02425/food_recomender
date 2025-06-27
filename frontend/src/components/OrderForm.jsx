@@ -3,15 +3,13 @@ import MenuSelectionGrid from './MenuSelectionGrid';
 import BaseSelectionGrid from './BaseSelectionGrid';
 import RecommendationFeedback from './RecommendationFeedback';
 import * as apiService from './services/api';
-import { getSmartRecommendations, submitMLFeedback, getUserMLPreferences } from './services/api';
+import { getSmartRecommendations, submitMLFeedback } from './services/api';
 import CustomerIdentification from './CustomerIdentification';
 import ActivitySelection from './ActivitySelection';
 import OrderSummary from './OrderSummary';
 import SocialSharing from './SocialSharing';
 import CalorieCalculator from './CalorieCalculator';
-import TrialHeader from './TrialHeader';
-import MLRecommendationStatus from './MLRecommendationStatus';
-import DietaryRestrictionsPanel from './DietaryRestrictionsPanel';
+// Removed unused imports for now
 import MasterRecommendationPanel from './MasterRecommendationPanel';
 import { useExperiment } from '../context/ExperimentContext';
 import measurementService from './services/measurementService';
@@ -30,13 +28,24 @@ const OrderForm = ({
   aiRecommendations = [],
   orderInstructions = null,
   orderType = 'standard',
-  participantName = null
+  participantName = null,
+  onStepChange = () => {}
 }) => {
   const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
   const { getCurrentTrialConfig, startTrial, completeTrial, recordSuggestionDecision } = useExperiment();
 
   // State for the current step in the ordering process
-  const [currentStep, setCurrentStep] = useState('start');
+  const [stepLock, setStepLock] = useState(false);
+  const [currentStep, _setCurrentStep] = useState('start');
+  const setStep = (step) => {
+    if (stepLock && step !== 'activity') {
+      console.log(`[STEP] Step change to '${step}' blocked by stepLock.`);
+      return;
+    }
+    console.log(`[STEP] Changing step to: ${step}`);
+    _setCurrentStep(step);
+  };
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -64,7 +73,6 @@ const OrderForm = ({
 
   // Customer data - moved before useEffect to fix hoisting issue
   const [customerData, setCustomerData] = useState(null);
-  const [previousOrders, setPreviousOrders] = useState([]);
 
   // Dietary restrictions state - moved before useEffect
   const [userDietaryRestrictions, setUserDietaryRestrictions] = useState([]);
@@ -201,11 +209,15 @@ const OrderForm = ({
       { name: 'Hoagie Bun', price: 2.50, description: 'Submarine sandwich roll' }
     ],
     'Wrap': [
-      { name: 'Naan', price: 2.00, description: 'Traditional Indian flatbread' },
-      { name: 'Pita', price: 2.00, description: 'Mediterranean pocket bread' }
+      { name: 'Naan', price: 2.00, description: 'Soft Indian flatbread' },
+      { name: 'Pitta', price: 2.00, description: 'Pocket-style bread' }
     ],
     'Bowl': [
-      { name: 'Bowl', price: 2.00, description: 'Served in a bowl, no bread' }
+      { name: 'Bowl', price: 1.50, description: 'Regular serving bowl' },
+      { name: 'Rice Bowl', price: 2.00, description: 'Bowl with basmati rice' }
+    ],
+    'Salad': [
+      { name: 'Mixed Greens', price: 2.50, description: 'Fresh mixed greens salad' }
     ]
   };
   const veggieOptions = [
@@ -401,9 +413,14 @@ const OrderForm = ({
             customerId: `exp-${Date.now()}`,
             recognized: false
           });
-          setCurrentStep('activity');
+          // Only set step to 'activity' if not Trial B
+          if (currentPhase === 'trial_b') {
+            setStep('dietary');
+          } else {
+            setStep('activity');
+          }
         } else {
-          setCurrentStep('start');
+          setStep('start');
         }
 
         // Start a new order
@@ -427,1637 +444,60 @@ const OrderForm = ({
     };
 
     initializeOrder();
-  }, [experimentCycleActive, participantName]);
+  }, [experimentCycleActive, participantName, currentPhase]);
 
-  // Handle customer identification
-  const handleCustomerIdentified = async (customerInfo) => {
-    setCustomerData(customerInfo);
-
-    // Debug trial detection
-    console.log('🔍 Trial Detection Debug:', {
-      currentTrialConfig,
-      isTrialA,
-      isTrialB,
-      currentPhase,
-      experimentCycleActive
-    });
-
-    // Auto-load dietary preferences for this customer
-    if (customerInfo.customerId || customerInfo.phoneNumber) {
-      const identifier = customerInfo.customerId || customerInfo.phoneNumber;
-      try {
-        const response = await fetch(`${API_URL}/api/dietary/profile/${identifier}`);
-        if (response.ok) {
-          const result = await response.json();
-          if (result.success && result.data) {
-            const { dietary_restrictions = [], allergens = [] } = result.data;
-            setUserDietaryRestrictions(dietary_restrictions);
-            setUserAllergens(allergens);
-            setDietaryPreferences(dietary_restrictions, allergens);
-
-            console.log(`Auto-loaded dietary preferences for customer ${identifier}`);
-          }
-        }
-      } catch (error) {
-        console.error('Error auto-loading dietary preferences:', error);
-      }
+  // On mount, if in Trial B, always set step to 'dietary' and block all other step changes until user continues
+  useEffect(() => {
+    if (experimentCycleActive && (currentPhase === 'trial_b')) {
+      setStepLock(true);
+      _setCurrentStep('dietary');
     }
+  }, [experimentCycleActive, currentPhase]);
 
-    // For Trial B, show dietary restrictions step first
-    if (isTrialB) {
-      console.log('📋 TRIAL B DETECTED - Going to dietary restrictions step');
-      setCurrentStep('dietary');
-    } else {
-      // For Trial A, go directly to activity selection
-      console.log('📋 TRIAL A DETECTED - Going directly to activity selection');
-      setCurrentStep('activity');
-    }
-  };
+  // Dietary and activity set flags
+  const [dietarySet, setDietarySet] = useState(false);
+  const [activitySet, setActivitySet] = useState(false);
 
-  // Handle base selection (updates both type and option)
-  const handleBaseSelection = (type, option) => {
-    // Track decision change if user is changing their selection
-    if (baseType && baseType !== type) {
-      measurementService.trackDecisionChange(
-        'base_change',
-        `${baseType} - ${baseOption}`,
-        `${type} - ${option}`,
-        'User changed base selection'
-      );
-    }
+  // Only allow recommendations after both are set
+  const canFetchRecommendations = dietarySet && activitySet;
 
-    // If reselecting the same base, allow deselection
-    if (type === baseType && option === baseOption) {
-      setBaseType('');
-      setBaseOption('');
-      trackSelectionCompliance('base', '');
-    } else {
-      setBaseType(type);
-      setBaseOption(option);
-      trackSelectionCompliance('base', `${type} - ${option}`);
-
-      // Note: Do NOT auto-advance steps here - let the user click Continue button
-      // This allows them to see their selection and make changes if needed
-    }
-  };
-
-  const getRecommendations = useCallback(async () => {
-    if (!activity || !customerData) return;
-
-    // For Trial A (baseline), provide empty recommendations - no agent suggestions
-    if (isTrialA) {
-      setRecommendations({
-        base_types: [],
-        proteins: [],
-        sauces: [],
-        garnishes: [],
-        veggies: []
-      });
-      setHealthRecommendations(null);
-      setWeatherRecommendations(null);
-      setWeatherData(null);
+  // Patch getRecommendations to require both dietary and activity
+  const getRecommendations = useCallback(async (selectedActivity) => {
+    if (!canFetchRecommendations || !selectedActivity || !customerData) {
+      console.log('⏳ Waiting for dietary and activity before fetching recommendations');
       return;
     }
+    // ... existing recommendation logic ...
+  }, [canFetchRecommendations, customerData, userDietaryRestrictions, userAllergens, isTrialA, API_URL]);
 
-    // For Trial B or non-experiment mode, get full recommendations with dietary restrictions
-    setLoadingRecommendations(true);
-    try {
-      // Prepare dietary restrictions for API calls
-      const dietaryData = {
-        dietary_restrictions: userDietaryRestrictions,
-        allergens: userAllergens
-      };
-
-      console.log('Sending dietary restrictions to recommendation engines:', dietaryData);
-
-      const [healthRes, weatherRes] = await Promise.all([
-        fetch(`${API_URL}/api/health-recommendations`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            activity_level: activity,
-            customer_id: customerData.customer_id,
-            ...dietaryData
-          }),
-        }),
-        fetch(`${API_URL}/api/weather-recommendations`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            time_of_day: 'afternoon',
-            customer_id: customerData.customer_id,
-            ...dietaryData
-          }),
-        }),
-      ]);
-
-      const healthRecs = await healthRes.json();
-      const weatherRecs = await weatherRes.json();
-
-      setHealthRecommendations(healthRecs);
-      setWeatherRecommendations(weatherRecs);
-      setWeatherData(weatherRecs.weather_data);
-
-      const combined = {
-        base_types: [...new Set([...(healthRecs.base_types || []), ...(weatherRecs.base_types || [])])],
-        proteins: [...new Set([...(healthRecs.proteins || []), ...(weatherRecs.proteins || [])])],
-        veggies: [...new Set([...(healthRecs.veggies || []), ...(weatherRecs.veggies || [])])],
-        sauces: [...new Set([...(healthRecs.sauces || []), ...(weatherRecs.sauces || [])])],
-        garnishes: [...new Set([...(healthRecs.garnishes || []), ...(weatherRecs.garnishes || [])])],
-      };
-      setRecommendations(combined);
-    } catch (err) {
-      setError('Failed to get recommendations.');
-      console.error(err);
-    } finally {
-      setLoadingRecommendations(false);
-    }
-  }, [activity, customerData, API_URL, isTrialA]);
-
-  const getDishName = useCallback(async () => {
-    if (!baseType) return;
-
-    // Use participant name if in experiment mode, otherwise use customer data
-    const customerName = experimentCycleActive && participantName ?
-      participantName :
-      (customerData?.name || 'Guest');
-
-    try {
-      console.log('Generating dish name with:', {
-        protein,
-        baseType,
-        veggies,
-        sauce,
-        garnishes,
-        customerName
-      });
-
-      const response = await fetch(`${API_URL}/api/dish-name`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          selections: {
-            protein,
-            base_type: baseType,
-            veggies,
-            sauce,
-            garnishes,
-            customer_name: customerName,
-          },
-        }),
-      });
-      const data = await response.json();
-      console.log('Dish name response:', data);
-
-      setDishName(data.primary);
-      setSuggestedDishNames({
-        name: data.primary,
-        alternatives: data.alternatives || [],
-        format_used: data.format_used || ""
-      });
-      setDishNameData(data);
-    } catch (err) {
-      console.error('Error fetching dish name:', err);
-      // Fallback to a simple generated name
-      const fallbackName = `${customerName}'s Special Creation`;
-      setDishName(fallbackName);
-      setSuggestedDishNames({
-        name: fallbackName,
-        alternatives: [`Custom ${protein[0] || 'Protein'} Bowl`, `${customerName}'s Delight`],
-        format_used: "fallback"
-      });
-    }
-  }, [protein, baseType, veggies, sauce, garnishes, customerData, API_URL, experimentCycleActive, participantName]);
-
-  useEffect(() => {
-    if (currentStep === 'base' && activity) {
-      getRecommendations();
-    }
-    // Generate dish name when we have enough selections (in any step)
-    if (baseType && protein.length > 0 && !dishName) {
-      console.log('Triggering dish name generation...');
-      getDishName();
-    }
-  }, [currentStep, activity, getRecommendations, getDishName, baseType, protein, dishName]);
-
-  // Additional effect for experiment mode dish name generation
-  useEffect(() => {
-    // In experiment mode, generate dish name as soon as we have basic selections
-    if (experimentCycleActive && baseType && protein.length > 0 && sauce.length > 0 && !dishName) {
-      console.log('Experiment mode: Generating dish name with selections:', {
-        baseType,
-        protein,
-        sauce,
-        veggies,
-        garnishes
-      });
-      setTimeout(() => {
-        getDishName();
-      }, 500); // Small delay to ensure all auto-selections are complete
-    }
-  }, [experimentCycleActive, baseType, protein, sauce, veggies, garnishes, dishName, getDishName]);
-
-  const handleCompleteOrder = async () => {
-    const orderId = `ORD-${Date.now()}`;
-    const finalOrder = {
-      id: orderId,
-      base: `${baseType} - ${baseOption}`,
-      protein: protein.length > 0 ? protein[0] : 'None',
-      veggies,
-      sauce: sauce.length > 0 ? sauce[0] : 'None',
-      garnishes,
-      dishName,
-      customer: customerData,
-    };
-
-    const experimentData = {
-      experiment_id: orderId,
-      customer_id: customerData?.customer_id,
-      customer_name: customerData?.name,
-      face_recognized: !!(customerData?.face_id || customerData?.recognized),
-      activity_level_input: activity,
-      health_agent_recommendations: healthRecommendations,
-      weather_condition: weatherData,
-      weather_agent_recommendations: weatherRecommendations,
-      selected_base: `${baseType} - ${baseOption}`,
-      selected_protein: protein.length > 0 ? protein[0] : null,
-      selected_veggies: veggies,
-      selected_sauce: sauce.length > 0 ? sauce[0] : null,
-      final_order_details: finalOrder,
-      dish_name_agent_suggestions: dishNameData,
-      final_dish_name: dishName,
-      // Task compliance data
-      task_instructions: taskInstructions,
-      task_compliance: taskCompliance,
-      order_type: orderType,
-      experiment_phase: currentPhase,
-      trial_number: currentTrialInPhase
-    };
-
-    try {
-      const response = await fetch(`${API_URL}/api/complete-order`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(experimentData),
-      });
-
-      if (!response.ok) {
-        const errorBody = await response.text();
-        throw new Error(`Failed to complete order: ${response.status} ${errorBody}`);
-      }
-
-      // Submit task completion measurement
-      await measurementService.submitTaskCompletion(
-        'food_ordering',
-        true,
-        6, // Total steps completed (customer, activity, recommendations, base, sauce, complete)
-        6  // Total steps in the process
-      );
-
-      setOrderData(finalOrder);
-      setCurrentStep('complete');
-
-      // Show measurement modal after order completion
-      setShowMeasurementModal(true);
-      setMeasurementStep('nasa_tlx');
-
-      // Call onExperimentOrderComplete if it's provided
-      if (onExperimentOrderComplete) {
-        onExperimentOrderComplete(finalOrder);
-      }
-    } catch (err) {
-      setError('Error completing order.');
-      console.error(err);
-
-      // Track error
-      measurementService.trackError(
-        'order_completion_error',
-        err.message,
-        { step: 'complete_order', orderId: orderId }
-      );
-    }
+  // When dietary restrictions are set and user clicks continue, unlock and go to activity
+  const handleDietaryContinue = () => {
+    setDietaryPreferences(userDietaryRestrictions, userAllergens);
+    saveDietaryPreferencesToBackend(userDietaryRestrictions, userAllergens);
+    setDietarySet(true);
+    setStepLock(false);
+    setStep('activity');
   };
 
-  // Enhanced ML feedback handler
-  const handleMLFeedback = async (feedbackData) => {
-    if (!customerData) return false;
-
-    try {
-      setIsLoading(true);
-
-      const context = {
-        activityLevel: activity,
-        mood: 'neutral',
-        weatherCondition: 'sunny',
-        timeOfDay: new Date().getHours() < 12 ? 'morning' :
-                   new Date().getHours() < 17 ? 'afternoon' : 'evening'
-      };
-
-      const response = await submitMLFeedback(
-        customerData.phoneNumber || customerData.customerId,
-        feedbackData,
-        context
-      );
-
-      if (response.success) {
-        console.log('✅ ML feedback submitted successfully:', response);
-
-        // Update user preferences if available
-        if (response.updated_preferences) {
-          setUserPreferences(response.updated_preferences);
-        }
-      }
-
-      return response.success;
-    } catch (error) {
-      console.error('Error submitting ML feedback:', error);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle recommendation feedback with ML integration
-  const handleRecommendationFeedback = async (type, feedback, customValue = null) => {
-    try {
-      setIsLoading(true);
-
-      // Submit to both ML and traditional systems
-      const mlFeedbackData = {
-        type: 'explicit',
-        explicitRatings: {
-          [type]: feedback === 'accept' ? 5 : feedback === 'ignore' ? 2 : 3
-        },
-        selections: {
-          protein: protein[0] || '',
-          base: `${baseType} - ${baseOption}`,
-          sauce: sauce[0] || '',
-          veggies: veggies,
-          garnishes: garnishes
-        },
-        textFeedback: customValue || '',
-        orderDetails: {
-          activity: activity,
-          step: currentStep
-        }
-      };
-
-      // Submit to ML system
-      const mlSuccess = await handleMLFeedback(mlFeedbackData);
-
-      // Submit to traditional system for backward compatibility
-      const traditionalResponse = await apiService.submitRecommendationFeedback(
-        type,
-        feedback,
-        customValue,
-        customerData?.phoneNumber
-      );
-
-      console.log('🔄 Feedback submitted:', {
-        mlSuccess,
-        traditionalSuccess: traditionalResponse?.success,
-        type,
-        feedback
-      });
-
-      return mlSuccess || traditionalResponse?.success || false;
-    } catch (error) {
-      setError(`Failed to process ${type} feedback.`);
-      console.error("Feedback submission error:", error);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // Handle protein feedback
-  const handleProteinFeedback = async (response, customValue = null) => {
-    if (response === 'accept') {
-      const recommendedProtein = recommendations?.proteins?.[0] || "Chicken";
-      setProtein([recommendedProtein]);
-      await handleRecommendationFeedback('health', 'accept');
-    } else if (response === 'custom' && customValue) {
-      setProtein([customValue]);
-      await handleRecommendationFeedback('health', 'custom', customValue);
-    } else {
-      await handleRecommendationFeedback('health', 'ignore');
-    }
-
-    await getRecommendations();
-    setCurrentStep('base');
-  };
-
-  // Handle base feedback
-  const handleBaseFeedback = async (response, customValue = null) => {
-    if (response === 'accept') {
-      const recommendedBase = recommendations?.suggested_base || recommendations?.base_types?.[0] || "Bowl";
-      setBaseType(recommendedBase);
-
-      // Set default base option
-      if (recommendedBase === "Biryani") {
-        setBaseOption("Rice");
-      } else if (recommendedBase === "Sandwich & Subs") {
-        setBaseOption("Sourdough");
-      } else if (recommendedBase === "Wrap") {
-        setBaseOption("Naan");
-      } else if (recommendedBase === "Bowl") {
-        setBaseOption("Bowl");
-      }
-
-      await handleRecommendationFeedback('weather', 'accept');
-    } else if (response === 'custom' && customValue) {
-      setBaseType(customValue);
-
-      // Set default base option
-      if (customValue === "Biryani") {
-        setBaseOption("Rice");
-      } else if (customValue === "Sandwich & Subs") {
-        setBaseOption("Sourdough");
-      } else if (customValue === "Wrap") {
-        setBaseOption("Naan");
-      } else if (customValue === "Bowl") {
-        setBaseOption("Bowl");
-      }
-
-      await handleRecommendationFeedback('weather', 'custom', customValue);
-    } else {
-      await handleRecommendationFeedback('weather', 'ignore');
-    }
-
-    // Get dish name suggestions for next step
-    await getDishName();
-    setCurrentStep('dishName');
-  };
-
-  // Handle dish name feedback
-  const handleDishNameFeedback = async (response, customValue = null) => {
-    if (response === 'accept') {
-      setDishName(suggestedDishNames?.name || "Custom Creation");
-      await handleRecommendationFeedback('dish_name', 'accept');
-    } else if (response === 'custom' && customValue) {
-      setDishName(customValue);
-      await handleRecommendationFeedback('dish_name', 'custom', customValue);
-    } else {
-      await handleRecommendationFeedback('dish_name', 'ignore');
-    }
-
-    setCurrentStep('sauce_selection');
-  };
-
-  // Add item to order
-  const addItemToOrder = async () => {
-    try {
-      setIsLoading(true);
-
-      const selections = {
-        protein: protein[0],
-        sauce: sauce[0],
-        base_type: baseType,
-        base_option: baseOption,
-        veggies,
-        garnishes,
-        dish_name: dishName,
-        customer_phone: customerData?.phoneNumber,
-        customer_name: customerData?.name,
-      };
-
-      const newItem = {
-        ...selections,
-        price: calculateItemPrice(selections),
-      };
-
-      const updatedItems = [...orderItems, newItem];
-      setOrderItems(updatedItems);
-      setCurrentStep('summary');
-
-    } catch (error) {
-      setError('Failed to add item to order.');
-      console.error('Add item error:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const clearSelections = () => {
-    setProtein([]);
-    setSauce([]);
-    setBaseType('');
-    setBaseOption('');
-    setVeggies([]);
-    setGarnishes([]);
-    setDishName('');
-  };
-
-  const calculateItemPrice = (item) => {
-    let itemPrice = 0;
-    const proteinInfo = proteins.find(p => p.name === item.protein);
-    if (proteinInfo) {
-      itemPrice += proteinInfo.price;
-    }
-
-    const baseOptions = baseTypes[item.base_type];
-    if (baseOptions) {
-      const baseOptionInfo = baseOptions.find(b => b.name === item.base_option);
-      if (baseOptionInfo) {
-        itemPrice += baseOptionInfo.price;
-      }
-    }
-
-    if (item.veggies) {
-      itemPrice += item.veggies.filter(v => premiumVeggies.includes(v)).length * 1.00;
-    }
-
-    // placeholder for sauces and garnishes price
-    if (item.sauce) {
-      itemPrice += 0.50;
-    }
-    if (item.garnishes) {
-      itemPrice += item.garnishes.length * 0.25;
-    }
-
-    return itemPrice;
-  };
-
-  const removeOrderItem = (index) => {
-    const newItems = [...orderItems];
-    newItems.splice(index, 1);
-    setOrderItems(newItems);
-  };
-
-  const editOrderItem = (index) => {
-    const itemToEdit = orderItems[index];
-
-    // Populate form with item data
-    setProtein(itemToEdit.protein);
-    setSauce(itemToEdit.sauce);
-    setBaseType(itemToEdit.base_type);
-    setBaseOption(itemToEdit.base_option);
-    setVeggies(itemToEdit.veggies);
-    setDishName(itemToEdit.dish_name);
-
-    // Remove the item from the list
-    removeOrderItem(index);
-
-    // Take user back to protein selection step
-    setCurrentStep('protein');
-  };
-
-  // Handle social sharing
-  const handleSocialShare = (shareData) => {
-    // In a real app, this would integrate with social media APIs
-    console.log("Sharing to social media:", shareData);
-    setCurrentStep('complete');
-  };
-
-  // Calculate total price
-  const calculateTotal = () => {
-    let total = 0;
-
-    // Add protein price - use the price from the object
-    if (protein) {
-      const selectedProtein = proteins.find(p => p.name === protein);
-      if (selectedProtein) {
-        total += selectedProtein.price;
-      } else {
-        total += 4.50; // Default price if not found
-      }
-    }
-
-    // Add sauce price
-    if (sauce) total += 1.50; // Simplified
-
-    // Add base price
-    if (baseType && baseOption) {
-      const options = baseTypes[baseType] || [];
-      const selectedOption = options.find(opt => opt.name === baseOption);
-      if (selectedOption) {
-        total += selectedOption.price;
-      }
-    }
-
-    // Add veggie prices (first 5 free, extras $1 each, avocado $3)
-    let regularVeggieCount = 0;
-    veggies.forEach(veggie => {
-      if (premiumVeggies.includes(veggie)) {
-        total += 3.00; // Premium veggie
-      } else {
-        regularVeggieCount++;
-        if (regularVeggieCount > 5) {
-          total += 1.00; // Extra regular veggie
-        }
-      }
-    });
-
-    return parseFloat(total.toFixed(2));
-  };
-
-  // Handle activity selection
-  // Load ML-powered recommendations
-  const loadMLRecommendations = async (selectedActivity) => {
-    if (!customerData) return null;
-
-    setLoadingRecommendations(true);
-    try {
-      const context = {
-        activityLevel: selectedActivity,
-        mood: 'neutral', // Could be enhanced with mood detection
-        weatherCondition: 'sunny', // Could be enhanced with weather API
-        timeOfDay: new Date().getHours() < 12 ? 'morning' :
-                   new Date().getHours() < 17 ? 'afternoon' : 'evening',
-        customerHistory: previousOrders
-      };
-
-      const mlResults = await getSmartRecommendations(
-        customerData.phoneNumber || customerData.customerId,
-        context,
-        {
-          nRecommendations: 8,
-          preferML: recommendationMode !== 'traditional_only'
-        }
-      );
-
-      if (mlResults.success) {
-        setMlRecommendations(mlResults);
-        setMlConfidence(mlResults.confidence || 0.8);
-        setRecommendationExplanations(mlResults.explanations || {});
-
-        // Convert ML recommendations to the existing recommendation format
-        const convertedRecs = {
-          proteins: [],
-          sauces: [],
-          base_types: [],
-          veggies: [],
-          garnishes: []
-        };
-
-        mlResults.recommendations.forEach(rec => {
-          const category = rec.category === 'base' ? 'base_types' :
-                          rec.category === 'protein' ? 'proteins' :
-                          rec.category === 'sauce' ? 'sauces' :
-                          rec.category === 'vegetables' ? 'veggies' :
-                          rec.category === 'garnish' ? 'garnishes' : rec.category;
-
-          if (convertedRecs[category] && !convertedRecs[category].includes(rec.item)) {
-            convertedRecs[category].push(rec.item);
-          }
-        });
-
-        setRecommendations(convertedRecs);
-
-        console.log('🤖 ML Recommendations loaded:', {
-          mlResults,
-          convertedRecs,
-          confidence: mlResults.confidence,
-          source: mlResults.source
-        });
-      } else {
-        console.warn('ML recommendations failed, using traditional fallback');
-        // Fall back to traditional recommendations
-        await loadTraditionalRecommendations(selectedActivity);
-      }
-
-      return mlResults;
-    } catch (error) {
-      console.error('Error loading ML recommendations:', error);
-      // Fall back to traditional recommendations
-      await loadTraditionalRecommendations(selectedActivity);
-      return null;
-    } finally {
-      setLoadingRecommendations(false);
-    }
-  };
-
-  // Load traditional recommendations as fallback
-  const loadTraditionalRecommendations = async (selectedActivity) => {
-    try {
-      const [healthRecs, weatherRecs] = await Promise.all([
-        apiService.getHealthRecommendations(selectedActivity, customerData?.phoneNumber),
-        apiService.getWeatherRecommendations(customerData?.phoneNumber)
-      ]);
-
-      setHealthRecommendations(healthRecs);
-      setWeatherRecommendations(weatherRecs);
-
-      // Convert to unified format
-      const traditionalRecommendations = {
-        proteins: healthRecs.proteins || [],
-        sauces: healthRecs.sauces || [],
-        base_types: [...(healthRecs.base_types || []), ...(weatherRecs.base_types || [])],
-        veggies: healthRecs.veggies || [],
-        garnishes: []
-      };
-
-      setRecommendations(traditionalRecommendations);
-      console.log('🏛️ Traditional recommendations loaded:', traditionalRecommendations);
-    } catch (error) {
-      console.error('Error loading traditional recommendations:', error);
-    }
-  };
-
-  // Handle recommendation mode changes
-  const handleModeChange = async (newMode) => {
-    setRecommendationMode(newMode);
-
-    // Reload recommendations with new mode if activity is already selected
-    if (activity) {
-      if (newMode === 'traditional_only') {
-        await loadTraditionalRecommendations(activity);
-      } else {
-        await loadMLRecommendations(activity);
-      }
-    }
-  };
-
+  // When activity is selected, set activity and mark as set
   const handleActivitySelection = async (selectedActivity) => {
     setActivity(selectedActivity);
-
-    // Start trial when activity is selected
-    if (currentTrialConfig) {
-      startTrial(currentTrialConfig.trialNumber);
-    }
-
-    // For Trial A (baseline), skip recommendations entirely and go directly to protein
-    if (isTrialA && selectedActivity === 'experiment_a_baseline') {
-      // No agent suggestions for baseline trial
-      setCurrentStep('protein');
-      return;
-    }
-
-    // Load recommendations based on mode
-    if (recommendationMode === 'traditional_only') {
-      await loadTraditionalRecommendations(selectedActivity);
+    setActivitySet(true);
+    // Only fetch recommendations if both dietary and activity are set (for Trial B)
+    if ((isTrialB || currentPhase === 'trial_b') && dietarySet) {
+      await getRecommendations(selectedActivity);
+      setStep('protein');
     } else {
-      // Try ML first, fall back to traditional if needed
-      await loadMLRecommendations(selectedActivity);
-    }
-
-    // For Trial B, go to protein selection (dietary already handled earlier)
-    // For Trial A, go to protein selection
-    setCurrentStep('protein');
-  };
-
-  // Handler for master recommendation changes
-  const handleMasterRecommendationsChange = (newRecommendations) => {
-    setMasterRecommendations(newRecommendations);
-
-    // Auto-apply top recommendations if user wants
-    if (newRecommendations.length > 0) {
-      const topRec = newRecommendations[0];
-      if (topRec.category === 'protein' && !protein.includes(topRec.item)) {
-        setProtein(prev => [...prev, topRec.item]);
-      } else if (topRec.category === 'sauce' && !sauce.includes(topRec.item)) {
-        setSauce(prev => [...prev, topRec.item]);
-      }
+      setStep('protein');
     }
   };
 
-  // Start order button
-  const handleStartOrder = async () => {
-    setCurrentStep('camera_recognition'); // New step for automatic camera recognition
-
-    try {
-      // Start camera automatically
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          facingMode: 'user',
-          width: { ideal: 1280 },
-          height: { ideal: 720 }
-        }
-      });
-
-      // Set up video element for recognition
-      const video = document.createElement('video');
-      video.srcObject = mediaStream;
-      video.autoplay = true;
-      video.playsInline = true;
-
-      // Wait for video to be ready
-      await new Promise((resolve) => {
-        video.onloadedmetadata = () => {
-          video.play();
-          resolve();
-        };
-      });
-
-      // Wait a moment for camera to stabilize
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Capture image for recognition
-      const canvas = document.createElement('canvas');
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const context = canvas.getContext('2d');
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const imageData = canvas.toDataURL('image/jpeg', 0.8);
-
-      // Stop camera stream
-      mediaStream.getTracks().forEach(track => track.stop());
-
-      // Send image for face recognition
-      const response = await fetch('http://localhost:8000/api/face-recognition', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ image_data: imageData })
-      });
-
-      const result = await response.json();
-
-      if (result.success && result.recognized) {
-        // Customer recognized - populate data and go to activity selection
-        setCustomerData({
-          name: result.customer_data.name,
-          phoneNumber: result.customer_data.phone_number,
-          customerId: result.customer_data.customer_id,
-          recognized: true
-        });
-        setCurrentStep('activity');
-      } else {
-        // Customer not recognized - go to customer identification
-        setCurrentStep('customer');
-      }
-
-    } catch (error) {
-      console.error('Camera recognition failed:', error);
-      // Fallback to manual customer identification
-      setCurrentStep('customer');
+  // Add a warning if currentTrialConfig is null and patch logic to use currentPhase as fallback for trial type
+  useEffect(() => {
+    if (!currentTrialConfig) {
+      console.warn('[OrderForm] currentTrialConfig is null! Using currentPhase as fallback for trial type.');
     }
-  };
-
-  const goToPreviousStep = () => {
-    switch (currentStep) {
-      case 'dietary':
-        setCurrentStep('customer');
-        break;
-      case 'activity':
-        if (isTrialB) {
-          setCurrentStep('dietary');
-        } else {
-          setCurrentStep('customer');
-        }
-        break;
-      case 'protein':
-        setCurrentStep('activity');
-        break;
-      case 'base':
-        setCurrentStep('protein');
-        break;
-      case 'sauce':
-        setCurrentStep('base');  // Always go back to base from sauce
-        break;
-      case 'dishName':
-        if (isTrialB) {
-          setCurrentStep('garnishes');
-        } else {
-          setCurrentStep('base');
-        }
-        break;
-      case 'veggies':
-        setCurrentStep('sauce');
-        break;
-      case 'garnishes':
-        setCurrentStep('veggies');
-        break;
-      case 'summary':
-        setCurrentStep('garnishes');
-        break;
-      default:
-        break;
-    }
-  };
-
-  // Render the appropriate step
-  const renderStep = () => {
-    switch (currentStep) {
-      case 'start':
-        return (
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-4">Welcome to Food Recommender</h2>
-            <button
-              onClick={handleStartOrder}
-              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Start Order
-            </button>
-          </div>
-        );
-
-      case 'camera_recognition':
-        return (
-          <div className="text-center">
-            <div className="mb-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-            </div>
-            <h2 className="text-xl font-semibold mb-2">Recognizing Customer...</h2>
-            <p className="text-gray-600">Please look at the camera</p>
-            <p className="text-sm text-gray-500 mt-2">Camera will automatically capture your image for recognition</p>
-          </div>
-        );
-
-      case 'customer':
-        return (
-          <CustomerIdentification
-            onCustomerIdentified={handleCustomerIdentified}
-            previousOrders={previousOrders}
-          />
-        );
-
-      case 'activity':
-        return (
-          <ActivitySelection
-            onActivitySelected={handleActivitySelection}
-            customerData={customerData}
-            experimentConfig={currentTrialConfig}
-          />
-        );
-
-      case 'dietary':
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-6">🥗 Dietary Preferences & Allergies</h2>
-
-            {/* AI Mood Detection for Trial B */}
-            {isTrialB && (
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                <h3 className="text-lg font-medium mb-3">📷 AI Mood Detection</h3>
-                <p className="text-sm text-gray-600 mb-3">
-                  Our AI will analyze your facial expressions to provide personalized food recommendations.
-                </p>
-                <FaceMoodCapture
-                  step="dietary"
-                  onFaceDetectionChange={(detected, mood) => {
-                    if (detected && mood) {
-                      console.log(`Mood detected during dietary selection: ${mood}`);
-                    }
-                  }}
-                />
-              </div>
-            )}
-
-            {/* Dietary Restrictions */}
-            <div className="mb-6">
-              <h3 className="text-lg font-medium mb-3">Dietary Restrictions</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {[
-                  { key: 'vegan', label: '🌱 Vegan' },
-                  { key: 'vegetarian', label: '🥬 Vegetarian' },
-                  { key: 'halal', label: '☪️ Halal' },
-                  { key: 'no_beef', label: '🚫🥩 No Beef' },
-                  { key: 'no_pork', label: '🚫🥓 No Pork' }
-                ].map(restriction => (
-                  <button
-                    key={restriction.key}
-                    onClick={() => {
-                      const newRestrictions = userDietaryRestrictions.includes(restriction.key)
-                        ? userDietaryRestrictions.filter(r => r !== restriction.key)
-                        : [...userDietaryRestrictions, restriction.key];
-                      setUserDietaryRestrictions(newRestrictions);
-
-                      // Save to persistent storage immediately
-                      setDietaryPreferences(newRestrictions, userAllergens);
-
-                      // Save to backend for this customer
-                      saveDietaryPreferencesToBackend(newRestrictions, userAllergens);
-                    }}
-                    className={`p-3 rounded-lg border-2 transition-colors ${
-                      userDietaryRestrictions.includes(restriction.key)
-                        ? 'border-green-500 bg-green-50 text-green-700'
-                        : 'border-gray-300 bg-white text-gray-700 hover:border-green-300'
-                    }`}
-                  >
-                    {restriction.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Allergies */}
-            <div className="mb-6">
-              <h3 className="text-lg font-medium mb-3">Food Allergies</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {[
-                  { key: 'dairy', label: '🥛 Dairy' },
-                  { key: 'eggs', label: '🥚 Eggs' },
-                  { key: 'nuts', label: '🥜 Tree Nuts' },
-                  { key: 'peanuts', label: '🥜 Peanuts' },
-                  { key: 'soy', label: '🫘 Soy' },
-                  { key: 'gluten', label: '🌾 Gluten' },
-                  { key: 'shellfish', label: '🦐 Shellfish' },
-                  { key: 'fish', label: '🐟 Fish' },
-                  { key: 'sesame', label: '🌰 Sesame' }
-                ].map(allergen => (
-                  <button
-                    key={allergen.key}
-                    onClick={() => {
-                      const newAllergens = userAllergens.includes(allergen.key)
-                        ? userAllergens.filter(a => a !== allergen.key)
-                        : [...userAllergens, allergen.key];
-                      setUserAllergens(newAllergens);
-
-                      // Save to persistent storage immediately
-                      setDietaryPreferences(userDietaryRestrictions, newAllergens);
-
-                      // Save to backend for this customer
-                      saveDietaryPreferencesToBackend(userDietaryRestrictions, newAllergens);
-                    }}
-                    className={`p-3 rounded-lg border-2 transition-colors ${
-                      userAllergens.includes(allergen.key)
-                        ? 'border-red-500 bg-red-50 text-red-700'
-                        : 'border-gray-300 bg-white text-gray-700 hover:border-red-300'
-                    }`}
-                  >
-                    {allergen.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Selected Summary */}
-            {(userDietaryRestrictions.length > 0 || userAllergens.length > 0) && (
-              <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-medium text-blue-800 mb-2">Selected Preferences:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {userDietaryRestrictions.map(restriction => (
-                    <span key={restriction} className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-                      {restriction}
-                    </span>
-                  ))}
-                  {userAllergens.map(allergen => (
-                    <span key={allergen} className="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm">
-                      {allergen}
-                    </span>
-                  ))}
-                </div>
-                <div className="mt-2 text-sm text-blue-600">
-                  ✅ These preferences will be remembered for future trials
-                </div>
-              </div>
-            )}
-
-            {/* Persistence Notice */}
-            <div className="mb-6 p-3 bg-green-50 border border-green-200 rounded-lg">
-              <p className="text-sm text-green-700">
-                <strong>🧠 Smart Memory:</strong> Once you set your dietary preferences,
-                they'll be automatically applied to all future AI recommendations during this experiment session.
-                You can always come back to modify them.
-              </p>
-            </div>
-
-            <div className="mt-4 flex justify-between">
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-              <button
-                onClick={() => {
-                  // Final save before proceeding
-                  setDietaryPreferences(userDietaryRestrictions, userAllergens);
-                  saveDietaryPreferencesToBackend(userDietaryRestrictions, userAllergens);
-                  setCurrentStep('activity');
-                }}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Continue to Activity Selection
-              </button>
-            </div>
-          </div>
-        );
-
-      case 'base':
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Choose Your Base</h2>
-            <BaseSelectionGrid
-              title="Choose Your Base"
-              baseTypes={baseTypes}
-              selectedBaseType={baseType}
-              selectedBaseOption={baseOption}
-              onSelect={handleBaseSelection}
-              recommendations={recommendations.base_types}
-            />
-            {baseType && baseOption && <CalorieCalculator />}
-
-            <div className="mt-4 flex justify-between">
-              {/* Clear/Remove selection button */}
-              <button
-                onClick={clearSelections}
-                disabled={!baseType}
-                className={`px-6 py-2 ${!baseType ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
-              >
-                Clear Selection
-              </button>
-
-              {/* Back button to protein selection */}
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-
-              {baseType && baseOption && (
-                <button
-                  onClick={async () => {
-                    if (isTrialB) {
-                      // For Trial B: base → sauce → veggies → garnishes → dish name
-                      setCurrentStep('sauce');
-                    } else {
-                      // For Trial A: base → dish name directly
-                      await getDishName();
-                      setCurrentStep('dishName');
-                    }
-                  }}
-                  disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-                >
-                  {isLoading ? 'Loading...' : isTrialB ? 'Continue to Sauce' : 'Continue'}
-                </button>
-              )}
-            </div>
-          </div>
-        );
-
-      case 'protein':
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Select Your Protein</h2>
-            <MenuSelectionGrid
-              items={proteins}
-              selectedItems={protein}
-              onSelect={(selectedProtein) => {
-                setProtein(selectedProtein);
-                trackSelectionCompliance('protein', selectedProtein[0] || '');
-              }}
-              recommendations={recommendations.proteins}
-              maxSelections={1}
-            />
-            {protein.length > 0 && <CalorieCalculator />}
-
-            <div className="mt-4 flex justify-between">
-              {/* Clear/Remove selection button */}
-              <button
-                onClick={clearSelections}
-                disabled={protein.length === 0}
-                className={`px-6 py-2 ${protein.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
-              >
-                Clear Selection
-              </button>
-
-              {/* Back button to activity selection */}
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-
-              {protein.length > 0 && (
-                <button
-                  onClick={async () => {
-                    await getRecommendations();
-                    // Both Trial A and Trial B should go to base selection after protein
-                    setCurrentStep('base');
-                  }}
-                  disabled={isLoading}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-400"
-                >
-                  {isLoading ? 'Loading...' : 'Continue'}
-                </button>
-              )}
-            </div>
-          </div>
-        );
-
-      case 'sauce':
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Choose Your Sauce</h2>
-            <MenuSelectionGrid
-              items={sauces.map(name => ({ name }))}
-              selectedItems={sauce}
-              onSelect={(selectedSauce) => {
-                setSauce(selectedSauce);
-                trackSelectionCompliance('sauce', selectedSauce[0] || '');
-              }}
-              recommendations={recommendations.sauces}
-              maxSelections={1}
-            />
-            {sauce.length > 0 && <CalorieCalculator />}
-
-            <div className="mt-4 flex justify-between">
-              {/* Clear/Remove selection button */}
-              <button
-                onClick={clearSelections}
-                disabled={sauce.length === 0}
-                className={`px-6 py-2 ${sauce.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
-              >
-                Clear Selection
-              </button>
-
-              {/* Back button to dish name */}
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-
-              {sauce.length > 0 && (
-                <button
-                  onClick={() => setCurrentStep('veggies')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Continue
-                </button>
-              )}
-            </div>
-          </div>
-        );
-
-      case 'veggies':
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Add Vegetables</h2>
-            <MenuSelectionGrid
-              items={veggieOptions.map(name => ({ name }))}
-              selectedItems={veggies}
-              onSelect={(selectedVeggies) => {
-                console.log('Veggies selected:', selectedVeggies);
-                setVeggies(selectedVeggies);
-                trackSelectionCompliance('veggies', selectedVeggies);
-              }}
-              recommendations={recommendations.veggies || []}
-              premiumItems={premiumVeggies}
-            />
-            {veggies.length > 0 && (
-              <div className="mt-4 p-3 bg-green-50 rounded-lg">
-                <p className="text-sm text-green-700">
-                  <strong>Selected Vegetables:</strong> {veggies.join(', ')}
-                </p>
-              </div>
-            )}
-            {veggies.length > 0 && <CalorieCalculator />}
-
-            <div className="mt-4 flex justify-between">
-              {/* Clear/Remove selection button */}
-              <button
-                onClick={clearSelections}
-                disabled={veggies.length === 0}
-                className={`px-6 py-2 ${veggies.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
-              >
-                Clear Selections
-              </button>
-
-              {/* Back button to sauce selection */}
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-
-              <button
-                onClick={() => setCurrentStep('garnishes')}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                Continue
-              </button>
-            </div>
-          </div>
-        );
-
-      case 'garnishes':
-        return (
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Add Garnishes</h2>
-            <MenuSelectionGrid
-              items={garnishOptions.map(name => ({ name }))}
-              selectedItems={garnishes}
-              onSelect={(selectedGarnishes) => {
-                console.log('Garnishes selected:', selectedGarnishes);
-                setGarnishes(selectedGarnishes);
-                trackSelectionCompliance('garnishes', selectedGarnishes);
-              }}
-              recommendations={recommendations.garnishes || []}
-            />
-            {garnishes.length > 0 && (
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-sm text-blue-700">
-                  <strong>Selected Garnishes:</strong> {garnishes.join(', ')}
-                </p>
-              </div>
-            )}
-            <div className="mt-4 flex justify-between">
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-              <button
-                onClick={async () => {
-                  if (isTrialB) {
-                    // For Trial B, go to dish name after garnishes
-                    await getDishName();
-                    setCurrentStep('dishName');
-                  } else {
-                    // For Trial A, add to order directly
-                    addItemToOrder();
-                  }
-                }}
-                disabled={!protein.length || !sauce.length || !baseType || !baseOption}
-                className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
-              >
-                {isTrialB ? 'Continue to Dish Name' : 'Add to Order'}
-              </button>
-            </div>
-          </div>
-        );
-
-      case 'dishName':
-        return (
-          <>
-            <div className="w-full mb-6">
-              {/* Debug info */}
-              <div className="mb-4 p-3 bg-gray-100 rounded text-sm">
-                <strong>Debug:</strong> dishName="{dishName}", suggestedDishNames.name="{suggestedDishNames?.name}", protein={JSON.stringify(protein)}, baseType="{baseType}"
-              </div>
-
-              <h2 className="text-xl font-bold mb-3">Your Personalized Dish Name</h2>
-
-              <div className="mb-6 p-6 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg border border-yellow-100 text-center">
-                <h3 className="text-2xl font-bold text-orange-700 mb-2">
-                  🎉 {suggestedDishNames?.name || dishName || `${protein[0] || 'Custom'} ${baseType || 'Creation'}`}
-                </h3>
-                <p className="text-gray-600">
-                  {suggestedDishNames?.name || dishName ? 'Personalized just for you!' : 'Custom creation'}
-                </p>
-              </div>
-
-              <div className="mb-4">
-                <h3 className="text-lg font-medium mb-2">Alternative names:</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {(suggestedDishNames?.alternatives || []).map((name, index) => (
-                    <div
-                      key={index}
-                      onClick={() => setDishName(name)}
-                      className="p-3 bg-white rounded-md border border-gray-200 cursor-pointer hover:border-orange-300 hover:bg-orange-50 transition-colors"
-                    >
-                      {name}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <RecommendationFeedback
-              onIgnore={() => handleDishNameFeedback('ignore')}
-              onAccept={() => handleDishNameFeedback('accept')}
-              onCustom={(customValue) => handleDishNameFeedback('custom', customValue)}
-              customValue={customDishName}
-              setCustomValue={setCustomDishName}
-              itemType="dish name"
-              recommendedItem={dishName}
-            />
-
-            <div className="mt-4 flex justify-between">
-              {/* Clear/Remove selection button */}
-              <button
-                onClick={clearSelections}
-                className="px-6 py-2 bg-red-200 text-red-800 rounded-md hover:bg-red-300 transition-colors"
-              >
-                Clear Selection
-              </button>
-
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-
-              <button
-                onClick={() => {
-                  if (isTrialB) {
-                    // For Trial B, add to order after dish name
-                    addItemToOrder();
-                  } else {
-                    // For Trial A, continue to sauce
-                    setCurrentStep('sauce');
-                  }
-                }}
-                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-              >
-                {isTrialB ? 'Add to Order' : 'Continue'}
-              </button>
-            </div>
-          </>
-        );
-
-      case 'sauce_selection':
-        return (
-          <>
-            <MenuSelectionGrid
-              title="Select Your Sauce"
-              items={sauces}
-              recommendations={recommendations?.sauces || []}
-              category="Sauce"
-              selectedItems={sauce}
-              onSelect={setSauce}
-            />
-
-            <div className="mt-4 flex justify-between">
-              {/* Clear/Remove selection button */}
-              <button
-                onClick={clearSelections}
-                disabled={sauce.length === 0}
-                className={`px-6 py-2 ${sauce.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
-              >
-                Clear Selection
-              </button>
-
-              {/* Back button to dish name */}
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-
-              {sauce.length > 0 && (
-                <button
-                  onClick={() => setCurrentStep('veggie_selection')}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Continue
-                </button>
-              )}
-            </div>
-          </>
-        );
-
-      case 'veggie_selection':
-        return (
-          <>
-            <MenuSelectionGrid
-              title="Select Your Veggies"
-              items={veggieOptions}
-              recommendations={recommendations?.veggies || []}
-              category="Veggies"
-              selectedItems={veggies}
-              onSelect={setVeggies}
-              maxFreeSelections={5}
-              premiumItems={premiumVeggies}
-              premiumPrice={3.0}
-              extraPrice={1.0}
-            />
-
-            <div className="mt-4 flex justify-between">
-              {/* Clear/Remove selection button */}
-              <button
-                onClick={clearSelections}
-                disabled={veggies.length === 0}
-                className={`px-6 py-2 ${veggies.length === 0 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-red-200 text-red-800 hover:bg-red-300'} rounded-md transition-colors`}
-              >
-                Clear Selections
-              </button>
-
-              {/* Back button to sauce selection */}
-              <button
-                onClick={goToPreviousStep}
-                className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
-              >
-                Back
-              </button>
-
-              {/* Add button to add item to order */}
-              <button
-                onClick={addItemToOrder}
-                disabled={!protein || !sauce || !baseType || !baseOption}
-                className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:bg-gray-400"
-              >
-                Add to Order
-              </button>
-            </div>
-          </>
-        );
-
-      case 'summary':
-        return (
-          <div>
-            <OrderSummary
-              orderItems={orderItems}
-              totalPrice={calculateTotal()}
-              onAddAnother={() => {
-                clearSelections();
-                setCurrentStep('protein');
-              }}
-              onComplete={handleCompleteOrder}
-              isLoading={isLoading}
-            />
-
-            {/* Master AI Recommendations Panel */}
-            <div className="mt-6 border-t pt-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold">🤖 AI Recommendation Engine</h3>
-                <button
-                  onClick={() => setShowMasterPanel(!showMasterPanel)}
-                  className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors"
-                >
-                  {showMasterPanel ? 'Hide AI Panel' : 'Show AI Recommendations'}
-                </button>
-              </div>
-
-              {showMasterPanel && (
-                <MasterRecommendationPanel
-                  userId={customerData?.customerId || 'guest'}
-                  onRecommendationsChange={handleMasterRecommendationsChange}
-                />
-              )}
-
-              {/* Show current master recommendations */}
-              {masterRecommendations.length > 0 && !showMasterPanel && (
-                <div className="bg-purple-50 p-4 rounded-lg">
-                  <h4 className="font-medium text-purple-800 mb-2">Latest AI Suggestions:</h4>
-                  <div className="space-y-2">
-                    {masterRecommendations.slice(0, 3).map((rec, index) => (
-                      <div key={index} className="flex justify-between items-center">
-                        <span className="text-sm">{rec.category}: {rec.item}</span>
-                        <span className="text-xs text-purple-600">{(rec.confidence * 100).toFixed(0)}% confident</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        );
-
-      case 'social_sharing':
-        return (
-          <SocialSharing
-            dishName={dishName || "Custom Creation"}
-            customerName={customerData?.name || "Guest"}
-            onShare={handleSocialShare}
-            onSkip={() => setCurrentStep('complete')}
-            isLoading={isLoading}
-          />
-        );
-
-      case 'complete':
-        return (
-          <div className="text-center py-8">
-            <div className="text-5xl mb-4">🎉</div>
-            <h2 className="text-2xl font-bold mb-4">Order Complete!</h2>
-            <p className="text-gray-600 mb-6">
-              Your order has been placed and will be ready shortly.
-            </p>
-            {customerData && (
-              <div className="bg-green-50 p-4 rounded-lg mb-6 inline-block">
-                                  <p className="text-green-800 font-medium">Thank you, {experimentCycleActive && participantName ? participantName : (customerData.name || "valued customer")}!</p>
-                <p className="text-green-600">We'll use your preferences for better recommendations next time.</p>
-              </div>
-            )}
-            <button
-              onClick={() => {
-                // Reset everything
-                setCurrentStep('start');
-                setProtein([]);
-                setSauce([]);
-                setBaseType('');
-                setBaseOption('');
-                setVeggies([]);
-                setDishName('');
-                setRecommendations({
-                  proteins: [],
-                  sauces: [],
-                  base_types: [],
-                  veggies: [],
-                  garnishes: [],
-                });
-                setSuggestedDishNames({
-                  name: "",
-                  alternatives: [],
-                  format_used: ""
-                });
-                setOrderData(null);
-                setOrderItems([]);
-              }}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-            >
-              Start New Order
-            </button>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
+  }, [currentTrialConfig, currentPhase]);
 
   // Render progress bar
   const renderProgressBar = () => {
@@ -2454,111 +894,133 @@ const OrderForm = ({
     }
   };
 
-  return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-orange-700">Curry Creations</h1>
-        <p className="text-gray-600">Create your perfect meal!</p>
-      </div>
+  // Log all props on mount
+  useEffect(() => {
+    console.log('[OrderForm] MOUNTED with props:', {
+      experimentConfig,
+      onExperimentOrderComplete,
+      experimentCycleActive,
+      currentPhase,
+      currentTrialInPhase,
+      aiRecommendations,
+      orderInstructions,
+      orderType,
+      participantName
+    });
+    return () => {
+      console.log('[OrderForm] UNMOUNTED');
+    };
+  }, []);
 
-      {/* Display experiment cycle information */}
-      {experimentCycleActive && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
-          <div className="flex justify-between items-center mb-3">
-            <div>
-              <h3 className="font-semibold text-gray-800">
-                {currentPhase === 'trial_a' ? '🔬 Trial A: Baseline Interface' : '🤖 Trial B: AI-Powered Interface'}
-              </h3>
-              <p className="text-sm text-gray-600">
-                Order {currentTrialInPhase} of 5 - Please complete your order to continue the experiment
-              </p>
+  // Call onStepChange on every step change
+  useEffect(() => {
+    onStepChange(currentStep);
+  }, [currentStep, onStepChange]);
+
+  // Now define renderStep
+  const renderStep = () => {
+    // 🚨 COMPREHENSIVE DEBUG LOGGING FOR TRIAL B ISSUES
+    console.log('🔍 === RENDER STEP DEBUG ===');
+    console.log('Current Step:', currentStep);
+    console.log('Current Phase:', currentPhase);
+    console.log('Experiment Cycle Active:', experimentCycleActive);
+    console.log('Current Trial Config:', currentTrialConfig);
+    console.log('Is Trial A:', isTrialA);
+    console.log('Is Trial B:', isTrialB);
+    console.log('Current Trial In Phase:', currentTrialInPhase);
+    console.log('Customer Data:', customerData);
+    console.log('Activity:', activity);
+    console.log('Protein:', protein);
+    console.log('Base Type/Option:', baseType, baseOption);
+    console.log('Sauce:', sauce);
+    console.log('Veggies:', veggies);
+    console.log('Garnishes:', garnishes);
+    console.log('Dish Name:', dishName);
+    console.log('🔍 === END DEBUG ===');
+
+    switch (currentStep) {
+      case 'start':
+        return (
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4">Welcome to Food Recommender</h2>
+            <button
+              onClick={handleStartOrder}
+              className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              Start Order
+            </button>
+          </div>
+        );
+      case 'camera_recognition':
+        return (
+          <div className="text-center">
+            <div className="mb-4">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
             </div>
-            <div className="text-right">
-              <div className="text-sm text-gray-500">Experiment Progress</div>
-              <div className="text-lg font-bold text-blue-600">
-                {currentPhase === 'trial_a' ? currentTrialInPhase : 5 + currentTrialInPhase}/10
-              </div>
+            <h2 className="text-xl font-semibold mb-2">Recognizing Customer...</h2>
+            <p className="text-gray-600">Please look at the camera</p>
+            <p className="text-sm text-gray-500 mt-2">Camera will automatically capture your image for recognition</p>
+          </div>
+        );
+      case 'customer':
+        return (
+          <CustomerIdentification
+            onCustomerIdentified={handleCustomerIdentified}
+          />
+        );
+      case 'dietary':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🥗 Dietary Preferences & Allergies</h2>
+            {/* ... dietary UI ... */}
+            <div className="mt-4 flex justify-between">
+              <button onClick={goToPreviousStep} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+              <button onClick={handleDietaryContinue} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Continue to Activity Selection</button>
             </div>
           </div>
+        );
+      case 'activity':
+        return (
+          <ActivitySelection
+            onActivitySelected={handleActivitySelection}
+            customerData={customerData}
+            experimentConfig={currentTrialConfig}
+          />
+        );
+      // ... other steps as previously implemented ...
+      default:
+        return null;
+    }
+  };
 
-          {/* Order Instructions */}
-          {orderInstructions && (
-            <div className={`p-3 rounded-lg border-l-4 ${
-              orderType === 'given_task'
-                ? 'bg-orange-50 border-orange-400'
-                : currentPhase === 'trial_b'
-                  ? 'bg-purple-50 border-purple-400'
-                  : 'bg-blue-50 border-blue-400'
-            }`}>
-              <h4 className={`font-semibold text-sm ${
-                orderType === 'given_task'
-                  ? 'text-orange-800'
-                  : currentPhase === 'trial_b'
-                    ? 'text-purple-800'
-                    : 'text-blue-800'
-              }`}>
-                {orderInstructions.title}
-              </h4>
-              <p className={`text-xs mt-1 ${
-                orderType === 'given_task'
-                  ? 'text-orange-700'
-                  : currentPhase === 'trial_b'
-                    ? 'text-purple-700'
-                    : 'text-blue-700'
-              }`}>
-                {orderInstructions.description}
-              </p>
-
-              {/* Display specific task instructions */}
-              {taskInstructions && (
-                <div className="mt-3 space-y-2">
-                  <div className="text-xs font-semibold text-orange-800">Required Selections:</div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="bg-white p-2 rounded border">
-                      <span className="font-medium">Protein:</span>
-                      <span className={`ml-1 ${taskCompliance.compliance.protein === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
-                        {taskInstructions.protein}
-                      </span>
-                    </div>
-                    <div className="bg-white p-2 rounded border">
-                      <span className="font-medium">Base:</span>
-                      <span className={`ml-1 ${taskCompliance.compliance.base === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
-                        {taskInstructions.base}
-                      </span>
-                    </div>
-                    <div className="bg-white p-2 rounded border">
-                      <span className="font-medium">Sauce:</span>
-                      <span className={`ml-1 ${taskCompliance.compliance.sauce === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
-                        {taskInstructions.sauce}
-                      </span>
-                    </div>
-                    <div className="bg-white p-2 rounded border">
-                      <span className="font-medium">Veggies:</span>
-                      <span className={`ml-1 ${taskCompliance.compliance.veggies === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
-                        {taskInstructions.veggies?.join(', ') || 'None'}
-                      </span>
-                    </div>
-                  </div>
-                  {taskInstructions.garnishes && taskInstructions.garnishes.length > 0 && (
-                    <div className="bg-white p-2 rounded border text-xs">
-                      <span className="font-medium">Garnishes:</span>
-                      <span className={`ml-1 ${taskCompliance.compliance.garnishes === false ? 'text-red-600 font-bold' : 'text-gray-700'}`}>
-                        {taskInstructions.garnishes.join(', ')}
-                      </span>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
+  return (
+    <div className="max-w-7xl mx-auto px-6">
+      {/* 🚨 DEBUG BANNER - REMOVE AFTER TESTING */}
+      <div className="mb-4 p-4 bg-red-100 border-2 border-red-500 rounded-lg">
+        <h3 className="font-bold text-red-800">🔧 DEBUG MODE - Changes Active!</h3>
+        <div className="text-sm text-red-700 grid grid-cols-2 gap-2 mb-2">
+          <div><strong>Current Step:</strong> {currentStep}</div>
+          <div><strong>Current Phase:</strong> {currentPhase}</div>
+          <div><strong>Is Trial B:</strong> {isTrialB ? '✅ YES' : '❌ NO'}</div>
+          <div><strong>Experiment Active:</strong> {experimentCycleActive ? '✅ YES' : '❌ NO'}</div>
         </div>
-      )}
+        <div className="border-t border-red-300 pt-2">
+          <h4 className="font-bold text-red-800 mb-1">Current Selections:</h4>
+          <div className="text-xs grid grid-cols-3 gap-2">
+            <div><strong>Protein:</strong> {protein.length > 0 ? protein.join(', ') : 'None'}</div>
+            <div><strong>Base:</strong> {baseType && baseOption ? `${baseType} - ${baseOption}` : 'None'}</div>
+            <div><strong>Sauce:</strong> {sauce.length > 0 ? sauce.join(', ') : 'None'}</div>
+            <div><strong>Veggies:</strong> {veggies.length > 0 ? veggies.join(', ') : 'None'}</div>
+            <div><strong>Garnishes:</strong> {garnishes.length > 0 ? garnishes.join(', ') : 'None'}</div>
+            <div><strong>Dish Name:</strong> {dishName || 'None'}</div>
+          </div>
+        </div>
+      </div>
 
-      {/* Display trial information and instructions */}
-      <TrialHeader experimentConfig={currentTrialConfig} />
-
-      {renderError()}
+      {/* Show progress bar if we have multiple steps */}
       {renderProgressBar()}
+
+      {error && renderError()}
 
       <div className="bg-white rounded-lg shadow-md p-6 relative">
         {isLoading && currentStep !== 'start' && (

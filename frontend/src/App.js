@@ -38,6 +38,20 @@ function App() {
     trialSequence: []
   });
 
+  // Persistent debug info for experiment state
+  const [orderFormStep, setOrderFormStep] = useState('');
+
+  // Debug banner component
+  const DebugBanner = () => (
+    <div style={{position:'fixed',top:0,left:0,right:0,zIndex:1000}} className="bg-red-700 text-white text-xs p-2 font-mono">
+      <span>EXPERIMENT ACTIVE: <b>{experimentCycleActive ? 'YES' : 'NO'}</b> | </span>
+      <span>PHASE: <b>{currentPhase}</b> | </span>
+      <span>TRIAL: <b>{currentTrialInPhase}</b> | </span>
+      <span>PARTICIPANT: <b>{participantName}</b> | </span>
+      <span>ORDERFORM STEP: <b>{orderFormStep}</b></span>
+    </div>
+  );
+
   const handleExperimentStart = (config) => {
     setExperimentConfig(config);
     setShowExperimentSetup(false);
@@ -510,6 +524,11 @@ function App() {
     console.log(`📊 Exported ${moodData.length} mood tracking data points`);
   };
 
+  // Pass a callback to OrderForm to update the step in the debug banner
+  const handleOrderFormStepChange = (step) => {
+    setOrderFormStep(step);
+  };
+
   // Show experiment setup if no experiment is configured
   if (showExperimentSetup) {
     return (
@@ -577,6 +596,7 @@ function App() {
 
   return (
     <ExperimentProvider>
+      <DebugBanner />
       <OrderProvider>
         <Router>
           <div className="min-h-screen bg-gray-100 py-8">
@@ -812,19 +832,23 @@ function App() {
             {/* Main Routes - Only show if not in break or complete phase */}
             {(!experimentCycleActive || (currentPhase !== 'break' && currentPhase !== 'complete')) && (
               <Routes>
-                <Route path="/" element={
-                  <OrderForm
-                    experimentConfig={experimentConfig}
-                    onExperimentOrderComplete={experimentCycleActive ? handleExperimentOrderComplete : undefined}
-                    experimentCycleActive={experimentCycleActive}
-                    currentPhase={currentPhase}
-                    currentTrialInPhase={currentTrialInPhase}
-                    aiRecommendations={aiRecommendations}
-                    orderInstructions={experimentCycleActive ? getOrderInstructions() : null}
-                    orderType={experimentCycleActive ? getCurrentOrderType() : 'standard'}
-                    participantName={participantName}
-                  />
-                } />
+                <Route
+                  path="/"
+                  element={
+                    <OrderForm
+                      experimentConfig={experimentConfig}
+                      onExperimentOrderComplete={handleExperimentOrderComplete}
+                      experimentCycleActive={experimentCycleActive}
+                      currentPhase={currentPhase}
+                      currentTrialInPhase={currentTrialInPhase}
+                      aiRecommendations={aiRecommendations}
+                      orderInstructions={getOrderInstructions()}
+                      orderType={getCurrentOrderType()}
+                      participantName={participantName}
+                      onStepChange={handleOrderFormStepChange}
+                    />
+                  }
+                />
                 <Route path="/report" element={<ExperimentReport />} />
                 <Route path="/measurements" element={<MeasurementDemo />} />
               </Routes>

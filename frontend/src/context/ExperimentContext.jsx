@@ -19,6 +19,8 @@ export const ExperimentProvider = ({ children }) => {
     lastUpdated: null
   });
 
+  const [stepLock, setStepLock] = useState(false);
+
   const timerRef = useRef({});
   const moodRef = useRef({});
 
@@ -124,10 +126,15 @@ export const ExperimentProvider = ({ children }) => {
   // Get current trial configuration
   const getCurrentTrialConfig = () => {
     if (!experimentConfig) return null;
-
     const trialSchedule = experimentConfig.trialSchedule || [];
-    const trialInfo = trialSchedule.find(t => t.trialNumber === currentTrial) || {};
-
+    const trialInfo = trialSchedule.find(t => t.trialNumber === currentTrial);
+    if (!trialInfo) {
+      console.warn('[ExperimentContext] No trialInfo found for currentTrial', currentTrial, 'Returning experimentConfig fallback.');
+      return {
+        ...experimentConfig,
+        trialNumber: currentTrial
+      };
+    }
     return {
       ...experimentConfig,
       ...trialInfo,
