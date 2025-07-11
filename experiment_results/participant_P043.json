@@ -1,0 +1,726 @@
+{
+  "participant": {
+    "id": "P043",
+    "name": "Elizabeth Allen",
+    "age": 52,
+    "gender": "Female",
+    "occupation": "Consultant",
+    "tech_savviness": 0.3408787504054801,
+    "dietary_preferences": [],
+    "allergies": [
+      "sesame",
+      "eggs"
+    ],
+    "decision_speed": 4.295863623619831,
+    "attention_span": 36.380952595890676,
+    "experiment_phase": "B",
+    "current_step": "measurements",
+    "selections": {
+      "experiment_started": true,
+      "phone": "4156201490",
+      "restrictions": [],
+      "allergies": [
+        "sesame",
+        "eggs"
+      ],
+      "activity": "exercise",
+      "protein": [
+        {
+          "name": "Chicken",
+          "price": 4.5,
+          "calories": 250,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 20,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 3.15,
+              "calories": 175,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 4.5,
+              "calories": 250,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 6.3,
+              "calories": 350,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "protein_portion": "extra",
+      "base_type": "Wrap",
+      "base_option": {
+        "name": "Pitta",
+        "price": 0.0,
+        "calories": 200,
+        "status": "low_stock",
+        "wait_time": null,
+        "stock_level": 6
+      },
+      "sauce": [
+        {
+          "name": "Yogurt/Raita",
+          "price": 0.0,
+          "calories": 60,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 9,
+          "portion_sizes": {
+            "low": {
+              "name": "Light",
+              "price": 0.0,
+              "calories": 36,
+              "multiplier": 0.6
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.0,
+              "calories": 60,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Extra",
+              "price": 0.0,
+              "calories": 90,
+              "multiplier": 1.5
+            }
+          }
+        }
+      ],
+      "sauce_portion": "low",
+      "veggies": [
+        {
+          "name": "Lettuce",
+          "price": 0.5,
+          "calories": 5,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 11,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.35,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.5,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.7,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "veggie_portions": {
+        "Lettuce": "extra"
+      },
+      "garnishes": [
+        {
+          "name": "Chili",
+          "price": 0.25,
+          "calories": 5,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 6,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        },
+        {
+          "name": "Mint",
+          "price": 0.25,
+          "calories": 5,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 18,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "garnish_portions": {
+        "Chili": "low",
+        "Mint": "low"
+      },
+      "dish_name": "Custom Creation",
+      "refreshment": {
+        "name": "Masala Chai",
+        "price": 3.5,
+        "reason": "Perfect for longer waits"
+      },
+      "order_reviewed": true,
+      "nasatlx": {
+        "mental_demand": 4,
+        "physical_demand": 10,
+        "temporal_demand": 15,
+        "performance": 20,
+        "effort": 14,
+        "frustration": 11
+      },
+      "sus": [
+        3,
+        3,
+        4,
+        4,
+        3,
+        4,
+        1,
+        4,
+        5,
+        4
+      ],
+      "satisfaction": {
+        "overall_satisfaction": 7,
+        "ease_of_use": 2,
+        "recommendation_quality": 1,
+        "agent_helpfulness": 7
+      }
+    },
+    "start_time": "2025-07-11T07:52:19.387749",
+    "completion_time": "2025-07-11T07:53:22.465917",
+    "nasatlx_scores": {
+      "mental_demand": 4,
+      "physical_demand": 10,
+      "temporal_demand": 15,
+      "performance": 20,
+      "effort": 14,
+      "frustration": 11
+    },
+    "sus_scores": [
+      3,
+      3,
+      4,
+      4,
+      3,
+      4,
+      1,
+      4,
+      5,
+      4
+    ],
+    "satisfaction_scores": {
+      "overall_satisfaction": 7,
+      "ease_of_use": 2,
+      "recommendation_quality": 1,
+      "agent_helpfulness": 7
+    },
+    "agent_interactions": [
+      {
+        "participant_id": "P043",
+        "agent_type": "context_intelligence",
+        "recommendation_content": "Queue position: #10",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772929"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "preference_learning",
+        "recommendation_content": "Based on your previous orders, you might enjoy this combination",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772944"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "preparation_time",
+        "recommendation_content": "Your order will be ready at 08:24",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772948"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Masala Chai",
+        "action": "accepted",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772961"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Mango Lassi",
+        "action": "rejected",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772965"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "context_intelligence",
+        "recommendation_content": "Queue position: #10",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772929"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "preference_learning",
+        "recommendation_content": "Based on your previous orders, you might enjoy this combination",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772944"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "preparation_time",
+        "recommendation_content": "Your order will be ready at 08:24",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772948"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Masala Chai",
+        "action": "accepted",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772961"
+      },
+      {
+        "participant_id": "P043",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Mango Lassi",
+        "action": "rejected",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:53:05.772965"
+      }
+    ]
+  },
+  "experiment": {
+    "participant_id": "P043",
+    "phase": "B",
+    "start_time": "2025-07-11T07:52:19.387749",
+    "steps": [
+      {
+        "participant_id": "P043",
+        "step": "start",
+        "timestamp": "2025-07-11T07:52:19.387879",
+        "selections": {
+          "experiment_started": true
+        },
+        "time_spent": 1.2633888721466064,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "customer_identification",
+        "timestamp": "2025-07-11T07:52:21.362098",
+        "selections": {
+          "phone": "4156201490"
+        },
+        "time_spent": 3.593170166015625,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "dietary_preferences",
+        "timestamp": "2025-07-11T07:52:25.667106",
+        "selections": {
+          "restrictions": [],
+          "allergies": [
+            "sesame",
+            "eggs"
+          ]
+        },
+        "time_spent": 4.723225116729736,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "activity_selection",
+        "timestamp": "2025-07-11T07:52:30.952910",
+        "selections": {
+          "activity": "exercise"
+        },
+        "time_spent": 2.1147301197052,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "protein_selection",
+        "timestamp": "2025-07-11T07:52:34.785706",
+        "selections": {
+          "protein": [
+            {
+              "name": "Chicken",
+              "price": 4.5,
+              "calories": 250,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 20,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 3.15,
+                  "calories": 175,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 4.5,
+                  "calories": 250,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 6.3,
+                  "calories": 350,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "protein_portion": "extra"
+        },
+        "time_spent": 4.125180244445801,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "base_selection",
+        "timestamp": "2025-07-11T07:52:40.466158",
+        "selections": {
+          "base_type": "Wrap",
+          "base_option": {
+            "name": "Pitta",
+            "price": 0.0,
+            "calories": 200,
+            "status": "low_stock",
+            "wait_time": null,
+            "stock_level": 6
+          }
+        },
+        "time_spent": 4.9086480140686035,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "sauce_selection",
+        "timestamp": "2025-07-11T07:52:46.383231",
+        "selections": {
+          "sauce": [
+            {
+              "name": "Yogurt/Raita",
+              "price": 0.0,
+              "calories": 60,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 9,
+              "portion_sizes": {
+                "low": {
+                  "name": "Light",
+                  "price": 0.0,
+                  "calories": 36,
+                  "multiplier": 0.6
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.0,
+                  "calories": 60,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Extra",
+                  "price": 0.0,
+                  "calories": 90,
+                  "multiplier": 1.5
+                }
+              }
+            }
+          ],
+          "sauce_portion": "low"
+        },
+        "time_spent": 3.9822208881378174,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "veggies_selection",
+        "timestamp": "2025-07-11T07:52:51.463527",
+        "selections": {
+          "veggies": [
+            {
+              "name": "Lettuce",
+              "price": 0.5,
+              "calories": 5,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 11,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.35,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.5,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.7,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "veggie_portions": {
+            "Lettuce": "extra"
+          }
+        },
+        "time_spent": 0.011131763458251953,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "garnishes_selection",
+        "timestamp": "2025-07-11T07:52:53.112354",
+        "selections": {
+          "garnishes": [
+            {
+              "name": "Chili",
+              "price": 0.25,
+              "calories": 5,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 6,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            },
+            {
+              "name": "Mint",
+              "price": 0.25,
+              "calories": 5,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 18,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "garnish_portions": {
+            "Chili": "low",
+            "Mint": "low"
+          }
+        },
+        "time_spent": 0.007303953170776367,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "dish_naming",
+        "timestamp": "2025-07-11T07:52:54.683211",
+        "selections": {
+          "dish_name": "Custom Creation"
+        },
+        "time_spent": 3.3723978996276855,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T07:52:58.977762",
+        "selections": {
+          "refreshment": {
+            "name": "Masala Chai",
+            "price": 3.5,
+            "reason": "Perfect for longer waits"
+          }
+        },
+        "time_spent": 6.795191049575806,
+        "errors": [],
+        "agent_interactions": [
+          {
+            "participant_id": "P043",
+            "agent_type": "context_intelligence",
+            "recommendation_content": "Queue position: #10",
+            "action": "shown",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T07:53:05.772929"
+          },
+          {
+            "participant_id": "P043",
+            "agent_type": "preference_learning",
+            "recommendation_content": "Based on your previous orders, you might enjoy this combination",
+            "action": "shown",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T07:53:05.772944"
+          },
+          {
+            "participant_id": "P043",
+            "agent_type": "preparation_time",
+            "recommendation_content": "Your order will be ready at 08:24",
+            "action": "shown",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T07:53:05.772948"
+          },
+          {
+            "participant_id": "P043",
+            "agent_type": "refreshment_suggestion",
+            "recommendation_content": "Masala Chai",
+            "action": "accepted",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T07:53:05.772961"
+          },
+          {
+            "participant_id": "P043",
+            "agent_type": "refreshment_suggestion",
+            "recommendation_content": "Mango Lassi",
+            "action": "rejected",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T07:53:05.772965"
+          }
+        ]
+      },
+      {
+        "participant_id": "P043",
+        "step": "order_summary",
+        "timestamp": "2025-07-11T07:53:07.309055",
+        "selections": {
+          "order_reviewed": true
+        },
+        "time_spent": 3.899401903152466,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P043",
+        "step": "measurements",
+        "timestamp": "2025-07-11T07:53:12.118003",
+        "selections": {
+          "nasatlx": {
+            "mental_demand": 4,
+            "physical_demand": 10,
+            "temporal_demand": 15,
+            "performance": 20,
+            "effort": 14,
+            "frustration": 11
+          },
+          "sus": [
+            3,
+            3,
+            4,
+            4,
+            3,
+            4,
+            1,
+            4,
+            5,
+            4
+          ],
+          "satisfaction": {
+            "overall_satisfaction": 7,
+            "ease_of_use": 2,
+            "recommendation_quality": 1,
+            "agent_helpfulness": 7
+          }
+        },
+        "time_spent": 10.347886085510254,
+        "errors": [],
+        "agent_interactions": []
+      }
+    ],
+    "total_time": 63.078168,
+    "errors": [],
+    "completion_time": "2025-07-11T07:53:22.465917"
+  }
+}

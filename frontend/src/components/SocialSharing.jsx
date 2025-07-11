@@ -53,7 +53,8 @@ const SocialSharing = ({
   // Generate default caption
   useEffect(() => {
     if (!caption && dishName) {
-      const defaultCaption = `Just enjoyed my delicious ${dishName} at Curry Creations! 😋 #FoodLover #CurryCreations #${customerName.replace(/\s+/g, '')}sMasterpiece`;
+      const safeCustomerName = customerName || 'Chef';
+      const defaultCaption = `Just enjoyed my delicious ${dishName} at Curry Creations! 😋 #FoodLover #CurryCreations #${safeCustomerName.replace(/\s+/g, '')}sMasterpiece`;
       setCaption(defaultCaption);
       setCaptionLength(defaultCaption.length);
     }

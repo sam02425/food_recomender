@@ -1,0 +1,65 @@
+.status-badge {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  margin-left: 0.5rem;
+}
+
+.status-low-stock {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #f59e0b;
+}
+
+.status-preparing {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #3b82f6;
+}
+
+.status-out-of-stock {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #ef4444;
+}
+
+.stock-indicator {
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.125rem 0.375rem;
+  border-radius: 0.25rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+.stock-high {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.stock-medium {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.stock-low {
+  background-color: #fed7aa;
+  color: #c2410c;
+}
+
+.stock-critical {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.wait-time {
+  font-size: 0.75rem;
+  color: #1e40af;
+  background-color: #dbeafe;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}

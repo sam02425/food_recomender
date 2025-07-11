@@ -1,0 +1,691 @@
+{
+  "participant": {
+    "id": "P007",
+    "name": "Ella Scott",
+    "age": 32,
+    "gender": "Male",
+    "occupation": "Administrator",
+    "tech_savviness": 0.5197972577027621,
+    "dietary_preferences": [],
+    "allergies": [],
+    "decision_speed": 7.559637823057033,
+    "attention_span": 44.30455918413494,
+    "experiment_phase": "A",
+    "current_step": "measurements",
+    "selections": {
+      "experiment_started": true,
+      "phone": "4155140330",
+      "restrictions": [],
+      "allergies": [],
+      "activity": "exercise",
+      "protein": [
+        {
+          "name": "Chicken",
+          "price": 4.5,
+          "calories": 250,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 20,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 3.15,
+              "calories": 175,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 4.5,
+              "calories": 250,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 6.3,
+              "calories": 350,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "protein_portion": "medium",
+      "base_type": "Biryani",
+      "base_option": {
+        "name": "Rice",
+        "price": 0.0,
+        "calories": 300,
+        "status": "low_stock",
+        "wait_time": null,
+        "stock_level": 6
+      },
+      "sauce": [
+        {
+          "name": "Malai Masala",
+          "price": 0.0,
+          "calories": 150,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 1,
+          "portion_sizes": {
+            "low": {
+              "name": "Light",
+              "price": 0.0,
+              "calories": 90,
+              "multiplier": 0.6
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.0,
+              "calories": 150,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Extra",
+              "price": 0.0,
+              "calories": 225,
+              "multiplier": 1.5
+            }
+          }
+        }
+      ],
+      "sauce_portion": "extra",
+      "veggies": [
+        {
+          "name": "Carrot",
+          "price": 0.75,
+          "calories": 30,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 37,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.52,
+              "calories": 21,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.75,
+              "calories": 30,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 1.05,
+              "calories": 42,
+              "multiplier": 1.4
+            }
+          }
+        },
+        {
+          "name": "Tomato",
+          "price": 0.5,
+          "calories": 25,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 37,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.35,
+              "calories": 18,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.5,
+              "calories": 25,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.7,
+              "calories": 35,
+              "multiplier": 1.4
+            }
+          }
+        },
+        {
+          "name": "Cucumber",
+          "price": 0.5,
+          "calories": 15,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 26,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.35,
+              "calories": 10,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.5,
+              "calories": 15,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.7,
+              "calories": 21,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "veggie_portions": {
+        "Carrot": "low",
+        "Tomato": "extra",
+        "Cucumber": "medium"
+      },
+      "garnishes": [
+        {
+          "name": "Lemon",
+          "price": 0.25,
+          "calories": 5,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 4,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        },
+        {
+          "name": "Cilantro",
+          "price": 0.25,
+          "calories": 5,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 5,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "garnish_portions": {
+        "Lemon": "low",
+        "Cilantro": "low"
+      },
+      "dish_name": "Ella's Special",
+      "order_reviewed": true,
+      "nasatlx": {
+        "mental_demand": 6,
+        "physical_demand": 5,
+        "temporal_demand": 4,
+        "performance": 10,
+        "effort": 20,
+        "frustration": 9
+      },
+      "sus": [
+        3,
+        4,
+        4,
+        1,
+        1,
+        5,
+        2,
+        4,
+        1,
+        5
+      ],
+      "satisfaction": {
+        "overall_satisfaction": 7,
+        "ease_of_use": 3,
+        "recommendation_quality": 5,
+        "agent_helpfulness": null
+      }
+    },
+    "start_time": "2025-07-11T06:29:28.518166",
+    "completion_time": "2025-07-11T06:30:34.240957",
+    "nasatlx_scores": {
+      "mental_demand": 6,
+      "physical_demand": 5,
+      "temporal_demand": 4,
+      "performance": 10,
+      "effort": 20,
+      "frustration": 9
+    },
+    "sus_scores": [
+      3,
+      4,
+      4,
+      1,
+      1,
+      5,
+      2,
+      4,
+      1,
+      5
+    ],
+    "satisfaction_scores": {
+      "overall_satisfaction": 7,
+      "ease_of_use": 3,
+      "recommendation_quality": 5,
+      "agent_helpfulness": null
+    },
+    "agent_interactions": []
+  },
+  "experiment": {
+    "participant_id": "P007",
+    "phase": "A",
+    "start_time": "2025-07-11T06:29:28.518166",
+    "steps": [
+      {
+        "participant_id": "P007",
+        "step": "start",
+        "timestamp": "2025-07-11T06:29:28.518263",
+        "selections": {
+          "experiment_started": true
+        },
+        "time_spent": 1.576280117034912,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "customer_identification",
+        "timestamp": "2025-07-11T06:29:31.387759",
+        "selections": {
+          "phone": "4155140330"
+        },
+        "time_spent": 3.1428287029266357,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "dietary_preferences",
+        "timestamp": "2025-07-11T06:29:35.063989",
+        "selections": {
+          "restrictions": [],
+          "allergies": []
+        },
+        "time_spent": 4.4380857944488525,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "activity_selection",
+        "timestamp": "2025-07-11T06:29:40.735882",
+        "selections": {
+          "activity": "exercise"
+        },
+        "time_spent": 2.642953872680664,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "protein_selection",
+        "timestamp": "2025-07-11T06:29:45.359521",
+        "selections": {
+          "protein": [
+            {
+              "name": "Chicken",
+              "price": 4.5,
+              "calories": 250,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 20,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 3.15,
+                  "calories": 175,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 4.5,
+                  "calories": 250,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 6.3,
+                  "calories": 350,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "protein_portion": "medium"
+        },
+        "time_spent": 6.788750171661377,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "base_selection",
+        "timestamp": "2025-07-11T06:29:53.658742",
+        "selections": {
+          "base_type": "Biryani",
+          "base_option": {
+            "name": "Rice",
+            "price": 0.0,
+            "calories": 300,
+            "status": "low_stock",
+            "wait_time": null,
+            "stock_level": 6
+          }
+        },
+        "time_spent": 8.305469036102295,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "sauce_selection",
+        "timestamp": "2025-07-11T06:30:03.401627",
+        "selections": {
+          "sauce": [
+            {
+              "name": "Malai Masala",
+              "price": 0.0,
+              "calories": 150,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 1,
+              "portion_sizes": {
+                "low": {
+                  "name": "Light",
+                  "price": 0.0,
+                  "calories": 90,
+                  "multiplier": 0.6
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.0,
+                  "calories": 150,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Extra",
+                  "price": 0.0,
+                  "calories": 225,
+                  "multiplier": 1.5
+                }
+              }
+            }
+          ],
+          "sauce_portion": "extra"
+        },
+        "time_spent": 7.829721927642822,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "veggies_selection",
+        "timestamp": "2025-07-11T06:30:13.239364",
+        "selections": {
+          "veggies": [
+            {
+              "name": "Carrot",
+              "price": 0.75,
+              "calories": 30,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 37,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.52,
+                  "calories": 21,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.75,
+                  "calories": 30,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 1.05,
+                  "calories": 42,
+                  "multiplier": 1.4
+                }
+              }
+            },
+            {
+              "name": "Tomato",
+              "price": 0.5,
+              "calories": 25,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 37,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.35,
+                  "calories": 18,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.5,
+                  "calories": 25,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.7,
+                  "calories": 35,
+                  "multiplier": 1.4
+                }
+              }
+            },
+            {
+              "name": "Cucumber",
+              "price": 0.5,
+              "calories": 15,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 26,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.35,
+                  "calories": 10,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.5,
+                  "calories": 15,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.7,
+                  "calories": 21,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "veggie_portions": {
+            "Carrot": "low",
+            "Tomato": "extra",
+            "Cucumber": "medium"
+          }
+        },
+        "time_spent": 0.050137996673583984,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "garnishes_selection",
+        "timestamp": "2025-07-11T06:30:14.187458",
+        "selections": {
+          "garnishes": [
+            {
+              "name": "Lemon",
+              "price": 0.25,
+              "calories": 5,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 4,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            },
+            {
+              "name": "Cilantro",
+              "price": 0.25,
+              "calories": 5,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 5,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "garnish_portions": {
+            "Lemon": "low",
+            "Cilantro": "low"
+          }
+        },
+        "time_spent": 0.007905006408691406,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "dish_naming",
+        "timestamp": "2025-07-11T06:30:15.551914",
+        "selections": {
+          "dish_name": "Ella's Special"
+        },
+        "time_spent": 3.2512309551239014,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "order_summary",
+        "timestamp": "2025-07-11T06:30:19.681068",
+        "selections": {
+          "order_reviewed": true
+        },
+        "time_spent": 2.3486759662628174,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P007",
+        "step": "measurements",
+        "timestamp": "2025-07-11T06:30:23.304937",
+        "selections": {
+          "nasatlx": {
+            "mental_demand": 6,
+            "physical_demand": 5,
+            "temporal_demand": 4,
+            "performance": 10,
+            "effort": 20,
+            "frustration": 9
+          },
+          "sus": [
+            3,
+            4,
+            4,
+            1,
+            1,
+            5,
+            2,
+            4,
+            1,
+            5
+          ],
+          "satisfaction": {
+            "overall_satisfaction": 7,
+            "ease_of_use": 3,
+            "recommendation_quality": 5,
+            "agent_helpfulness": null
+          }
+        },
+        "time_spent": 10.935993194580078,
+        "errors": [],
+        "agent_interactions": []
+      }
+    ],
+    "total_time": 65.722791,
+    "errors": [],
+    "completion_time": "2025-07-11T06:30:34.240957"
+  }
+}

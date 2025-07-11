@@ -1,0 +1,298 @@
+{
+  "experiment_design": {
+    "title": "AI Agent-Enhanced Food Ordering System: A Controlled Human Experiment",
+    "description": "Automated simulation of 50 human participants testing the effectiveness of AI agents in food ordering interfaces",
+    "version": "1.0.0",
+    "date": "2024",
+    "researcher": "Experiment System"
+  },
+  "participant_configuration": {
+    "total_participants": 50,
+    "phase_distribution": {
+      "phase_a": 25,
+      "phase_b": 25
+    },
+    "demographics": {
+      "age_range": [18, 65],
+      "gender_options": ["Male", "Female", "Non-binary"],
+      "occupations": [
+        "Software Engineer", "Teacher", "Nurse", "Marketing Manager", "Student",
+        "Accountant", "Designer", "Sales Representative", "Doctor", "Chef",
+        "Writer", "Engineer", "Administrator", "Consultant", "Artist",
+        "Manager", "Analyst", "Coordinator", "Specialist", "Assistant"
+      ]
+    },
+    "behavioral_parameters": {
+      "decision_speed_range": [2.0, 8.0],
+      "attention_span_range": [15.0, 45.0],
+      "tech_savviness_factors": {
+        "age_under_30_bonus": 0.3,
+        "age_over_50_penalty": -0.2,
+        "tech_occupation_bonus": 0.2,
+        "random_variation": [-0.2, 0.2]
+      }
+    }
+  },
+  "experimental_tasks": {
+    "task_1": {
+      "name": "Customer Identification",
+      "description": "Enter phone number to identify customer and load previous preferences",
+      "expected_duration": [2.0, 5.0],
+      "success_criteria": "Phone number entered successfully",
+      "ui_elements": ["phone_input_field", "continue_button"]
+    },
+    "task_2": {
+      "name": "Dietary Preferences Setup",
+      "description": "Select dietary restrictions and allergies",
+      "expected_duration": [3.0, 8.0],
+      "success_criteria": "Preferences saved and menu filtered accordingly",
+      "ui_elements": ["dietary_checkboxes", "allergy_checkboxes", "save_button"]
+    },
+    "task_3": {
+      "name": "Activity Context Selection",
+      "description": "Choose current activity context for personalized recommendations",
+      "expected_duration": [2.0, 4.0],
+      "success_criteria": "Activity selected and recommendations generated",
+      "ui_elements": ["activity_cards", "work", "exercise", "relaxation"]
+    },
+    "task_4": {
+      "name": "Protein Selection",
+      "description": "Choose protein options with portion size selection",
+      "expected_duration": [3.0, 6.0],
+      "success_criteria": "Protein selected with appropriate portion size",
+      "ui_elements": ["protein_grid", "portion_buttons", "calorie_display"]
+    },
+    "task_5": {
+      "name": "Base Selection",
+      "description": "Choose base type and specific option",
+      "expected_duration": [2.0, 5.0],
+      "success_criteria": "Base type and option selected",
+      "ui_elements": ["base_type_tabs", "base_option_grid", "price_display"]
+    },
+    "task_6": {
+      "name": "Sauce Selection",
+      "description": "Choose sauce with portion size options",
+      "expected_duration": [2.0, 4.0],
+      "success_criteria": "Sauce selected with portion size",
+      "ui_elements": ["sauce_grid", "portion_buttons", "calorie_display"]
+    },
+    "task_7": {
+      "name": "Vegetable Selection",
+      "description": "Select multiple vegetables with portion sizes",
+      "expected_duration": [3.0, 7.0],
+      "success_criteria": "Vegetables selected with portion sizes",
+      "ui_elements": ["veggie_grid", "multi_select", "portion_buttons"]
+    },
+    "task_8": {
+      "name": "Garnish Selection",
+      "description": "Select garnishes with portion sizes",
+      "expected_duration": [2.0, 4.0],
+      "success_criteria": "Garnishes selected with portion sizes",
+      "ui_elements": ["garnish_grid", "multi_select", "portion_buttons"]
+    },
+    "task_9": {
+      "name": "Dish Naming",
+      "description": "Generate or select a name for the custom dish",
+      "expected_duration": [2.0, 5.0],
+      "success_criteria": "Dish name assigned",
+      "ui_elements": ["name_suggestions", "custom_name_input", "confirm_button"]
+    },
+    "task_10": {
+      "name": "Agent Recommendations (Phase B Only)",
+      "description": "Review and interact with AI agent recommendations",
+      "expected_duration": [3.0, 8.0],
+      "success_criteria": "Agent recommendations reviewed and optionally accepted",
+      "ui_elements": ["agent_panel", "recommendation_cards", "accept_button", "refreshment_suggestions"]
+    },
+    "task_11": {
+      "name": "Order Review",
+      "description": "Review complete order with pricing and nutritional information",
+      "expected_duration": [2.0, 4.0],
+      "success_criteria": "Order reviewed and confirmed",
+      "ui_elements": ["order_summary", "price_breakdown", "calorie_total", "confirm_order"]
+    },
+    "task_12": {
+      "name": "Assessment Completion",
+      "description": "Complete NASA-TLX, SUS, and satisfaction questionnaires",
+      "expected_duration": [5.0, 12.0],
+      "success_criteria": "All assessments completed",
+      "ui_elements": ["nasatlx_form", "sus_questionnaire", "satisfaction_survey"]
+    }
+  },
+  "agent_testing_specifications": {
+    "context_intelligence_agent": {
+      "purpose": "Analyze user context and provide situational recommendations",
+      "test_scenarios": [
+        "Dietary restriction conflicts",
+        "Allergy warnings",
+        "Activity-based suggestions",
+        "Inventory status awareness"
+      ],
+      "expected_behaviors": [
+        "Detect incompatible selections",
+        "Suggest alternatives",
+        "Provide context-aware recommendations",
+        "Warn about preparation times"
+      ]
+    },
+    "preference_learning_agent": {
+      "purpose": "Learn from user selections and provide personalized recommendations",
+      "test_scenarios": [
+        "Previous order analysis",
+        "Pattern recognition",
+        "Personalized suggestions",
+        "Preference adaptation"
+      ],
+      "expected_behaviors": [
+        "Remember previous choices",
+        "Identify preference patterns",
+        "Suggest similar items",
+        "Adapt to changing preferences"
+      ]
+    },
+    "preparation_time_agent": {
+      "purpose": "Optimize order preparation time and queue management",
+      "test_scenarios": [
+        "Queue position analysis",
+        "Preparation time estimation",
+        "Refreshment suggestions",
+        "Optimization strategies"
+      ],
+      "expected_behaviors": [
+        "Calculate accurate preparation times",
+        "Suggest queue optimization",
+        "Recommend refreshments for long waits",
+        "Provide time-saving suggestions"
+      ]
+    }
+  },
+  "measurement_instruments": {
+    "nasa_tlx": {
+      "description": "NASA Task Load Index for workload assessment",
+      "dimensions": [
+        "mental_demand",
+        "physical_demand",
+        "temporal_demand",
+        "performance",
+        "effort",
+        "frustration"
+      ],
+      "scale": "0-20",
+      "purpose": "Measure cognitive workload and task difficulty"
+    },
+    "system_usability_scale": {
+      "description": "System Usability Scale for interface evaluation",
+      "questions": 10,
+      "scale": "1-5 per question, converted to 0-100",
+      "purpose": "Evaluate overall system usability and user experience"
+    },
+    "satisfaction_survey": {
+      "description": "Custom satisfaction assessment",
+      "dimensions": [
+        "overall_satisfaction",
+        "ease_of_use",
+        "recommendation_quality",
+        "agent_helpfulness"
+      ],
+      "scale": "1-7",
+      "purpose": "Measure user satisfaction with specific aspects"
+    }
+  },
+  "data_collection_parameters": {
+    "timing_metrics": [
+      "step_completion_time",
+      "total_experiment_duration",
+      "decision_making_time",
+      "agent_interaction_time"
+    ],
+    "interaction_metrics": [
+      "selections_made",
+      "errors_committed",
+      "agent_recommendations_accepted",
+      "refreshment_purchases"
+    ],
+    "quality_metrics": [
+      "task_completion_rate",
+      "error_rate",
+      "satisfaction_scores",
+      "usability_scores"
+    ],
+    "agent_specific_metrics": [
+      "recommendation_accuracy",
+      "acceptance_rate",
+      "user_feedback",
+      "interaction_success_rate"
+    ]
+  },
+  "experimental_hypotheses": {
+    "h1": {
+      "statement": "AI agent-enhanced interfaces will improve user satisfaction compared to baseline interfaces",
+      "measurement": "Satisfaction scores and SUS scores",
+      "expected_result": "Phase B > Phase A"
+    },
+    "h2": {
+      "statement": "AI agents will reduce task completion time through intelligent assistance",
+      "measurement": "Total experiment duration and step completion times",
+      "expected_result": "Phase B < Phase A"
+    },
+    "h3": {
+      "statement": "Agent recommendations will be accepted at a rate above 40%",
+      "measurement": "Recommendation acceptance rate",
+      "expected_result": "Acceptance rate > 40%"
+    },
+    "h4": {
+      "statement": "Users will report lower cognitive workload with agent assistance",
+      "measurement": "NASA-TLX scores",
+      "expected_result": "Phase B < Phase A"
+    }
+  },
+  "quality_assurance": {
+    "data_validation": [
+      "Participant ID uniqueness",
+      "Complete data collection",
+      "Realistic timing patterns",
+      "Consistent demographic distribution"
+    ],
+    "bias_prevention": [
+      "Random phase assignment",
+      "Balanced demographic distribution",
+      "Unbiased task presentation",
+      "Neutral measurement instruments"
+    ],
+    "reliability_checks": [
+      "Consistent decision patterns",
+      "Realistic interaction timing",
+      "Valid measurement scores",
+      "Logical task progression"
+    ]
+  },
+  "output_specifications": {
+    "individual_data": {
+      "format": "JSON",
+      "content": [
+        "Participant demographics",
+        "Complete interaction log",
+        "Measurement scores",
+        "Agent interactions"
+      ]
+    },
+    "aggregate_data": {
+      "format": "JSON + CSV",
+      "content": [
+        "Statistical summaries",
+        "Phase comparisons",
+        "Demographic analysis",
+        "Performance metrics"
+      ]
+    },
+    "analysis_reports": {
+      "format": "Markdown",
+      "content": [
+        "Detailed findings",
+        "Statistical analysis",
+        "Hypothesis testing",
+        "Recommendations"
+      ]
+    }
+  }
+}

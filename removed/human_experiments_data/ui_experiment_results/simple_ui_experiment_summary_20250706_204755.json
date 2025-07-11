@@ -1,0 +1,29 @@
+{
+  "experiment_info": {
+    "total_participants": 10,
+    "total_trials": 100,
+    "baseline_trials": 50,
+    "adaptive_trials": 50,
+    "timestamp": "2025-07-06T20:47:55.683408"
+  },
+  "baseline_performance": {
+    "avg_completion_time": 43.65468699932099,
+    "avg_satisfaction": 5.087668603491964,
+    "avg_nasa_tlx": 51.26666666666667,
+    "avg_error_count": 0.14,
+    "avg_navigation_steps": 4.0
+  },
+  "adaptive_performance": {
+    "avg_completion_time": 78.3935187959671,
+    "avg_satisfaction": 5.202023319040329,
+    "avg_nasa_tlx": 50.43,
+    "avg_error_count": 0.12,
+    "avg_navigation_steps": 6.0,
+    "avg_recommendation_acceptance": 0.5138982974259676
+  },
+  "comparison": {
+    "completion_time_difference": 34.73883179664611,
+    "satisfaction_difference": 0.11435471554836507,
+    "nasa_tlx_difference": -0.8366666666666731
+  }
+}

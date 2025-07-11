@@ -1,139 +1,165 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import './MenuSelectionGrid.css';
 
-/**
- * Enhanced grid component for menu item selection with recommendation highlighting.
- * Handles both single-select (protein, sauce) and multi-select (veggies) options.
- */
 const MenuSelectionGrid = ({
+  items = [],
   title,
-  items,
-  recommendations = [],
-  category,
-  selectedItems = [],
   onSelect,
-  maxFreeSelections = null,
-  premiumItems = [],
-  premiumPrice = 0,
-  extraPrice = 0
+  selectedItems = [],
+  multiSelect = false,
+  showCalories = true,
+  showPortionSizes = false
 }) => {
-  // Handle single vs multiple selection
-  const isMultiSelect = Array.isArray(selectedItems);
+  const [selectedPortions, setSelectedPortions] = useState({});
+
+  if (!items || items.length === 0) {
+    return (
+      <div className="menu-selection-grid">
+        <h3>{title}</h3>
+        <p className="no-items">No items available</p>
+      </div>
+    );
+  }
 
   const handleItemClick = (item) => {
-    if (isMultiSelect) {
-      // For multi-select (like veggies)
-      if (selectedItems.includes(item)) {
-        onSelect(selectedItems.filter(i => i !== item));
+    if (multiSelect) {
+      const isSelected = selectedItems.some(selected => selected.name === item.name);
+      if (isSelected) {
+        // Remove item from selection
+        onSelect(selectedItems.filter(selected => selected.name !== item.name));
       } else {
+        // Add item to selection
         onSelect([...selectedItems, item]);
       }
     } else {
-      // For single select (proteins, sauces, base)
-      onSelect(item === selectedItems ? '' : item); // Toggle selection if clicking the same item
+      // Single selection - replace current selection
+      onSelect([item]);
     }
   };
 
-  // Calculate pricing information for display
-  const getPricingInfo = (item) => {
-    if (!maxFreeSelections) return null;
+  const handlePortionSelect = (itemName, portionSize, event) => {
+    // Prevent the item click when clicking on portion buttons
+    event.stopPropagation();
 
-    if (premiumItems.includes(item)) {
-      return `$${(premiumPrice || 0).toFixed(2)}`;
+    setSelectedPortions(prev => ({
+      ...prev,
+      [itemName]: portionSize
+    }));
+  };
+
+  const isItemSelected = (item) => {
+    return selectedItems.some(selected => selected.name === item.name);
+  };
+
+  const getSelectedPortion = (itemName) => {
+    return selectedPortions[itemName] || 'medium';
+  };
+
+  const getStatusBadge = (item) => {
+    if (!item.status || item.status === 'available') return null;
+
+    const statusConfig = {
+      'low_stock': { text: 'Low Stock', className: 'status-low-stock' },
+      'preparing': { text: `Preparing (${item.wait_time}m)`, className: 'status-preparing' },
+      'out_of_stock': { text: 'Out of Stock', className: 'status-out-of-stock' }
+    };
+
+    const config = statusConfig[item.status];
+    if (!config) return null;
+
+    return (
+      <div className={`status-badge ${config.className}`}>
+        {config.text}
+      </div>
+    );
+  };
+
+  const getStockIndicator = (item) => {
+    if (!item.stock_level && item.stock_level !== 0) return null;
+
+    let stockClass = 'stock-high';
+    if (item.stock_level <= 5) {
+      stockClass = 'stock-critical';
+    } else if (item.stock_level <= 10) {
+      stockClass = 'stock-low';
+    } else if (item.stock_level <= 20) {
+      stockClass = 'stock-medium';
     }
 
-    // For regular items, show pricing only if it's an extra item
-    if (isMultiSelect && maxFreeSelections) {
-      const itemIndex = selectedItems.indexOf(item);
-      if (itemIndex >= 0 && itemIndex >= maxFreeSelections) {
-        return `$${(extraPrice || 0).toFixed(2)}`;
-      }
-    }
+    return (
+      <div className={`stock-indicator ${stockClass}`}>
+        Stock: {item.stock_level}
+      </div>
+    );
+  };
 
-    return null;
+  const renderPortionSizes = (item) => {
+    if (!showPortionSizes || !item.portion_sizes) return null;
+
+    const currentPortion = getSelectedPortion(item.name);
+    const portionData = item.portion_sizes[currentPortion];
+
+    return (
+      <div className="portion-sizes">
+        <div className="portion-selector">
+          {Object.entries(item.portion_sizes).map(([size, data]) => (
+            <button
+              key={size}
+              onClick={(e) => handlePortionSelect(item.name, size, e)}
+              className={`portion-btn ${currentPortion === size ? 'selected' : ''}`}
+            >
+              <div className="portion-name">{data.name}</div>
+              <div className="portion-price">${data.price}</div>
+              <div className="portion-calories">{data.calories} cal</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
-    <div className="w-full mb-6">
-      <h2 className="text-xl font-bold mb-3">{title}</h2>
-
-      {/* Display info about pricing for veggies */}
-      {maxFreeSelections && (
-        <div className="mb-4 p-3 bg-blue-50 rounded-md text-sm">
-          <p>First {maxFreeSelections} {category.toLowerCase()} are included</p>
-          {extraPrice > 0 && <p>Each additional: ${(extraPrice || 0).toFixed(2)}</p>}
-          {premiumItems.length > 0 && <p>{premiumItems.join(', ')}: ${(premiumPrice || 0).toFixed(2)} each</p>}
-        </div>
-      )}
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-        {items.map((item) => {
-          // If item is an object (for proteins with prices), extract the properties
-          const itemName = typeof item === 'object' ? item.name : item;
-          const itemPrice = typeof item === 'object' ? item.price : null;
-          const itemDescription = typeof item === 'object' ? item.description : null;
-
-          const isSelected = isMultiSelect
-            ? selectedItems.includes(itemName)
-            : selectedItems === itemName;
-          const isRecommended = recommendations.includes(itemName);
-          const pricing = getPricingInfo(itemName);
+    <div className="menu-selection-grid">
+      <h3>{title}</h3>
+      <div className="grid-container">
+        {items.map((item, index) => {
+          const selected = isItemSelected(item);
+          const isDisabled = item.status === 'out_of_stock';
 
           return (
             <div
-              key={itemName}
-              onClick={() => handleItemClick(itemName)}
-              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') handleItemClick(itemName); }}
-              role="button"
-              tabIndex={0}
-              className={`
-                relative p-4 rounded-lg border-2 cursor-pointer transition-all
-                ${isSelected ? 'border-blue-500 bg-blue-600 text-white' : 'border-gray-200'}
-                ${isRecommended ? 'border-green-500 shadow-md' : ''}
-                ${isSelected && isRecommended ? 'border-blue-500 shadow-md border-dashed' : ''}
-                hover:border-blue-300
-              `}
-              {...(category === 'Protein' ? { 'data-testid': `protein-${itemName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}` } : {})}
+              key={index}
+              className={`grid-item ${selected ? 'selected' : ''} ${isDisabled ? 'disabled' : ''}`}
+              onClick={() => !isDisabled && handleItemClick(item)}
             >
-              <div className="flex justify-between items-center">
-                <span
-                  className="font-medium"
-                >
-                  {itemName}
-                </span>
-                {isRecommended && (
-                  <span className="text-green-500 ml-2">✓</span>
-                )}
+              <div className="item-header">
+                <h4>{item.name}</h4>
+                {getStatusBadge(item)}
               </div>
 
-              {/* Display the price if protein item */}
-              {itemPrice !== null && itemPrice !== undefined && (
-                <div className="text-sm text-gray-600 mt-1 font-medium">
-                  ${itemPrice.toFixed(2)}
+              {showPortionSizes && item.portion_sizes ? (
+                renderPortionSizes(item)
+              ) : (
+                <div className="item-details">
+                  {item.price !== undefined && (
+                    <span className="price">${item.price.toFixed(2)}</span>
+                  )}
+                  {showCalories && item.calories && (
+                    <span className="calories">{item.calories} cal</span>
+                  )}
                 </div>
               )}
 
-              {/* Display the description if available */}
-              {itemDescription && (
-                <div className="text-xs text-gray-500 mt-1 truncate" title={itemDescription}>
-                  {itemDescription}
+              {getStockIndicator(item)}
+
+              {item.status === 'preparing' && item.wait_time && (
+                <div className="wait-time">
+                  ⏱️ Ready in {item.wait_time} minutes
                 </div>
               )}
 
-              {/* Show premium or extra pricing */}
-              {pricing && (
-                <div className="text-sm text-gray-600 mt-1">
-                  {pricing}
-                </div>
-              )}
-
-              {isSelected && (
-                <div className="absolute top-0 right-0 bg-blue-500 w-6 h-6 flex items-center justify-center rounded-bl-md">
-                  <span className="text-white text-xs">
-                    {isMultiSelect ? (selectedItems.indexOf(itemName) + 1) : '✓'}
-                  </span>
-                </div>
-              )}
+              {/* Selected indicator is now handled by CSS pseudo-element */}
             </div>
           );
         })}
@@ -143,19 +169,21 @@ const MenuSelectionGrid = ({
 };
 
 MenuSelectionGrid.propTypes = {
+  items: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    price: PropTypes.number,
+    calories: PropTypes.number,
+    status: PropTypes.string,
+    wait_time: PropTypes.number,
+    stock_level: PropTypes.number,
+    portion_sizes: PropTypes.object
+  })),
   title: PropTypes.string.isRequired,
-  items: PropTypes.array.isRequired,
-  recommendations: PropTypes.array,
-  category: PropTypes.string,
-  selectedItems: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.array
-  ]),
   onSelect: PropTypes.func.isRequired,
-  maxFreeSelections: PropTypes.number,
-  premiumItems: PropTypes.array,
-  premiumPrice: PropTypes.number,
-  extraPrice: PropTypes.number
+  selectedItems: PropTypes.array,
+  multiSelect: PropTypes.bool,
+  showCalories: PropTypes.bool,
+  showPortionSizes: PropTypes.bool
 };
 
 export default MenuSelectionGrid;

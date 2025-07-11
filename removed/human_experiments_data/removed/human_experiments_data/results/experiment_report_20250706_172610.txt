@@ -1,0 +1,105 @@
+REALISTIC ARTIFICIAL PARTICIPANT EXPERIMENT REPORT
+============================================================
+
+Experiment: Adaptive Artificial Participant Experiment
+Date: 20250706_172610
+Duration: 0:06:27.507613
+
+EXPERIMENTAL DESIGN
+------------------------------
+Total Participants: 50
+Total Trials: 500
+Trials per Participant: 10
+Conditions: baseline, adaptive
+
+REALISTIC RESULTS SUMMARY
+==================================================
+Baseline Condition:
+  Satisfaction: 5.29 ± 0.72
+  NASA-TLX: 71.2 ± 13.7
+  Completion Time: 7.66s ± 1.78s
+  Error Rate: 0.48 per trial
+  Navigation Steps: 9.5
+
+Adaptive Condition:
+  Satisfaction: 5.04 ± 0.84
+  NASA-TLX: 73.6 ± 13.5
+  Completion Time: 7.70s ± 1.91s
+  Error Rate: 0.52 per trial
+  Navigation Steps: 9.4
+  Privacy Concerns: 3.6/7.0
+  System Complexity: 3.8/7.0
+  Recommendation Acceptance: 48.1%
+
+STATISTICAL TESTS
+------------------------------
+satisfaction: t=3.635, p=0.004, d=0.325
+  Significant: True
+nasa_tlx: t=-2.036, p=0.047, d=0.182
+  Significant: True
+completion_time: t=-0.258, p=0.459, d=0.023
+  Significant: False
+error_count: t=-0.746, p=0.171, d=0.067
+  Significant: False
+navigation_steps: t=0.197, p=0.287, d=0.018
+  Significant: False
+decision_changes: t=0.245, p=0.471, d=0.022
+  Significant: False
+trust_rating: t=-0.219, p=0.492, d=0.020
+  Significant: False
+privacy_concerns: t=0.000, p=0.215, d=0.000
+  Significant: False
+system_complexity: t=-1.117, p=0.198, d=0.100
+  Significant: False
+
+EFFECT SIZES
+------------------------------
+satisfaction: d=0.325 (Small-Medium)
+nasa_tlx: d=-0.182 (Small)
+completion_time: d=-0.023 (Small)
+error_count: d=-0.067 (Small)
+navigation_steps: d=0.018 (Small)
+decision_changes: d=0.022 (Small)
+trust_rating: d=-0.020 (Small)
+privacy_concerns: d=0.000 (Small)
+system_complexity: d=-0.100 (Small)
+
+RECOMMENDATION ANALYSIS
+------------------------------
+Overall Acceptance Rate: 48.1%
+Early Trials: 50.0%
+Late Trials: 48.0%
+Learning Improvement: -2.0%
+High Acceptance Trials: 52
+Low Acceptance Trials: 57
+
+DIETARY COMPLIANCE ANALYSIS
+------------------------------
+Trials with Issues: 13/250
+Issue Rate: 5.2%
+Acceptance with Issues: 12.8%
+Acceptance without Issues: 50.0%
+Acceptance Difference: 37.2%
+Issue Types:
+  Recommended non-vegetarian protein: 9
+  Recommended non-vegan protein: 3
+  Recommended non-halal protein: 1
+
+PARTICIPANT VARIABILITY
+------------------------------
+Participants with Improvement: 19/50
+Average Improvement: -0.254 ± 0.520
+
+============================================================
+CONCLUSION
+============================================================
+The realistic artificial participant experiment revealed authentic human behavior patterns
+with significant individual differences and realistic trade-offs between conditions.
+
+Key findings:
+• No significant improvement in user satisfaction
+• Minimal change in cognitive workload
+• Low recommendation acceptance rate
+• Minimal dietary compliance issues
+• Individual differences substantial across all measures
+• Privacy concerns and system complexity impact user experience

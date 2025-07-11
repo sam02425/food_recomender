@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List
-from app.db import SessionLocal
-from app.models.location import Location
+from backend.app.db import SessionLocal
+from backend.app.models.location import Location
 
 router = APIRouter(prefix="/api/locations", tags=["locations"])
 

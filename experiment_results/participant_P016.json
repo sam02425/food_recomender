@@ -1,0 +1,706 @@
+{
+  "participant": {
+    "id": "P016",
+    "name": "William Jones",
+    "age": 33,
+    "gender": "Female",
+    "occupation": "Writer",
+    "tech_savviness": 0.6470230607287379,
+    "dietary_preferences": [],
+    "allergies": [],
+    "decision_speed": 5.091269590251501,
+    "attention_span": 34.068394238249965,
+    "experiment_phase": "B",
+    "current_step": "measurements",
+    "selections": {
+      "experiment_started": true,
+      "phone": "4154199278",
+      "restrictions": [],
+      "allergies": [],
+      "activity": "relaxation",
+      "protein": [
+        {
+          "name": "Chicken",
+          "price": 4.5,
+          "calories": 250,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 20,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 3.15,
+              "calories": 175,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 4.5,
+              "calories": 250,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 6.3,
+              "calories": 350,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "protein_portion": "low",
+      "base_type": "Sandwich & Subs",
+      "base_option": {
+        "name": "Sourdough",
+        "price": 0.0,
+        "calories": 220,
+        "status": "available",
+        "wait_time": null,
+        "stock_level": 15
+      },
+      "sauce": [
+        {
+          "name": "Yogurt/Raita",
+          "price": 0.0,
+          "calories": 60,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 9,
+          "portion_sizes": {
+            "low": {
+              "name": "Light",
+              "price": 0.0,
+              "calories": 36,
+              "multiplier": 0.6
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.0,
+              "calories": 60,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Extra",
+              "price": 0.0,
+              "calories": 90,
+              "multiplier": 1.5
+            }
+          }
+        }
+      ],
+      "sauce_portion": "extra",
+      "veggies": [
+        {
+          "name": "Carrot",
+          "price": 0.75,
+          "calories": 30,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 37,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.52,
+              "calories": 21,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.75,
+              "calories": 30,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 1.05,
+              "calories": 42,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "veggie_portions": {
+        "Carrot": "medium"
+      },
+      "garnishes": [
+        {
+          "name": "Cilantro",
+          "price": 0.25,
+          "calories": 5,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 5,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        },
+        {
+          "name": "Lemon",
+          "price": 0.25,
+          "calories": 5,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 4,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "garnish_portions": {
+        "Cilantro": "extra",
+        "Lemon": "extra"
+      },
+      "dish_name": "Custom Creation",
+      "order_reviewed": true,
+      "nasatlx": {
+        "mental_demand": 18,
+        "physical_demand": 4,
+        "temporal_demand": 5,
+        "performance": 8,
+        "effort": 18,
+        "frustration": 7
+      },
+      "sus": [
+        1,
+        3,
+        2,
+        1,
+        5,
+        1,
+        1,
+        1,
+        3,
+        4
+      ],
+      "satisfaction": {
+        "overall_satisfaction": 2,
+        "ease_of_use": 6,
+        "recommendation_quality": 5,
+        "agent_helpfulness": 6
+      }
+    },
+    "start_time": "2025-07-11T06:50:13.887504",
+    "completion_time": "2025-07-11T06:51:17.000756",
+    "nasatlx_scores": {
+      "mental_demand": 18,
+      "physical_demand": 4,
+      "temporal_demand": 5,
+      "performance": 8,
+      "effort": 18,
+      "frustration": 7
+    },
+    "sus_scores": [
+      1,
+      3,
+      2,
+      1,
+      5,
+      1,
+      1,
+      1,
+      3,
+      4
+    ],
+    "satisfaction_scores": {
+      "overall_satisfaction": 2,
+      "ease_of_use": 6,
+      "recommendation_quality": 5,
+      "agent_helpfulness": 6
+    },
+    "agent_interactions": [
+      {
+        "participant_id": "P016",
+        "agent_type": "context_intelligence",
+        "recommendation_content": "Queue position: #27",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355730"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "preference_learning",
+        "recommendation_content": "Based on your previous orders, you might enjoy this combination",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355739"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "preparation_time",
+        "recommendation_content": "Your order will be ready at 07:44",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355741"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Masala Chai",
+        "action": "rejected",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355745"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Mango Lassi",
+        "action": "rejected",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355747"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "context_intelligence",
+        "recommendation_content": "Queue position: #27",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355730"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "preference_learning",
+        "recommendation_content": "Based on your previous orders, you might enjoy this combination",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355739"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "preparation_time",
+        "recommendation_content": "Your order will be ready at 07:44",
+        "action": "shown",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355741"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Masala Chai",
+        "action": "rejected",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355745"
+      },
+      {
+        "participant_id": "P016",
+        "agent_type": "refreshment_suggestion",
+        "recommendation_content": "Mango Lassi",
+        "action": "rejected",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:51:05.355747"
+      }
+    ]
+  },
+  "experiment": {
+    "participant_id": "P016",
+    "phase": "B",
+    "start_time": "2025-07-11T06:50:13.887504",
+    "steps": [
+      {
+        "participant_id": "P016",
+        "step": "start",
+        "timestamp": "2025-07-11T06:50:13.887666",
+        "selections": {
+          "experiment_started": true
+        },
+        "time_spent": 2.6906001567840576,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "customer_identification",
+        "timestamp": "2025-07-11T06:50:17.755483",
+        "selections": {
+          "phone": "4154199278"
+        },
+        "time_spent": 3.996580123901367,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "dietary_preferences",
+        "timestamp": "2025-07-11T06:50:22.684994",
+        "selections": {
+          "restrictions": [],
+          "allergies": []
+        },
+        "time_spent": 6.8459153175354,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "activity_selection",
+        "timestamp": "2025-07-11T06:50:30.396537",
+        "selections": {
+          "activity": "relaxation"
+        },
+        "time_spent": 2.8239142894744873,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "protein_selection",
+        "timestamp": "2025-07-11T06:50:33.754757",
+        "selections": {
+          "protein": [
+            {
+              "name": "Chicken",
+              "price": 4.5,
+              "calories": 250,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 20,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 3.15,
+                  "calories": 175,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 4.5,
+                  "calories": 250,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 6.3,
+                  "calories": 350,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "protein_portion": "low"
+        },
+        "time_spent": 4.417183876037598,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "base_selection",
+        "timestamp": "2025-07-11T06:50:40.153991",
+        "selections": {
+          "base_type": "Sandwich & Subs",
+          "base_option": {
+            "name": "Sourdough",
+            "price": 0.0,
+            "calories": 220,
+            "status": "available",
+            "wait_time": null,
+            "stock_level": 15
+          }
+        },
+        "time_spent": 5.440136909484863,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "sauce_selection",
+        "timestamp": "2025-07-11T06:50:47.102760",
+        "selections": {
+          "sauce": [
+            {
+              "name": "Yogurt/Raita",
+              "price": 0.0,
+              "calories": 60,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 9,
+              "portion_sizes": {
+                "low": {
+                  "name": "Light",
+                  "price": 0.0,
+                  "calories": 36,
+                  "multiplier": 0.6
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.0,
+                  "calories": 60,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Extra",
+                  "price": 0.0,
+                  "calories": 90,
+                  "multiplier": 1.5
+                }
+              }
+            }
+          ],
+          "sauce_portion": "extra"
+        },
+        "time_spent": 4.232994079589844,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "veggies_selection",
+        "timestamp": "2025-07-11T06:50:52.009451",
+        "selections": {
+          "veggies": [
+            {
+              "name": "Carrot",
+              "price": 0.75,
+              "calories": 30,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 37,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.52,
+                  "calories": 21,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.75,
+                  "calories": 30,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 1.05,
+                  "calories": 42,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "veggie_portions": {
+            "Carrot": "medium"
+          }
+        },
+        "time_spent": 0.005693912506103516,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "garnishes_selection",
+        "timestamp": "2025-07-11T06:50:52.702936",
+        "selections": {
+          "garnishes": [
+            {
+              "name": "Cilantro",
+              "price": 0.25,
+              "calories": 5,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 5,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            },
+            {
+              "name": "Lemon",
+              "price": 0.25,
+              "calories": 5,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 4,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "garnish_portions": {
+            "Cilantro": "extra",
+            "Lemon": "extra"
+          }
+        },
+        "time_spent": 0.0038101673126220703,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "dish_naming",
+        "timestamp": "2025-07-11T06:50:54.138238",
+        "selections": {
+          "dish_name": "Custom Creation"
+        },
+        "time_spent": 2.418973207473755,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "agent_recommendations",
+        "timestamp": "2025-07-11T06:50:58.348217",
+        "selections": {},
+        "time_spent": 7.007518291473389,
+        "errors": [],
+        "agent_interactions": [
+          {
+            "participant_id": "P016",
+            "agent_type": "context_intelligence",
+            "recommendation_content": "Queue position: #27",
+            "action": "shown",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T06:51:05.355730"
+          },
+          {
+            "participant_id": "P016",
+            "agent_type": "preference_learning",
+            "recommendation_content": "Based on your previous orders, you might enjoy this combination",
+            "action": "shown",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T06:51:05.355739"
+          },
+          {
+            "participant_id": "P016",
+            "agent_type": "preparation_time",
+            "recommendation_content": "Your order will be ready at 07:44",
+            "action": "shown",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T06:51:05.355741"
+          },
+          {
+            "participant_id": "P016",
+            "agent_type": "refreshment_suggestion",
+            "recommendation_content": "Masala Chai",
+            "action": "rejected",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T06:51:05.355745"
+          },
+          {
+            "participant_id": "P016",
+            "agent_type": "refreshment_suggestion",
+            "recommendation_content": "Mango Lassi",
+            "action": "rejected",
+            "step": "agent_recommendations",
+            "timestamp": "2025-07-11T06:51:05.355747"
+          }
+        ]
+      },
+      {
+        "participant_id": "P016",
+        "step": "order_summary",
+        "timestamp": "2025-07-11T06:51:06.586301",
+        "selections": {
+          "order_reviewed": true
+        },
+        "time_spent": 2.3043460845947266,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P016",
+        "step": "measurements",
+        "timestamp": "2025-07-11T06:51:10.793152",
+        "selections": {
+          "nasatlx": {
+            "mental_demand": 18,
+            "physical_demand": 4,
+            "temporal_demand": 5,
+            "performance": 8,
+            "effort": 18,
+            "frustration": 7
+          },
+          "sus": [
+            1,
+            3,
+            2,
+            1,
+            5,
+            1,
+            1,
+            1,
+            3,
+            4
+          ],
+          "satisfaction": {
+            "overall_satisfaction": 2,
+            "ease_of_use": 6,
+            "recommendation_quality": 5,
+            "agent_helpfulness": 6
+          }
+        },
+        "time_spent": 6.207564830780029,
+        "errors": [],
+        "agent_interactions": []
+      }
+    ],
+    "total_time": 63.113252,
+    "errors": [],
+    "completion_time": "2025-07-11T06:51:17.000756"
+  }
+}

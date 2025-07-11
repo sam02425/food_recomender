@@ -1,0 +1,5677 @@
+{
+  "experiment_summary": {
+    "total_participants": 10,
+    "total_trials": 100,
+    "baseline_trials": 50,
+    "adaptive_trials": 50,
+    "experiment_duration": "Simulated"
+  },
+  "performance_metrics": {
+    "baseline": {
+      "avg_completion_time": 119.05405907708484,
+      "avg_satisfaction": 3.089385850894469,
+      "avg_recommendation_acceptance": 0.3283958277595903,
+      "dietary_compliance_rate": 0.78,
+      "avg_nasa_tlx": 2.884639745518182,
+      "avg_sus": 49.35313373668716
+    },
+    "adaptive": {
+      "avg_completion_time": 121.15405907708484,
+      "avg_satisfaction": 3.224962334348329,
+      "avg_recommendation_acceptance": 0.330965521938819,
+      "dietary_compliance_rate": 0.84,
+      "avg_nasa_tlx": 3.084679373442814,
+      "avg_sus": 69.50280263325858
+    }
+  },
+  "statistical_analysis": {
+    "task_completion_time": {
+      "baseline_mean": 119.05405907708484,
+      "adaptive_mean": 121.15405907708484,
+      "difference": 2.0999999999999943,
+      "t_statistic": -1.2987623615191872,
+      "p_value": 0.1970731612965523,
+      "significant": "False",
+      "effect_size": 0.25975247230383747,
+      "effect_magnitude": "small"
+    },
+    "satisfaction_score": {
+      "baseline_mean": 3.089385850894469,
+      "adaptive_mean": 3.224962334348329,
+      "difference": 0.13557648345385998,
+      "t_statistic": -1.6727376990191318,
+      "p_value": 0.09756855028930016,
+      "significant": "False",
+      "effect_size": 0.3345475398038264,
+      "effect_magnitude": "small"
+    },
+    "recommendation_acceptance_rate": {
+      "baseline_mean": 0.3283958277595903,
+      "adaptive_mean": 0.330965521938819,
+      "difference": 0.0025696941792286987,
+      "t_statistic": -0.06695817572184994,
+      "p_value": 0.946751414904567,
+      "significant": "False",
+      "effect_size": 0.013391635144369985,
+      "effect_magnitude": "negligible"
+    }
+  },
+  "participant_diversity": {
+    "cultural_backgrounds": {
+      "East Asian": {
+        "count": 10,
+        "avg_satisfaction": 3.1156993943619287,
+        "avg_completion_time": 120.75384727712876,
+        "dietary_compliance_rate": 1.0
+      },
+      "Western": {
+        "count": 20,
+        "avg_satisfaction": 2.92441673808307,
+        "avg_completion_time": 129.8406502119528,
+        "dietary_compliance_rate": 0.65
+      },
+      "South Asian": {
+        "count": 50,
+        "avg_satisfaction": 3.3056979503912305,
+        "avg_completion_time": 116.61930655718062,
+        "dietary_compliance_rate": 0.8
+      },
+      "Middle Eastern": {
+        "count": 10,
+        "avg_satisfaction": 2.983919094128318,
+        "avg_completion_time": 113.90524307019004,
+        "dietary_compliance_rate": 1.0
+      },
+      "Other": {
+        "count": 10,
+        "avg_satisfaction": 3.0947992096014523,
+        "avg_completion_time": 123.60366721372085,
+        "dietary_compliance_rate": 0.8
+      }
+    },
+    "dietary_restrictions": {
+      "vegetarian": {
+        "count": 50,
+        "avg_satisfaction": 3.3268137867496907,
+        "dietary_compliance_rate": 0.8
+      },
+      "halal": {
+        "count": 30,
+        "avg_satisfaction": 2.94425085676482,
+        "dietary_compliance_rate": 0.7666666666666667
+      },
+      "none": {
+        "count": 10,
+        "avg_satisfaction": 3.1156993943619287,
+        "dietary_compliance_rate": 1.0
+      }
+    }
+  },
+  "system_performance": {
+    "avg_response_time": 2.2590544287785392,
+    "avg_recommendation_quality": 0.725,
+    "avg_dietary_accuracy": 0.8074999999999996,
+    "failure_rate": 0.2,
+    "common_failures": {
+      "Recommendation system unavailable": 16,
+      "Dietary filtering error": 3,
+      "System slow response": 1
+    }
+  },
+  "qualitative_insights": {
+    "llm_feedback_count": 20,
+    "sample_feedback": [
+      "The dietary restrictions worked well for me.",
+      "I appreciate the health-focused suggestions.",
+      "It took longer than expected to find what I wanted.",
+      "Some recommendations didn't make sense for my diet.",
+      "The interface was confusing at first but I got used to it."
+    ],
+    "privacy_concerns": [
+      "Personalization feels invasive",
+      "Data collection concerns"
+    ],
+    "cultural_mismatches": [
+      "Spice levels not appropriate",
+      "Halal certification unclear"
+    ],
+    "learning_insights": [
+      "Learned to trust recommendations more",
+      "Found interface shortcuts"
+    ],
+    "system_failures": {
+      "Recommendation system unavailable": 16,
+      "Dietary filtering error": 3,
+      "System slow response": 1
+    }
+  },
+  "raw_data": {
+    "participants": [
+      {
+        "participant_id": "P001",
+        "age": 41,
+        "gender": "Non-binary",
+        "dietary_restrictions": [],
+        "allergens": [
+          "gluten"
+        ],
+        "cultural_background": "East Asian",
+        "tech_savviness": 0.3243078269520805,
+        "food_adventurousness": 0.6364961618370261,
+        "health_consciousness": 0.7186239961688476,
+        "price_sensitivity": 0.20664399854683463,
+        "time_pressure": 0.28135767489808566,
+        "mood": 0.1862666612495714,
+        "fatigue": 0.49977863265990874,
+        "learning_rate": 0.9359849722855939,
+        "trust_in_recommendations": 0.02025990178500904,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 3.005959951323869,
+              "completion_time": 128.31369699998473,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0773486096803517,
+              "completion_time": 124.03377213855674,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.1531554695546307,
+              "completion_time": 119.75384727712878,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.924105988092981,
+              "completion_time": 115.4739224157008,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.1456183830256492,
+              "completion_time": 111.19399755427284,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 2.9173469420111466,
+              "completion_time": 130.31369699998473,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.3547186117339622,
+              "completion_time": 126.03377213855674,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.5667168562640836,
+              "completion_time": 121.75384727712878,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.9374767557997203,
+              "completion_time": 117.4739224157008,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.074546376132889,
+              "completion_time": 113.19399755427284,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P002",
+        "age": 39,
+        "gender": "Female",
+        "dietary_restrictions": [
+          "halal"
+        ],
+        "allergens": [],
+        "cultural_background": "Western",
+        "tech_savviness": 0.15446793485980193,
+        "food_adventurousness": 0.395171093856312,
+        "health_consciousness": 0.7840730848309955,
+        "price_sensitivity": 0.5948349932923505,
+        "time_pressure": 0.6157403871189814,
+        "mood": -0.17484921782931018,
+        "fatigue": 0.8100365056492511,
+        "learning_rate": 0.49140960017448176,
+        "trust_in_recommendations": 0.4897301191636552,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 3.727270473343722,
+              "completion_time": 135.6781709109225,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.748897660184685,
+              "completion_time": 133.62112291005005,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.217888604757085,
+              "completion_time": 131.56407490917766,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 2.245347511492915,
+              "completion_time": 129.50702690830525,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.221302651091133,
+              "completion_time": 127.44997890743284,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 3.2238438494311636,
+              "completion_time": 137.6781709109225,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0241840128660584,
+              "completion_time": 135.62112291005008,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.462807300590672,
+              "completion_time": 133.56407490917766,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.9873477393713554,
+              "completion_time": 131.50702690830525,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 2.845838530995078,
+              "completion_time": 129.44997890743284,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P003",
+        "age": 47,
+        "gender": "Female",
+        "dietary_restrictions": [
+          "vegetarian"
+        ],
+        "allergens": [],
+        "cultural_background": "South Asian",
+        "tech_savviness": 0.38065928772473795,
+        "food_adventurousness": 0.8504152144768369,
+        "health_consciousness": 0.785158736612225,
+        "price_sensitivity": 0.7260611068599234,
+        "time_pressure": 0.9212720122465319,
+        "mood": 0.26869737919429626,
+        "fatigue": 0.4668451875386243,
+        "learning_rate": 0.3687241290021574,
+        "trust_in_recommendations": 0.6557247130863061,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 3.4103931110984655,
+              "completion_time": 127.47036758183359,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.442453138081583,
+              "completion_time": 126.0267469368228,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.4950668128973303,
+              "completion_time": 124.58312629181202,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.4140387190147585,
+              "completion_time": 123.13950564680124,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.118269013291849,
+              "completion_time": 121.69588500179044,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 3.2805040498743594,
+              "completion_time": 129.47036758183359,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 4.034454519339879,
+              "completion_time": 128.0267469368228,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 4.136360487322663,
+              "completion_time": 127.58312629181202,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 4.173333123914355,
+              "completion_time": 127.13950564680124,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.4594038521891077,
+              "completion_time": 126.69588500179043,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P004",
+        "age": 30,
+        "gender": "Male",
+        "dietary_restrictions": [
+          "no_beef"
+        ],
+        "allergens": [],
+        "cultural_background": "South Asian",
+        "tech_savviness": 0.2796110108001146,
+        "food_adventurousness": 0.34599882329464565,
+        "health_consciousness": 0.9379369285835719,
+        "price_sensitivity": 0.5285986528196379,
+        "time_pressure": 0.49530153832638674,
+        "mood": -0.21653521806030931,
+        "fatigue": 0.37426696462913106,
+        "learning_rate": 0.6672673804846186,
+        "trust_in_recommendations": 0,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 2.96195461490125,
+              "completion_time": 123.7894850475547,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0523153838928954,
+              "completion_time": 120.85314814513161,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.99583130691412,
+              "completion_time": 117.91681124270852,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0122163158109725,
+              "completion_time": 114.98047434028544,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 2.9326842978065173,
+              "completion_time": 112.04413743786233,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 3.5586826010832144,
+              "completion_time": 125.7894850475547,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.998553665722913,
+              "completion_time": 122.85314814513161,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.310905085020553,
+              "completion_time": 119.91681124270852,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.255043744311102,
+              "completion_time": 116.98047434028544,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 2.814013262627939,
+              "completion_time": 114.04413743786233,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P005",
+        "age": 27,
+        "gender": "Female",
+        "dietary_restrictions": [
+          "vegetarian"
+        ],
+        "allergens": [
+          "eggs"
+        ],
+        "cultural_background": "South Asian",
+        "tech_savviness": 0.927091971786773,
+        "food_adventurousness": 0.20049442955598037,
+        "health_consciousness": 0.9782504817558031,
+        "price_sensitivity": 0.6652557611112819,
+        "time_pressure": 0.7131614418280087,
+        "mood": -0.3184668114456809,
+        "fatigue": 0.4956700022749584,
+        "learning_rate": 0.22803030220232834,
+        "trust_in_recommendations": 0.6337393686292571,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 2.513920419087935,
+              "completion_time": 117.68220084322913,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.4933957183517745,
+              "completion_time": 116.94204933221745,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.4536823568590065,
+              "completion_time": 116.20189782120583,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.769594704423926,
+              "completion_time": 115.46174631019419,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0396903795349175,
+              "completion_time": 114.72159479918254,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 3.296831212016634,
+              "completion_time": 119.68220084322913,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.5801138647926605,
+              "completion_time": 118.94204933221748,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.8240981214690337,
+              "completion_time": 118.20189782120583,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.509475447137585,
+              "completion_time": 117.46174631019419,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.269397990911446,
+              "completion_time": 116.72159479918254,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P006",
+        "age": 45,
+        "gender": "Female",
+        "dietary_restrictions": [
+          "vegetarian"
+        ],
+        "allergens": [],
+        "cultural_background": "South Asian",
+        "tech_savviness": 0.5977657804292594,
+        "food_adventurousness": 0.9544248516839013,
+        "health_consciousness": 0.754357964766841,
+        "price_sensitivity": 0.2510391766750065,
+        "time_pressure": 0.2910155193745945,
+        "mood": -0.32240687053020894,
+        "fatigue": 0.33871466257218596,
+        "learning_rate": 0.628548822090938,
+        "trust_in_recommendations": 0.593712631231363,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 3.4020516162801493,
+              "completion_time": 117.44099372924806,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0953224856577237,
+              "completion_time": 114.69824961879335,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.2321174335683667,
+              "completion_time": 111.95550550833867,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0513413188668514,
+              "completion_time": 109.212761397884,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.1309023349836673,
+              "completion_time": 106.4700172874293,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 3.5287880740673083,
+              "completion_time": 119.44099372924806,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.389126945543633,
+              "completion_time": 116.69824961879335,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.9821363828274574,
+              "completion_time": 113.95550550833867,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.0886116391398617,
+              "completion_time": 111.212761397884,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.6238277637281113,
+              "completion_time": 108.4700172874293,
+              "dietary_compliance": false
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P007",
+        "age": 31,
+        "gender": "Male",
+        "dietary_restrictions": [
+          "vegetarian"
+        ],
+        "allergens": [
+          "nuts"
+        ],
+        "cultural_background": "South Asian",
+        "tech_savviness": 0.9567600512640262,
+        "food_adventurousness": 0.4197755769750699,
+        "health_consciousness": 0.4614895380353734,
+        "price_sensitivity": 0.8383590701089038,
+        "time_pressure": 0.9129312430549822,
+        "mood": 0.3257087365265691,
+        "fatigue": 0.23540171067268184,
+        "learning_rate": 0.9049685925280601,
+        "trust_in_recommendations": 0.5500738704401331,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 3.2399139872526295,
+              "completion_time": 115.08887784711862,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.7980952949870597,
+              "completion_time": 110.96403488447834,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.786049029550743,
+              "completion_time": 106.83919192183804,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.030709488886046,
+              "completion_time": 102.71434895919774,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.409275095802737,
+              "completion_time": 98.58950599655743,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 3.957629555775114,
+              "completion_time": 117.08887784711862,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.571875503799101,
+              "completion_time": 112.96403488447834,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.826052551512183,
+              "completion_time": 108.83919192183804,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 2.877700324843484,
+              "completion_time": 104.71434895919774,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.6566933727885274,
+              "completion_time": 100.58950599655743,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P008",
+        "age": 40,
+        "gender": "Male",
+        "dietary_restrictions": [
+          "halal"
+        ],
+        "allergens": [],
+        "cultural_background": "Middle Eastern",
+        "tech_savviness": 0.9031162619750613,
+        "food_adventurousness": 0.18093123188709062,
+        "health_consciousness": 0.7899666397515882,
+        "price_sensitivity": 0.8597477218096773,
+        "time_pressure": 0.14181803066819632,
+        "mood": 0.441851373576086,
+        "fatigue": 0.24904727823484304,
+        "learning_rate": 0.6498314867094498,
+        "trust_in_recommendations": 0,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 2.908553132810648,
+              "completion_time": 118.60355793728455,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.190721933912024,
+              "completion_time": 115.75440050373733,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.2679700913079737,
+              "completion_time": 112.90524307019007,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.719152132976308,
+              "completion_time": 110.0560856366428,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.896380754100891,
+              "completion_time": 107.20692820309556,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 3.1107838971584982,
+              "completion_time": 120.60355793728455,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.223963488002709,
+              "completion_time": 117.75440050373733,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.742103806925624,
+              "completion_time": 114.90524307019005,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.9395784641514644,
+              "completion_time": 112.0560856366428,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.839983239937036,
+              "completion_time": 109.20692820309556,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P009",
+        "age": 23,
+        "gender": "Non-binary",
+        "dietary_restrictions": [
+          "halal"
+        ],
+        "allergens": [
+          "eggs"
+        ],
+        "cultural_background": "Western",
+        "tech_savviness": 0.6769463812725759,
+        "food_adventurousness": 0.11810114541719259,
+        "health_consciousness": 0.6293840103237982,
+        "price_sensitivity": 0.19266978649627525,
+        "time_pressure": 0.5764651964324936,
+        "mood": 0.1079413692058496,
+        "fatigue": 0.6456095999367206,
+        "learning_rate": 0.30801229713175643,
+        "trust_in_recommendations": 0,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 1.6598972797041072,
+              "completion_time": 129.29734848604548,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.065153492513775,
+              "completion_time": 127.15728700038672,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 2.884804998725249,
+              "completion_time": 126.01722551472791,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.4894450067988103,
+              "completion_time": 124.87716402906914,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 2.7057490344389272,
+              "completion_time": 123.73710254341036,
+              "dietary_compliance": false
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 2.6046539441543315,
+              "completion_time": 130.29734848604548,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.149279456275291,
+              "completion_time": 129.1572870003867,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.9818610846507965,
+              "completion_time": 128.0172255147279,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.0681009919963023,
+              "completion_time": 126.87716402906914,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.174661138279953,
+              "completion_time": 125.73710254341036,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      },
+      {
+        "participant_id": "P010",
+        "age": 18,
+        "gender": "Non-binary",
+        "dietary_restrictions": [
+          "vegetarian"
+        ],
+        "allergens": [
+          "dairy"
+        ],
+        "cultural_background": "Other",
+        "tech_savviness": 0.3376031315280049,
+        "food_adventurousness": 0.05068834554571449,
+        "health_consciousness": 0.19415714164163797,
+        "price_sensitivity": 0.24209271660553933,
+        "time_pressure": 0.06643053090841576,
+        "mood": -0.4848302256347793,
+        "fatigue": 0.49296095411024043,
+        "learning_rate": 0.27621350928107324,
+        "trust_in_recommendations": 0.08073980748988711,
+        "previous_experience": {
+          "baseline": [
+            {
+              "satisfaction": 2.9369135127261132,
+              "completion_time": 124.5658023065316,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.6356406419524743,
+              "completion_time": 123.5847347601262,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.2627309801525843,
+              "completion_time": 122.60366721372084,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.745042467699131,
+              "completion_time": 121.62259966731548,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.352957404554132,
+              "completion_time": 120.64153212091011,
+              "dietary_compliance": true
+            }
+          ],
+          "adaptive": [
+            {
+              "satisfaction": 2.9962567644771645,
+              "completion_time": 126.5658023065316,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 2.5742906524647697,
+              "completion_time": 125.58473476012622,
+              "dietary_compliance": false
+            },
+            {
+              "satisfaction": 3.0324405962350363,
+              "completion_time": 124.60366721372085,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.2158820423819314,
+              "completion_time": 123.62259966731548,
+              "dietary_compliance": true
+            },
+            {
+              "satisfaction": 3.195837033371186,
+              "completion_time": 122.64153212091011,
+              "dietary_compliance": true
+            }
+          ]
+        }
+      }
+    ],
+    "trials": [
+      {
+        "trial_id": "P001_baseline_1",
+        "participant_id": "P001",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:02.656741",
+        "end_time": "2025-07-06 15:01:10.970438",
+        "task_completion_time": 128.31369699998473,
+        "satisfaction_score": 3.005959951323869,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 1.3142379318816122,
+          "temporal_demand": 1,
+          "performance": 1.9237438544594414,
+          "effort": 5.019095038071543,
+          "frustration": 2.865785940838215
+        },
+        "sus_scores": {
+          "usefulness": 54.35478549301815,
+          "ease_of_use": 55.953924273482755,
+          "learnability": 40.775712934690844,
+          "satisfaction": 45.65737766864562
+        },
+        "recommendation_acceptance_rate": 0.26610533128832214,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Mint Sauce",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P001_baseline_2",
+        "participant_id": "P001",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:02.656799",
+        "end_time": "2025-07-06 15:01:06.690571",
+        "task_completion_time": 124.03377213855674,
+        "satisfaction_score": 3.0773486096803517,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 1,
+          "temporal_demand": 3.869753576492907,
+          "performance": 3.9735594084653014,
+          "effort": 5.262890305063806,
+          "frustration": 4.2709636206727
+        },
+        "sus_scores": {
+          "usefulness": 45.91470831396626,
+          "ease_of_use": 36.58536234142709,
+          "learnability": 42.808441908279626,
+          "satisfaction": 44.71454223620181
+        },
+        "recommendation_acceptance_rate": 0.23857924958822135,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Curry Special",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P001_baseline_3",
+        "participant_id": "P001",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:02.656835",
+        "end_time": "2025-07-06 15:01:02.410682",
+        "task_completion_time": 119.75384727712878,
+        "satisfaction_score": 3.1531554695546307,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 2.592045068398095,
+          "temporal_demand": 3.424447580558107,
+          "performance": 3.3270972777101484,
+          "effort": 3.2543720544926327,
+          "frustration": 4.35747597962733
+        },
+        "sus_scores": {
+          "usefulness": 54.03707134928273,
+          "ease_of_use": 59.928494442264125,
+          "learnability": 52.942293765432545,
+          "satisfaction": 53.52229953677317
+        },
+        "recommendation_acceptance_rate": 0.44016769483844465,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Malai Masala",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.5
+        },
+        "llm_feedback": "The dietary restrictions worked well for me."
+      },
+      {
+        "trial_id": "P001_baseline_4",
+        "participant_id": "P001",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:02.840845",
+        "end_time": "2025-07-06 15:00:58.314767",
+        "task_completion_time": 115.4739224157008,
+        "satisfaction_score": 2.924105988092981,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.1707519153257397,
+          "physical_demand": 1,
+          "temporal_demand": 3.5566022293354194,
+          "performance": 3.1125733305702368,
+          "effort": 1,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 49.03834573010292,
+          "ease_of_use": 49.03381873111639,
+          "learnability": 58.89319661897651,
+          "satisfaction": 51.48153743026956
+        },
+        "recommendation_acceptance_rate": 0.15263175294546966,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P001_baseline_5",
+        "participant_id": "P001",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:02.840912",
+        "end_time": "2025-07-06 15:00:54.034910",
+        "task_completion_time": 111.19399755427284,
+        "satisfaction_score": 3.1456183830256492,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.7752287646001172,
+          "physical_demand": 3.608558720411265,
+          "temporal_demand": 1.1026077170110713,
+          "performance": 4.7709038277556255,
+          "effort": 4.0047968290258655,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 46.30145429967638,
+          "ease_of_use": 64.3851875452272,
+          "learnability": 38.624474311667974,
+          "satisfaction": 44.96602788216514
+        },
+        "recommendation_acceptance_rate": 0.39084099911868464,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P001_adaptive_1",
+        "participant_id": "P001",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:02.840941",
+        "end_time": "2025-07-06 15:01:13.154638",
+        "task_completion_time": 130.31369699998473,
+        "satisfaction_score": 2.9173469420111466,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.176092728232797,
+          "physical_demand": 1,
+          "temporal_demand": 2.9798982621173358,
+          "performance": 1.4942894507927362,
+          "effort": 3.6263941772896784,
+          "frustration": 4.443049446559499
+        },
+        "sus_scores": {
+          "usefulness": 73.16791634480447,
+          "ease_of_use": 78.98607589784366,
+          "learnability": 87.98694384437013,
+          "satisfaction": 60.52472122863241
+        },
+        "recommendation_acceptance_rate": 0.19666354736478525,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Marinara",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P001_adaptive_2",
+        "participant_id": "P001",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:02.840968",
+        "end_time": "2025-07-06 15:01:08.874740",
+        "task_completion_time": 126.03377213855674,
+        "satisfaction_score": 3.3547186117339622,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.341225702244166,
+          "physical_demand": 1.9950551436410624,
+          "temporal_demand": 1.6545157021575745,
+          "performance": 1,
+          "effort": 5.089533636306004,
+          "frustration": 1.5895677749617276
+        },
+        "sus_scores": {
+          "usefulness": 56.98910069876696,
+          "ease_of_use": 89.57965908335194,
+          "learnability": 75.02367175752813,
+          "satisfaction": 64.91364233936675
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Mint Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Ciabatta",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P001_adaptive_3",
+        "participant_id": "P001",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:02.840991",
+        "end_time": "2025-07-06 15:01:04.594838",
+        "task_completion_time": 121.75384727712878,
+        "satisfaction_score": 3.5667168562640836,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.100059441619619,
+          "physical_demand": 2.2415848138586885,
+          "temporal_demand": 3.131334741939806,
+          "performance": 2.1340036115741245,
+          "effort": 3.3322673127838676,
+          "frustration": 2.3010134198699803
+        },
+        "sus_scores": {
+          "usefulness": 61.64981754175802,
+          "ease_of_use": 57.68678475134742,
+          "learnability": 73.962998314761,
+          "satisfaction": 78.98102409486364
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 6.5
+        },
+        "llm_feedback": "I appreciate the health-focused suggestions."
+      },
+      {
+        "trial_id": "P001_adaptive_4",
+        "participant_id": "P001",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:02.926797",
+        "end_time": "2025-07-06 15:01:00.400719",
+        "task_completion_time": 117.4739224157008,
+        "satisfaction_score": 2.9374767557997203,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.165718836763879,
+          "physical_demand": 3.5438189653776333,
+          "temporal_demand": 1.8915234394306997,
+          "performance": 1.7494117407310834,
+          "effort": 4.27525436824729,
+          "frustration": 1.6044494775908051
+        },
+        "sus_scores": {
+          "usefulness": 48.57656467489476,
+          "ease_of_use": 57.9291064573483,
+          "learnability": 68.78160950946481,
+          "satisfaction": 71.72870887247717
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Ciabatta",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P001_adaptive_5",
+        "participant_id": "P001",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:02.926855",
+        "end_time": "2025-07-06 15:00:56.120853",
+        "task_completion_time": 113.19399755427284,
+        "satisfaction_score": 3.074546376132889,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.6006827345765138,
+          "physical_demand": 1.1499832112453983,
+          "temporal_demand": 1.656361284469213,
+          "performance": 3.620171607633822,
+          "effort": 2.9203114951454094,
+          "frustration": 4.623029034963684
+        },
+        "sus_scores": {
+          "usefulness": 66.32250395615418,
+          "ease_of_use": 58.981687219299495,
+          "learnability": 69.28416053183446,
+          "satisfaction": 74.07979829348893
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Mint Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_baseline_1",
+        "participant_id": "P002",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.028268",
+        "end_time": "2025-07-06 15:01:18.706439",
+        "task_completion_time": 135.6781709109225,
+        "satisfaction_score": 3.727270473343722,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 1.4819587037251127,
+          "temporal_demand": 2.887001018999402,
+          "performance": 2.755172331568298,
+          "effort": 3.2716678113729625,
+          "frustration": 1.326556288086854
+        },
+        "sus_scores": {
+          "usefulness": 45.451493274158324,
+          "ease_of_use": 32.74275408343462,
+          "learnability": 53.21894170289404,
+          "satisfaction": 53.65039907591313
+        },
+        "recommendation_acceptance_rate": 0.33065828621474685,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_baseline_2",
+        "participant_id": "P002",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.028406",
+        "end_time": "2025-07-06 15:01:16.649529",
+        "task_completion_time": 133.62112291005005,
+        "satisfaction_score": 3.748897660184685,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.9833803802757868,
+          "physical_demand": 2.589753692960446,
+          "temporal_demand": 4.16108139920192,
+          "performance": 3.2705520832929587,
+          "effort": 3.4069183307473145,
+          "frustration": 4.627221683648233
+        },
+        "sus_scores": {
+          "usefulness": 35.678771960329115,
+          "ease_of_use": 30.265632159088124,
+          "learnability": 52.98835258270476,
+          "satisfaction": 56.970296753999776
+        },
+        "recommendation_acceptance_rate": 0.4725351591442462,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_baseline_3",
+        "participant_id": "P002",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.028476",
+        "end_time": "2025-07-06 15:01:14.592551",
+        "task_completion_time": 131.56407490917766,
+        "satisfaction_score": 2.217888604757085,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.140331730552454,
+          "physical_demand": 3.205449570816192,
+          "temporal_demand": 5.929267900043294,
+          "performance": 1.6633175533020337,
+          "effort": 5.004198128846708,
+          "frustration": 3.236899789324363
+        },
+        "sus_scores": {
+          "usefulness": 51.62385183745127,
+          "ease_of_use": 59.6132072366204,
+          "learnability": 58.29267864623006,
+          "satisfaction": 45.39323073115111
+        },
+        "recommendation_acceptance_rate": 0.4202673698402486,
+        "dietary_compliance": false,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 5.5
+        },
+        "llm_feedback": "It took longer than expected to find what I wanted."
+      },
+      {
+        "trial_id": "P002_baseline_4",
+        "participant_id": "P002",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.109632",
+        "end_time": "2025-07-06 15:01:12.616659",
+        "task_completion_time": 129.50702690830525,
+        "satisfaction_score": 2.245347511492915,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.0960702340147923,
+          "physical_demand": 2.5651782039026565,
+          "temporal_demand": 4.172937662497514,
+          "performance": 2.3637851049708556,
+          "effort": 4.110319238279913,
+          "frustration": 4.891265507707722
+        },
+        "sus_scores": {
+          "usefulness": 61.63759438278153,
+          "ease_of_use": 48.44263064381444,
+          "learnability": 52.25897542528178,
+          "satisfaction": 51.129465126207094
+        },
+        "recommendation_acceptance_rate": 0.4251568725413025,
+        "dietary_compliance": false,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_baseline_5",
+        "participant_id": "P002",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.109693",
+        "end_time": "2025-07-06 15:01:10.559672",
+        "task_completion_time": 127.44997890743284,
+        "satisfaction_score": 3.221302651091133,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.73417955978701,
+          "physical_demand": 2.11460135014355,
+          "temporal_demand": 2.9664488004358156,
+          "performance": 4.4177517173828935,
+          "effort": 2.110472951929771,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 59.66957745161616,
+          "ease_of_use": 48.53168953383499,
+          "learnability": 55.89753850846822,
+          "satisfaction": 68.22581369100281
+        },
+        "recommendation_acceptance_rate": 0.24666554235112567,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Malai Masala",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 5.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_adaptive_1",
+        "participant_id": "P002",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.109721",
+        "end_time": "2025-07-06 15:01:20.787892",
+        "task_completion_time": 137.6781709109225,
+        "satisfaction_score": 3.2238438494311636,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.469262549235942,
+          "physical_demand": 2.41815597515336,
+          "temporal_demand": 4.068111009180612,
+          "performance": 3.7258934632512,
+          "effort": 3.186641855152845,
+          "frustration": 6.895002339061516
+        },
+        "sus_scores": {
+          "usefulness": 77.72785564904639,
+          "ease_of_use": 78.42815367080328,
+          "learnability": 78.82571132540149,
+          "satisfaction": 74.95641662904355
+        },
+        "recommendation_acceptance_rate": 0.5452436543316967,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Curry Masala",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 5.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_adaptive_2",
+        "participant_id": "P002",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.109744",
+        "end_time": "2025-07-06 15:01:18.730867",
+        "task_completion_time": 135.62112291005008,
+        "satisfaction_score": 3.0241840128660584,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.064696488293384,
+          "physical_demand": 1,
+          "temporal_demand": 4.954656966436404,
+          "performance": 3.3162000741920337,
+          "effort": 2.702213484044972,
+          "frustration": 4.540127539382853
+        },
+        "sus_scores": {
+          "usefulness": 58.89705840544866,
+          "ease_of_use": 77.79106373928359,
+          "learnability": 67.0113441857269,
+          "satisfaction": 72.56321410942044
+        },
+        "recommendation_acceptance_rate": 0.3866056535756111,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Malai Masala",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_adaptive_3",
+        "participant_id": "P002",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.109765",
+        "end_time": "2025-07-06 15:01:16.673840",
+        "task_completion_time": 133.56407490917766,
+        "satisfaction_score": 3.462807300590672,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.7264444895394802,
+          "physical_demand": 2.487846709479671,
+          "temporal_demand": 7,
+          "performance": 1.3937486737539113,
+          "effort": 6.422149952469561,
+          "frustration": 3.496661780294124
+        },
+        "sus_scores": {
+          "usefulness": 75.81227013413641,
+          "ease_of_use": 75.24188023058223,
+          "learnability": 69.93983206113134,
+          "satisfaction": 68.96052898420504
+        },
+        "recommendation_acceptance_rate": 0.5006220736133631,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns",
+          "Personalization feels invasive"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Mint Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Ciabatta",
+          "total_price": 5.0
+        },
+        "llm_feedback": "Some recommendations didn't make sense for my diet."
+      },
+      {
+        "trial_id": "P002_adaptive_4",
+        "participant_id": "P002",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.189688",
+        "end_time": "2025-07-06 15:01:14.696715",
+        "task_completion_time": 131.50702690830525,
+        "satisfaction_score": 2.9873477393713554,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.5024939549940495,
+          "physical_demand": 1.4342321046985163,
+          "temporal_demand": 3.8075893116029964,
+          "performance": 1.3968237898469578,
+          "effort": 4.558076565857198,
+          "frustration": 3.661867813857581
+        },
+        "sus_scores": {
+          "usefulness": 61.39075087463278,
+          "ease_of_use": 74.85757732611033,
+          "learnability": 53.854630079731876,
+          "satisfaction": 67.7245974908102
+        },
+        "recommendation_acceptance_rate": 0.2870922189046363,
+        "dietary_compliance": false,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Curry Masala",
+          "base_type": "Wrap",
+          "base_option": "Pitta",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P002_adaptive_5",
+        "participant_id": "P002",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.189748",
+        "end_time": "2025-07-06 15:01:12.639727",
+        "task_completion_time": 129.44997890743284,
+        "satisfaction_score": 2.845838530995078,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.7843169785607573,
+          "physical_demand": 1.0806751925798315,
+          "temporal_demand": 2.8334242934504097,
+          "performance": 3.660317447278849,
+          "effort": 2.7453537540166986,
+          "frustration": 3.7521086933419743
+        },
+        "sus_scores": {
+          "usefulness": 86.03930148572668,
+          "ease_of_use": 71.84979195065037,
+          "learnability": 88.89501178464084,
+          "satisfaction": 48.38959973119377
+        },
+        "recommendation_acceptance_rate": 0.3205404831018652,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_baseline_1",
+        "participant_id": "P003",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.290942",
+        "end_time": "2025-07-06 15:01:10.761310",
+        "task_completion_time": 127.47036758183359,
+        "satisfaction_score": 3.4103931110984655,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.1207370805351071,
+          "physical_demand": 2.20496070297537,
+          "temporal_demand": 3.0965047082406683,
+          "performance": 4.006718091127835,
+          "effort": 2.2593323341677007,
+          "frustration": 2.8363515308118914
+        },
+        "sus_scores": {
+          "usefulness": 51.946977671638535,
+          "ease_of_use": 45.04543896197873,
+          "learnability": 62.03943903713576,
+          "satisfaction": 44.76293534077773
+        },
+        "recommendation_acceptance_rate": 0.35732747299406287,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Dietary filtering error"
+        ],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Curry Special",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_baseline_2",
+        "participant_id": "P003",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.291007",
+        "end_time": "2025-07-06 15:01:09.317754",
+        "task_completion_time": 126.0267469368228,
+        "satisfaction_score": 3.442453138081583,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.297742547052656,
+          "physical_demand": 1,
+          "temporal_demand": 3.609218420460936,
+          "performance": 3.656152888758414,
+          "effort": 5.0265936437743965,
+          "frustration": 3.508466934100523
+        },
+        "sus_scores": {
+          "usefulness": 30.79894174895261,
+          "ease_of_use": 57.8855914810127,
+          "learnability": 49.85722254225145,
+          "satisfaction": 47.993030429472434
+        },
+        "recommendation_acceptance_rate": 0.5302902213396357,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_baseline_3",
+        "participant_id": "P003",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.291033",
+        "end_time": "2025-07-06 15:01:07.874159",
+        "task_completion_time": 124.58312629181202,
+        "satisfaction_score": 3.4950668128973303,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.9912671872295475,
+          "physical_demand": 1.9441130599867653,
+          "temporal_demand": 3.8892516196287485,
+          "performance": 3.7460287461320894,
+          "effort": 2.5458716514041506,
+          "frustration": 5.2785625431550365
+        },
+        "sus_scores": {
+          "usefulness": 59.06799329319081,
+          "ease_of_use": 35.280256552412,
+          "learnability": 34.91045451493324,
+          "satisfaction": 33.90332139614706
+        },
+        "recommendation_acceptance_rate": 0.5744526770626105,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Marinara",
+          "base_type": "Wrap",
+          "base_option": "Pitta",
+          "total_price": 6.0
+        },
+        "llm_feedback": "The interface was confusing at first but I got used to it."
+      },
+      {
+        "trial_id": "P003_baseline_4",
+        "participant_id": "P003",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.377256",
+        "end_time": "2025-07-06 15:01:06.516762",
+        "task_completion_time": 123.13950564680124,
+        "satisfaction_score": 3.4140387190147585,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 1.2598264500667131,
+          "temporal_demand": 2.715732713439253,
+          "performance": 1.8007982332324197,
+          "effort": 2.203390321601732,
+          "frustration": 3.7006683199710038
+        },
+        "sus_scores": {
+          "usefulness": 36.79210554988866,
+          "ease_of_use": 51.92087771617458,
+          "learnability": 53.29331246915534,
+          "satisfaction": 74.03669897212744
+        },
+        "recommendation_acceptance_rate": 0.4383286673942756,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Mint Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_baseline_5",
+        "participant_id": "P003",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.377312",
+        "end_time": "2025-07-06 15:01:05.073197",
+        "task_completion_time": 121.69588500179044,
+        "satisfaction_score": 3.118269013291849,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.880146822052523,
+          "physical_demand": 1.8729032936333627,
+          "temporal_demand": 4.758007769520671,
+          "performance": 1,
+          "effort": 2.5606090741311247,
+          "frustration": 1.5992297749956432
+        },
+        "sus_scores": {
+          "usefulness": 29.009760083775266,
+          "ease_of_use": 73.59172222856273,
+          "learnability": 56.77989580268299,
+          "satisfaction": 46.331429047605745
+        },
+        "recommendation_acceptance_rate": 0.4587445122652618,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Curry Masala",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Ciabatta",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_adaptive_1",
+        "participant_id": "P003",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.377338",
+        "end_time": "2025-07-06 15:01:12.847706",
+        "task_completion_time": 129.47036758183359,
+        "satisfaction_score": 3.2805040498743594,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.2950594499471753,
+          "physical_demand": 1,
+          "temporal_demand": 1.643016418925399,
+          "performance": 4.130033079591004,
+          "effort": 1,
+          "frustration": 3.987764967569801
+        },
+        "sus_scores": {
+          "usefulness": 53.75760282645305,
+          "ease_of_use": 71.85243447044434,
+          "learnability": 68.37031729537055,
+          "satisfaction": 86.67085405485864
+        },
+        "recommendation_acceptance_rate": 0.4794201451594056,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Curry Masala",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_adaptive_2",
+        "participant_id": "P003",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.377362",
+        "end_time": "2025-07-06 15:01:11.404109",
+        "task_completion_time": 128.0267469368228,
+        "satisfaction_score": 4.034454519339879,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.034157301656006,
+          "physical_demand": 3.7977453128417773,
+          "temporal_demand": 1.3683391164023004,
+          "performance": 1,
+          "effort": 4.347229929187183,
+          "frustration": 3.2377384531362368
+        },
+        "sus_scores": {
+          "usefulness": 63.84648660956115,
+          "ease_of_use": 67.31310113785067,
+          "learnability": 70.85119355148554,
+          "satisfaction": 67.20084311754782
+        },
+        "recommendation_acceptance_rate": 0.7201295445822817,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Malai Masala",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_adaptive_3",
+        "participant_id": "P003",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.377384",
+        "end_time": "2025-07-06 15:01:10.960510",
+        "task_completion_time": 127.58312629181202,
+        "satisfaction_score": 4.136360487322663,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.963448466254743,
+          "physical_demand": 3.1890145677258452,
+          "temporal_demand": 3.0747709030054353,
+          "performance": 2.834932837239988,
+          "effort": 1,
+          "frustration": 3.924140679383601
+        },
+        "sus_scores": {
+          "usefulness": 74.40108758526397,
+          "ease_of_use": 64.05542952734339,
+          "learnability": 66.53020395116724,
+          "satisfaction": 65.95136131587088
+        },
+        "recommendation_acceptance_rate": 0.5764809962708868,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Marinara",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.5
+        },
+        "llm_feedback": "It took longer than expected to find what I wanted."
+      },
+      {
+        "trial_id": "P003_adaptive_4",
+        "participant_id": "P003",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.468175",
+        "end_time": "2025-07-06 15:01:10.607681",
+        "task_completion_time": 127.13950564680124,
+        "satisfaction_score": 4.173333123914355,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.785422543063313,
+          "physical_demand": 2.94794268218227,
+          "temporal_demand": 2.5808520668629695,
+          "performance": 4.8723188942413245,
+          "effort": 6.047173719185242,
+          "frustration": 3.574735355646101
+        },
+        "sus_scores": {
+          "usefulness": 50.16298432416045,
+          "ease_of_use": 70.28971423323911,
+          "learnability": 77.50768614512431,
+          "satisfaction": 59.48593746910362
+        },
+        "recommendation_acceptance_rate": 0.5454673036312704,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P003_adaptive_5",
+        "participant_id": "P003",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.468234",
+        "end_time": "2025-07-06 15:01:10.164119",
+        "task_completion_time": 126.69588500179043,
+        "satisfaction_score": 3.4594038521891077,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.382459387830702,
+          "physical_demand": 2.9580708822532746,
+          "temporal_demand": 2.8950064415072325,
+          "performance": 2.3175660731781864,
+          "effort": 3.1762229571651823,
+          "frustration": 2.214936077658111
+        },
+        "sus_scores": {
+          "usefulness": 59.569149482098595,
+          "ease_of_use": 69.55607462831536,
+          "learnability": 80.57451675352557,
+          "satisfaction": 63.23527617912301
+        },
+        "recommendation_acceptance_rate": 0.6254387089965876,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_baseline_1",
+        "participant_id": "P004",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.569581",
+        "end_time": "2025-07-06 15:01:07.359066",
+        "task_completion_time": 123.7894850475547,
+        "satisfaction_score": 2.96195461490125,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.9885252897740302,
+          "physical_demand": 1.8573451383533413,
+          "temporal_demand": 3.8093512877879254,
+          "performance": 5.913313405015647,
+          "effort": 2.2433151815495447,
+          "frustration": 4.401409844975868
+        },
+        "sus_scores": {
+          "usefulness": 49.894826666467175,
+          "ease_of_use": 30.57096601099704,
+          "learnability": 44.58147691101712,
+          "satisfaction": 47.0474902126735
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 5.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_baseline_2",
+        "participant_id": "P004",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.569715",
+        "end_time": "2025-07-06 15:01:04.422863",
+        "task_completion_time": 120.85314814513161,
+        "satisfaction_score": 3.0523153838928954,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.540504527071417,
+          "physical_demand": 1.7666295228656326,
+          "temporal_demand": 1,
+          "performance": 1.424648532897649,
+          "effort": 1.947013290657084,
+          "frustration": 1.7738374081113133
+        },
+        "sus_scores": {
+          "usefulness": 41.32466880557603,
+          "ease_of_use": 53.27762943484016,
+          "learnability": 39.70911148926526,
+          "satisfaction": 49.42013254437789
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Curry Masala",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_baseline_3",
+        "participant_id": "P004",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.569787",
+        "end_time": "2025-07-06 15:01:01.486598",
+        "task_completion_time": 117.91681124270852,
+        "satisfaction_score": 2.99583130691412,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.713008482180481,
+          "physical_demand": 1,
+          "temporal_demand": 2.2812919073096998,
+          "performance": 4.318067445682345,
+          "effort": 1.3286136233037422,
+          "frustration": 5.093364622926484
+        },
+        "sus_scores": {
+          "usefulness": 43.00143096942831,
+          "ease_of_use": 41.28254413452481,
+          "learnability": 63.478341751385095,
+          "satisfaction": 58.155577187173854
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 5.5
+        },
+        "llm_feedback": "The dietary restrictions worked well for me."
+      },
+      {
+        "trial_id": "P004_baseline_4",
+        "participant_id": "P004",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.660421",
+        "end_time": "2025-07-06 15:00:58.640895",
+        "task_completion_time": 114.98047434028544,
+        "satisfaction_score": 3.0122163158109725,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.250003099929425,
+          "physical_demand": 1.3830538131713679,
+          "temporal_demand": 3.9111695305679604,
+          "performance": 4.4523030094790705,
+          "effort": 1.8721800127261234,
+          "frustration": 3.3230177725350094
+        },
+        "sus_scores": {
+          "usefulness": 60.66817539754932,
+          "ease_of_use": 52.09281008740725,
+          "learnability": 48.65938443439644,
+          "satisfaction": 48.01336388708951
+        },
+        "recommendation_acceptance_rate": 0.29134690374750416,
+        "dietary_compliance": false,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Mint Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_baseline_5",
+        "participant_id": "P004",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.660480",
+        "end_time": "2025-07-06 15:00:55.704617",
+        "task_completion_time": 112.04413743786233,
+        "satisfaction_score": 2.9326842978065173,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.1233386631389375,
+          "physical_demand": 1.9460135756488084,
+          "temporal_demand": 2.4340179981939047,
+          "performance": 1,
+          "effort": 2.341953772344372,
+          "frustration": 3.0319503433302137
+        },
+        "sus_scores": {
+          "usefulness": 46.172206793769455,
+          "ease_of_use": 42.336584590504735,
+          "learnability": 54.504218671996234,
+          "satisfaction": 42.239525232179226
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [
+          "Dietary filtering error"
+        ],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Curry Masala",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_adaptive_1",
+        "participant_id": "P004",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.660507",
+        "end_time": "2025-07-06 15:01:09.449992",
+        "task_completion_time": 125.7894850475547,
+        "satisfaction_score": 3.5586826010832144,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.134386154356961,
+          "physical_demand": 3.481597845304016,
+          "temporal_demand": 1.8308808313020655,
+          "performance": 2.559497272213378,
+          "effort": 2.197066320779666,
+          "frustration": 1.1065049116153824
+        },
+        "sus_scores": {
+          "usefulness": 58.58788453477014,
+          "ease_of_use": 50.70671521152718,
+          "learnability": 87.74096756884092,
+          "satisfaction": 64.43372990478505
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Wrap",
+          "base_option": "Pitta",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_adaptive_2",
+        "participant_id": "P004",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.660529",
+        "end_time": "2025-07-06 15:01:06.513677",
+        "task_completion_time": 122.85314814513161,
+        "satisfaction_score": 2.998553665722913,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.9012527941032396,
+          "physical_demand": 1.6606601602534852,
+          "temporal_demand": 5.120257791375118,
+          "performance": 2.5421083258609687,
+          "effort": 4.99304641783975,
+          "frustration": 6.56899123113754
+        },
+        "sus_scores": {
+          "usefulness": 74.57918886819385,
+          "ease_of_use": 94.95758312921146,
+          "learnability": 57.05527905610161,
+          "satisfaction": 72.69376632898935
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_adaptive_3",
+        "participant_id": "P004",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.660551",
+        "end_time": "2025-07-06 15:01:03.577362",
+        "task_completion_time": 119.91681124270852,
+        "satisfaction_score": 3.310905085020553,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.0519289593260304,
+          "physical_demand": 1.1946924446826401,
+          "temporal_demand": 1,
+          "performance": 4.032058539220136,
+          "effort": 7,
+          "frustration": 2.985127570397748
+        },
+        "sus_scores": {
+          "usefulness": 75.92250310254869,
+          "ease_of_use": 71.30704412607867,
+          "learnability": 62.69092743251255,
+          "satisfaction": 70.15052455578086
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Mint Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.5
+        },
+        "llm_feedback": "I appreciate the health-focused suggestions."
+      },
+      {
+        "trial_id": "P004_adaptive_4",
+        "participant_id": "P004",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.747586",
+        "end_time": "2025-07-06 15:01:00.728060",
+        "task_completion_time": 116.98047434028544,
+        "satisfaction_score": 2.255043744311102,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.811900947049856,
+          "physical_demand": 2.0737269003154997,
+          "temporal_demand": 3.3191332582004707,
+          "performance": 5.031594914510207,
+          "effort": 6.431341999209058,
+          "frustration": 3.0166436148628413
+        },
+        "sus_scores": {
+          "usefulness": 58.33899681386232,
+          "ease_of_use": 76.81914827461696,
+          "learnability": 82.24833574938933,
+          "satisfaction": 85.02525009541957
+        },
+        "recommendation_acceptance_rate": 0.15676417827494113,
+        "dietary_compliance": false,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Malai Masala",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P004_adaptive_5",
+        "participant_id": "P004",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.747704",
+        "end_time": "2025-07-06 15:00:57.791841",
+        "task_completion_time": 114.04413743786233,
+        "satisfaction_score": 2.814013262627939,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.43393924242266,
+          "physical_demand": 1,
+          "temporal_demand": 6.608030328263277,
+          "performance": 2.261725205014041,
+          "effort": 5.460067103312099,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 59.754544610600774,
+          "ease_of_use": 48.95157968834627,
+          "learnability": 86.3494362477007,
+          "satisfaction": 67.51221975814904
+        },
+        "recommendation_acceptance_rate": 0.1633542906558314,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Data collection concerns"
+        ],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Curry Special",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_baseline_1",
+        "participant_id": "P005",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.850631",
+        "end_time": "2025-07-06 15:01:01.532832",
+        "task_completion_time": 117.68220084322913,
+        "satisfaction_score": 2.513920419087935,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.0287517110648334,
+          "physical_demand": 1,
+          "temporal_demand": 1.0922394232161872,
+          "performance": 2.571270608727677,
+          "effort": 3.1696671979665814,
+          "frustration": 3.8443447072741304
+        },
+        "sus_scores": {
+          "usefulness": 41.32504601741203,
+          "ease_of_use": 60.93920476432248,
+          "learnability": 56.9047159466842,
+          "satisfaction": 42.366751282878965
+        },
+        "recommendation_acceptance_rate": 0.3454984384700776,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Mint Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_baseline_2",
+        "participant_id": "P005",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.850718",
+        "end_time": "2025-07-06 15:01:00.792767",
+        "task_completion_time": 116.94204933221745,
+        "satisfaction_score": 3.4933957183517745,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.6435732822934863,
+          "physical_demand": 2.8279491855785697,
+          "temporal_demand": 3.9140162282759237,
+          "performance": 3.1157005103885127,
+          "effort": 1.6222587447993149,
+          "frustration": 1.946279745037979
+        },
+        "sus_scores": {
+          "usefulness": 54.140591606341665,
+          "ease_of_use": 41.115356716158004,
+          "learnability": 38.76913795908343,
+          "satisfaction": 46.17101810431793
+        },
+        "recommendation_acceptance_rate": 0.4403113101536364,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Mint Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_baseline_3",
+        "participant_id": "P005",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.850750",
+        "end_time": "2025-07-06 15:01:00.052648",
+        "task_completion_time": 116.20189782120583,
+        "satisfaction_score": 3.4536823568590065,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.38511137331246,
+          "physical_demand": 2.814664995086109,
+          "temporal_demand": 3.8167218658935025,
+          "performance": 5.371961580562127,
+          "effort": 2.6293284363843634,
+          "frustration": 3.1278366625851723
+        },
+        "sus_scores": {
+          "usefulness": 42.914255084834785,
+          "ease_of_use": 47.56023429528125,
+          "learnability": 59.568455553222975,
+          "satisfaction": 43.63043827594225
+        },
+        "recommendation_acceptance_rate": 0.5014974130080855,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Mint Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.0
+        },
+        "llm_feedback": "The interface was confusing at first but I got used to it."
+      },
+      {
+        "trial_id": "P005_baseline_4",
+        "participant_id": "P005",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.951076",
+        "end_time": "2025-07-06 15:00:59.412822",
+        "task_completion_time": 115.46174631019419,
+        "satisfaction_score": 3.769594704423926,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.020868043384278,
+          "physical_demand": 2.36793855106764,
+          "temporal_demand": 3.723984767787916,
+          "performance": 2.3882374244013627,
+          "effort": 4.6517716790956785,
+          "frustration": 1.5194490817941566
+        },
+        "sus_scores": {
+          "usefulness": 36.11761277910821,
+          "ease_of_use": 61.49196686655967,
+          "learnability": 75.04062649674815,
+          "satisfaction": 35.88472668531159
+        },
+        "recommendation_acceptance_rate": 0.4614344183226149,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_baseline_5",
+        "participant_id": "P005",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:03.951168",
+        "end_time": "2025-07-06 15:00:58.672763",
+        "task_completion_time": 114.72159479918254,
+        "satisfaction_score": 3.0396903795349175,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.446055668127992,
+          "physical_demand": 1.6499376802425134,
+          "temporal_demand": 1.9944069926712213,
+          "performance": 4.1471537148551825,
+          "effort": 2.8660431295375304,
+          "frustration": 2.015420648036719
+        },
+        "sus_scores": {
+          "usefulness": 43.21204576883376,
+          "ease_of_use": 55.44254500607613,
+          "learnability": 73.8134994828193,
+          "satisfaction": 23.696458080456907
+        },
+        "recommendation_acceptance_rate": 0.44373774523196413,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Mint Sauce",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 5.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_adaptive_1",
+        "participant_id": "P005",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.951202",
+        "end_time": "2025-07-06 15:01:03.633403",
+        "task_completion_time": 119.68220084322913,
+        "satisfaction_score": 3.296831212016634,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.1558401932200706,
+          "physical_demand": 4.437490950313213,
+          "temporal_demand": 1.194379100550873,
+          "performance": 4.253666521083026,
+          "effort": 5.818228593892203,
+          "frustration": 4.653431972478993
+        },
+        "sus_scores": {
+          "usefulness": 76.33502618190833,
+          "ease_of_use": 59.648559463315024,
+          "learnability": 84.59998350210574,
+          "satisfaction": 55.274645973127846
+        },
+        "recommendation_acceptance_rate": 0.6288289717287514,
+        "dietary_compliance": false,
+        "privacy_concerns": [
+          "Personalization feels invasive"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Curry Special",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_adaptive_2",
+        "participant_id": "P005",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.951230",
+        "end_time": "2025-07-06 15:01:02.893279",
+        "task_completion_time": 118.94204933221748,
+        "satisfaction_score": 3.5801138647926605,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.9664691791534543,
+          "physical_demand": 2.59249703857858,
+          "temporal_demand": 2.672125975952269,
+          "performance": 4.908210114149898,
+          "effort": 1,
+          "frustration": 1.8425954995589313
+        },
+        "sus_scores": {
+          "usefulness": 47.88683277218874,
+          "ease_of_use": 68.95437796524614,
+          "learnability": 75.5804045196679,
+          "satisfaction": 81.31131516793337
+        },
+        "recommendation_acceptance_rate": 0.5690671114330593,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [
+          "System slow response"
+        ],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_adaptive_3",
+        "participant_id": "P005",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:03.951255",
+        "end_time": "2025-07-06 15:01:02.153153",
+        "task_completion_time": 118.20189782120583,
+        "satisfaction_score": 3.8240981214690337,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.413990548572736,
+          "physical_demand": 2.2760107692489617,
+          "temporal_demand": 1.2355293259484514,
+          "performance": 2.3000166128953468,
+          "effort": 2.18065918469232,
+          "frustration": 3.0289460080232598
+        },
+        "sus_scores": {
+          "usefulness": 71.47599353733249,
+          "ease_of_use": 64.5992985242802,
+          "learnability": 71.41523749332853,
+          "satisfaction": 54.06891969977578
+        },
+        "recommendation_acceptance_rate": 0.6142268876142832,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Personalization feels invasive"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 6.5
+        },
+        "llm_feedback": "The interface was confusing at first but I got used to it."
+      },
+      {
+        "trial_id": "P005_adaptive_4",
+        "participant_id": "P005",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.059577",
+        "end_time": "2025-07-06 15:01:01.521323",
+        "task_completion_time": 117.46174631019419,
+        "satisfaction_score": 3.509475447137585,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.6648570080526413,
+          "physical_demand": 1.2818193441283614,
+          "temporal_demand": 4.634855100850454,
+          "performance": 1.9033955695031397,
+          "effort": 4.300944293061974,
+          "frustration": 2.9995296019777338
+        },
+        "sus_scores": {
+          "usefulness": 54.7050792694489,
+          "ease_of_use": 73.58015944898865,
+          "learnability": 42.47217304836296,
+          "satisfaction": 74.7673090293049
+        },
+        "recommendation_acceptance_rate": 0.5551856782751465,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Curry Masala",
+          "base_type": "Bowl",
+          "base_option": "Bowl",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P005_adaptive_5",
+        "participant_id": "P005",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.059638",
+        "end_time": "2025-07-06 15:01:00.781233",
+        "task_completion_time": 116.72159479918254,
+        "satisfaction_score": 3.269397990911446,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.4097392814673202,
+          "physical_demand": 1.5323467395098995,
+          "temporal_demand": 1.583598746066289,
+          "performance": 1,
+          "effort": 4.144913408988941,
+          "frustration": 2.916120722019662
+        },
+        "sus_scores": {
+          "usefulness": 65.23582861105476,
+          "ease_of_use": 57.43055986914956,
+          "learnability": 60.91793692909248,
+          "satisfaction": 48.41665257918941
+        },
+        "recommendation_acceptance_rate": 0.5479683325520356,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Found interface shortcuts"
+        ],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Malai Masala",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_baseline_1",
+        "participant_id": "P006",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.160851",
+        "end_time": "2025-07-06 15:01:01.601845",
+        "task_completion_time": 117.44099372924806,
+        "satisfaction_score": 3.4020516162801493,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.5001653647898228,
+          "physical_demand": 3.2216899692784304,
+          "temporal_demand": 4.674868620203958,
+          "performance": 4.034120043491636,
+          "effort": 3.586232953212767,
+          "frustration": 3.894188420661543
+        },
+        "sus_scores": {
+          "usefulness": 39.434342896794504,
+          "ease_of_use": 66.56245506279558,
+          "learnability": 53.88436201696384,
+          "satisfaction": 33.07012972763263
+        },
+        "recommendation_acceptance_rate": 0.4421209766341434,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_baseline_2",
+        "participant_id": "P006",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.160919",
+        "end_time": "2025-07-06 15:00:58.859169",
+        "task_completion_time": 114.69824961879335,
+        "satisfaction_score": 3.0953224856577237,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.584857594128566,
+          "physical_demand": 3.040917534713649,
+          "temporal_demand": 1.271628814028761,
+          "performance": 1,
+          "effort": 1,
+          "frustration": 3.4570406359599573
+        },
+        "sus_scores": {
+          "usefulness": 59.860086927414784,
+          "ease_of_use": 43.46524190931751,
+          "learnability": 42.87043651216489,
+          "satisfaction": 52.13190519535978
+        },
+        "recommendation_acceptance_rate": 0.4820507941169577,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Marinara",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_baseline_3",
+        "participant_id": "P006",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.160952",
+        "end_time": "2025-07-06 15:00:56.116458",
+        "task_completion_time": 111.95550550833867,
+        "satisfaction_score": 3.2321174335683667,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.7118033520394977,
+          "physical_demand": 2.709484871641105,
+          "temporal_demand": 4.433655821643818,
+          "performance": 3.7742127191175685,
+          "effort": 3.426195596022229,
+          "frustration": 2.09043257026923
+        },
+        "sus_scores": {
+          "usefulness": 49.5347189692606,
+          "ease_of_use": 52.35214745275575,
+          "learnability": 60.99593283655725,
+          "satisfaction": 44.940289701965185
+        },
+        "recommendation_acceptance_rate": 0.34723495019793693,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 6.5
+        },
+        "llm_feedback": "I appreciate the health-focused suggestions."
+      },
+      {
+        "trial_id": "P006_baseline_4",
+        "participant_id": "P006",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.249302",
+        "end_time": "2025-07-06 15:00:53.462063",
+        "task_completion_time": 109.212761397884,
+        "satisfaction_score": 3.0513413188668514,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.4824860554379606,
+          "physical_demand": 1.2010533374916703,
+          "temporal_demand": 4.034213490802218,
+          "performance": 5.305810195437133,
+          "effort": 1,
+          "frustration": 1.0298646740022377
+        },
+        "sus_scores": {
+          "usefulness": 48.364700411553265,
+          "ease_of_use": 51.00946317966891,
+          "learnability": 51.047818178848466,
+          "satisfaction": 56.467904364123804
+        },
+        "recommendation_acceptance_rate": 0.4111622184106277,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Curry Masala",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_baseline_5",
+        "participant_id": "P006",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.249408",
+        "end_time": "2025-07-06 15:00:50.719425",
+        "task_completion_time": 106.4700172874293,
+        "satisfaction_score": 3.1309023349836673,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.436752795295471,
+          "physical_demand": 1.2760935224390288,
+          "temporal_demand": 2.9631830824496257,
+          "performance": 1,
+          "effort": 2.828434227550724,
+          "frustration": 5.534888365573454
+        },
+        "sus_scores": {
+          "usefulness": 41.98044933737804,
+          "ease_of_use": 59.697288554950305,
+          "learnability": 26.823726349457466,
+          "satisfaction": 50.17041388305594
+        },
+        "recommendation_acceptance_rate": 0.4835728269224455,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Curry Special",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_adaptive_1",
+        "participant_id": "P006",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.249499",
+        "end_time": "2025-07-06 15:01:03.690493",
+        "task_completion_time": 119.44099372924806,
+        "satisfaction_score": 3.5287880740673083,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.411851543389209,
+          "physical_demand": 1.9256974790366712,
+          "temporal_demand": 3.540304768929719,
+          "performance": 4.004557030914364,
+          "effort": 3.0654172170453364,
+          "frustration": 3.4669027729592696
+        },
+        "sus_scores": {
+          "usefulness": 71.53438576966194,
+          "ease_of_use": 56.54740368446248,
+          "learnability": 72.83985047815726,
+          "satisfaction": 57.84216352056258
+        },
+        "recommendation_acceptance_rate": 0.5627288122707623,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Marinara",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_adaptive_2",
+        "participant_id": "P006",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.249550",
+        "end_time": "2025-07-06 15:01:00.947800",
+        "task_completion_time": 116.69824961879335,
+        "satisfaction_score": 3.389126945543633,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 3.126585142763904,
+          "temporal_demand": 2.840045271763777,
+          "performance": 2.622974680919013,
+          "effort": 1,
+          "frustration": 2.04833363142261
+        },
+        "sus_scores": {
+          "usefulness": 77.65956167430994,
+          "ease_of_use": 76.22499565035363,
+          "learnability": 57.80539271023687,
+          "satisfaction": 72.83134207601498
+        },
+        "recommendation_acceptance_rate": 0.4477583408681248,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Curry Special",
+          "base_type": "Bowl",
+          "base_option": "Bowl",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_adaptive_3",
+        "participant_id": "P006",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.249594",
+        "end_time": "2025-07-06 15:00:58.205100",
+        "task_completion_time": 113.95550550833867,
+        "satisfaction_score": 2.9821363828274574,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.634817664292876,
+          "physical_demand": 1.704088823282953,
+          "temporal_demand": 1,
+          "performance": 2.1848610341066963,
+          "effort": 4.787631001691345,
+          "frustration": 6.828289943368857
+        },
+        "sus_scores": {
+          "usefulness": 59.250742083222875,
+          "ease_of_use": 64.47363478154062,
+          "learnability": 58.91646323233812,
+          "satisfaction": 61.42245550948917
+        },
+        "recommendation_acceptance_rate": 0.5858631401980853,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Sandwich & Subs",
+          "base_option": "White Bread",
+          "total_price": 4.5
+        },
+        "llm_feedback": "The dietary restrictions worked well for me."
+      },
+      {
+        "trial_id": "P006_adaptive_4",
+        "participant_id": "P006",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.332373",
+        "end_time": "2025-07-06 15:00:55.545134",
+        "task_completion_time": 111.212761397884,
+        "satisfaction_score": 3.0886116391398617,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.108145993051566,
+          "physical_demand": 1.234474328961947,
+          "temporal_demand": 4.0891463891878805,
+          "performance": 3.5005744960965415,
+          "effort": 4.2854225203490035,
+          "frustration": 2.111862676467366
+        },
+        "sus_scores": {
+          "usefulness": 77.0260683569607,
+          "ease_of_use": 78.2265092194438,
+          "learnability": 71.0108157156321,
+          "satisfaction": 67.73289233846819
+        },
+        "recommendation_acceptance_rate": 0.5729641395877739,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P006_adaptive_5",
+        "participant_id": "P006",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.332535",
+        "end_time": "2025-07-06 15:00:52.802552",
+        "task_completion_time": 108.4700172874293,
+        "satisfaction_score": 3.6238277637281113,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.089431829162737,
+          "physical_demand": 1.4529987158588678,
+          "temporal_demand": 3.6713135590368,
+          "performance": 1,
+          "effort": 3.3803211619270996,
+          "frustration": 3.3185837057803713
+        },
+        "sus_scores": {
+          "usefulness": 65.6508098390221,
+          "ease_of_use": 69.5950953100577,
+          "learnability": 64.25485123076248,
+          "satisfaction": 76.74895545617917
+        },
+        "recommendation_acceptance_rate": 0.5705630395445402,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_baseline_1",
+        "participant_id": "P007",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.433420",
+        "end_time": "2025-07-06 15:00:59.522298",
+        "task_completion_time": 115.08887784711862,
+        "satisfaction_score": 3.2399139872526295,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.611227628976583,
+          "physical_demand": 2.869839510563231,
+          "temporal_demand": 1.2651446076253148,
+          "performance": 4.796815904110218,
+          "effort": 1,
+          "frustration": 3.094627672324317
+        },
+        "sus_scores": {
+          "usefulness": 43.52777699309098,
+          "ease_of_use": 54.65491042062943,
+          "learnability": 51.05756311801523,
+          "satisfaction": 51.53823931865669
+        },
+        "recommendation_acceptance_rate": 0.4470768164992846,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_baseline_2",
+        "participant_id": "P007",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.433541",
+        "end_time": "2025-07-06 15:00:55.397576",
+        "task_completion_time": 110.96403488447834,
+        "satisfaction_score": 2.7980952949870597,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.856936859061219,
+          "physical_demand": 2.204790503178682,
+          "temporal_demand": 3.9578979296501426,
+          "performance": 3.358153975669397,
+          "effort": 1.2941236332892339,
+          "frustration": 4.135288195116089
+        },
+        "sus_scores": {
+          "usefulness": 49.67256813137914,
+          "ease_of_use": 52.90141777049588,
+          "learnability": 60.35563681436869,
+          "satisfaction": 58.501158591656264
+        },
+        "recommendation_acceptance_rate": 0.4392991005922939,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Marinara",
+          "base_type": "Bowl",
+          "base_option": "Bowl",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_baseline_3",
+        "participant_id": "P007",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.433603",
+        "end_time": "2025-07-06 15:00:51.272795",
+        "task_completion_time": 106.83919192183804,
+        "satisfaction_score": 3.786049029550743,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.2310407018113394,
+          "physical_demand": 3.6669174432897584,
+          "temporal_demand": 6.795508227199223,
+          "performance": 1.7144857165011087,
+          "effort": 2.176141083987624,
+          "frustration": 4.307149655056345
+        },
+        "sus_scores": {
+          "usefulness": 56.52686537770781,
+          "ease_of_use": 36.96332544493916,
+          "learnability": 51.6608735963605,
+          "satisfaction": 46.746225327607846
+        },
+        "recommendation_acceptance_rate": 0.5764463813030216,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.0
+        },
+        "llm_feedback": "I wish there were more options that fit my preferences."
+      },
+      {
+        "trial_id": "P007_baseline_4",
+        "participant_id": "P007",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.533598",
+        "end_time": "2025-07-06 15:00:47.247947",
+        "task_completion_time": 102.71434895919774,
+        "satisfaction_score": 3.030709488886046,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.910715017771777,
+          "physical_demand": 3.162740437640281,
+          "temporal_demand": 1,
+          "performance": 4.446863706465098,
+          "effort": 2.956378773732012,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 41.11407922997931,
+          "ease_of_use": 48.66322958306986,
+          "learnability": 54.47605604388137,
+          "satisfaction": 37.7018041873212
+        },
+        "recommendation_acceptance_rate": 0.435794373557724,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "White Bread",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_baseline_5",
+        "participant_id": "P007",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.533701",
+        "end_time": "2025-07-06 15:00:43.123207",
+        "task_completion_time": 98.58950599655743,
+        "satisfaction_score": 3.409275095802737,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 1.3805892858074298,
+          "temporal_demand": 1.8655536166382092,
+          "performance": 1.4852574479316827,
+          "effort": 3.2475082762035963,
+          "frustration": 5.259527685790092
+        },
+        "sus_scores": {
+          "usefulness": 46.89180415836701,
+          "ease_of_use": 55.15739574831524,
+          "learnability": 31.51525181753728,
+          "satisfaction": 48.4207140182759
+        },
+        "recommendation_acceptance_rate": 0.5666338038248654,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Mint Sauce",
+          "base_type": "Wrap",
+          "base_option": "Pitta",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_adaptive_1",
+        "participant_id": "P007",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.533748",
+        "end_time": "2025-07-06 15:01:01.622626",
+        "task_completion_time": 117.08887784711862,
+        "satisfaction_score": 3.957629555775114,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.162965889261268,
+          "physical_demand": 1,
+          "temporal_demand": 5.547603990493525,
+          "performance": 4.979400379264833,
+          "effort": 2.7602339979713046,
+          "frustration": 2.472208943791316
+        },
+        "sus_scores": {
+          "usefulness": 72.77120404342465,
+          "ease_of_use": 71.35325807098172,
+          "learnability": 70.80322942532233,
+          "satisfaction": 54.921605472174335
+        },
+        "recommendation_acceptance_rate": 0.49021307189520863,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Personalization feels invasive"
+        ],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Mint Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_adaptive_2",
+        "participant_id": "P007",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.533792",
+        "end_time": "2025-07-06 15:00:57.497827",
+        "task_completion_time": 112.96403488447834,
+        "satisfaction_score": 3.571875503799101,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.4779682477502036,
+          "physical_demand": 3.4783318218266044,
+          "temporal_demand": 1.2685679740529423,
+          "performance": 2.8231217693005677,
+          "effort": 4.220953745256829,
+          "frustration": 1.6549782671761901
+        },
+        "sus_scores": {
+          "usefulness": 80.51530226211655,
+          "ease_of_use": 71.78011293794052,
+          "learnability": 53.070638266332416,
+          "satisfaction": 75.0813908362088
+        },
+        "recommendation_acceptance_rate": 0.6014305084979108,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Mint Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_adaptive_3",
+        "participant_id": "P007",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.533833",
+        "end_time": "2025-07-06 15:00:53.373025",
+        "task_completion_time": 108.83919192183804,
+        "satisfaction_score": 2.826052551512183,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.9648038495350832,
+          "physical_demand": 2.8036160883842873,
+          "temporal_demand": 4.68773597890406,
+          "performance": 4.423412536641003,
+          "effort": 1,
+          "frustration": 2.4091964141242235
+        },
+        "sus_scores": {
+          "usefulness": 77.45021214045241,
+          "ease_of_use": 80.60440849880143,
+          "learnability": 81.17771093147385,
+          "satisfaction": 74.68460204614935
+        },
+        "recommendation_acceptance_rate": 0.5146973475519494,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 4.5
+        },
+        "llm_feedback": "I wish there were more options that fit my preferences."
+      },
+      {
+        "trial_id": "P007_adaptive_4",
+        "participant_id": "P007",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.618971",
+        "end_time": "2025-07-06 15:00:49.333320",
+        "task_completion_time": 104.71434895919774,
+        "satisfaction_score": 2.877700324843484,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.9183602547207115,
+          "physical_demand": 1.9548010477695932,
+          "temporal_demand": 2.499317968032813,
+          "performance": 4.977900814484194,
+          "effort": 1.3417066552932873,
+          "frustration": 4.741249050269195
+        },
+        "sus_scores": {
+          "usefulness": 70.93002640895568,
+          "ease_of_use": 84.28433364874775,
+          "learnability": 75.82364357896407,
+          "satisfaction": 55.736213672431155
+        },
+        "recommendation_acceptance_rate": 0.5929053154960484,
+        "dietary_compliance": false,
+        "privacy_concerns": [
+          "Personalization feels invasive"
+        ],
+        "cultural_mismatches": [
+          "Spice levels not appropriate"
+        ],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Bowl",
+          "base_option": "Bowl",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P007_adaptive_5",
+        "participant_id": "P007",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.619083",
+        "end_time": "2025-07-06 15:00:45.208589",
+        "task_completion_time": 100.58950599655743,
+        "satisfaction_score": 3.6566933727885274,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.100276872648176,
+          "physical_demand": 3.0183945641607384,
+          "temporal_demand": 4.122787018359764,
+          "performance": 3.3193725457412495,
+          "effort": 2.802895051297866,
+          "frustration": 2.4886435874260138
+        },
+        "sus_scores": {
+          "usefulness": 80.58327146420437,
+          "ease_of_use": 60.64074562998098,
+          "learnability": 66.25371790086457,
+          "satisfaction": 70.25119243382984
+        },
+        "recommendation_acceptance_rate": 0.6754950841411732,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_baseline_1",
+        "participant_id": "P008",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.719407",
+        "end_time": "2025-07-06 15:01:03.322965",
+        "task_completion_time": 118.60355793728455,
+        "satisfaction_score": 2.908553132810648,
+        "nasa_tlx_scores": {
+          "mental_demand": 5.0419857515994275,
+          "physical_demand": 1.3400200708648689,
+          "temporal_demand": 2.8150309763748482,
+          "performance": 3.3123186274336374,
+          "effort": 3.3614765268071656,
+          "frustration": 3.24483411266154
+        },
+        "sus_scores": {
+          "usefulness": 39.795351770777096,
+          "ease_of_use": 53.60296670254,
+          "learnability": 46.63658521568078,
+          "satisfaction": 44.61644722303486
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Mint Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_baseline_2",
+        "participant_id": "P008",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.719514",
+        "end_time": "2025-07-06 15:01:00.473915",
+        "task_completion_time": 115.75440050373733,
+        "satisfaction_score": 3.190721933912024,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.343485192197232,
+          "physical_demand": 2.9523804646273843,
+          "temporal_demand": 1,
+          "performance": 1,
+          "effort": 1,
+          "frustration": 2.727805194795287
+        },
+        "sus_scores": {
+          "usefulness": 35.929703269096116,
+          "ease_of_use": 48.30545273417118,
+          "learnability": 60.66410538903722,
+          "satisfaction": 71.69486659960084
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Mint Sauce",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_baseline_3",
+        "participant_id": "P008",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.719560",
+        "end_time": "2025-07-06 15:00:57.624803",
+        "task_completion_time": 112.90524307019007,
+        "satisfaction_score": 3.2679700913079737,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.7351563495263274,
+          "physical_demand": 1,
+          "temporal_demand": 2.419911541924505,
+          "performance": 3.0024333425057663,
+          "effort": 3.2115800392222846,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 50.337712498140405,
+          "ease_of_use": 56.71730831840852,
+          "learnability": 48.388065044067,
+          "satisfaction": 41.58012144406296
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Marinara",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 4.5
+        },
+        "llm_feedback": "The dietary restrictions worked well for me."
+      },
+      {
+        "trial_id": "P008_baseline_4",
+        "participant_id": "P008",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.822315",
+        "end_time": "2025-07-06 15:00:54.878401",
+        "task_completion_time": 110.0560856366428,
+        "satisfaction_score": 2.719152132976308,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.4970249243985507,
+          "physical_demand": 2.9319249689594526,
+          "temporal_demand": 3.2820589614728393,
+          "performance": 2.7590614801588242,
+          "effort": 2.4942416822852245,
+          "frustration": 4.5340879374961185
+        },
+        "sus_scores": {
+          "usefulness": 50.0774237810875,
+          "ease_of_use": 55.559213030807236,
+          "learnability": 59.464013263567935,
+          "satisfaction": 48.21142028313073
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Malai Masala",
+          "base_type": "Bowl",
+          "base_option": "Rice Bowl",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_baseline_5",
+        "participant_id": "P008",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:04.822467",
+        "end_time": "2025-07-06 15:00:52.029395",
+        "task_completion_time": 107.20692820309556,
+        "satisfaction_score": 2.896380754100891,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.9634351679719373,
+          "physical_demand": 1,
+          "temporal_demand": 5.9165586471244564,
+          "performance": 2.993284962972431,
+          "effort": 3.587649314367207,
+          "frustration": 2.995869104838061
+        },
+        "sus_scores": {
+          "usefulness": 61.84742524869959,
+          "ease_of_use": 46.731960935351246,
+          "learnability": 37.425361453452226,
+          "satisfaction": 57.87359513938215
+        },
+        "recommendation_acceptance_rate": 0.2015667313275875,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [
+          "Halal certification unclear"
+        ],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_adaptive_1",
+        "participant_id": "P008",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.822562",
+        "end_time": "2025-07-06 15:01:05.426120",
+        "task_completion_time": 120.60355793728455,
+        "satisfaction_score": 3.1107838971584982,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.719190801727161,
+          "physical_demand": 1.929761957535627,
+          "temporal_demand": 2.103020526687251,
+          "performance": 1.8407456970864269,
+          "effort": 2.2570037048703613,
+          "frustration": 4.462585859852464
+        },
+        "sus_scores": {
+          "usefulness": 79.8084687983849,
+          "ease_of_use": 69.18837494666822,
+          "learnability": 75.68505946491689,
+          "satisfaction": 68.50861157003018
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Mint Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_adaptive_2",
+        "participant_id": "P008",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.822652",
+        "end_time": "2025-07-06 15:01:02.577053",
+        "task_completion_time": 117.75440050373733,
+        "satisfaction_score": 3.223963488002709,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.5458353548397614,
+          "physical_demand": 1.6960762339227102,
+          "temporal_demand": 4.6286132166088,
+          "performance": 3.724579255380012,
+          "effort": 1.22033904106137,
+          "frustration": 3.6213125903183863
+        },
+        "sus_scores": {
+          "usefulness": 89.33574875303964,
+          "ease_of_use": 74.3015408410804,
+          "learnability": 64.88220164568214,
+          "satisfaction": 71.05948260462104
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_adaptive_3",
+        "participant_id": "P008",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.822744",
+        "end_time": "2025-07-06 15:00:59.727987",
+        "task_completion_time": 114.90524307019005,
+        "satisfaction_score": 2.742103806925624,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.3645798995030507,
+          "physical_demand": 1.6635259302833383,
+          "temporal_demand": 2.3912133082312503,
+          "performance": 1.9165199706140215,
+          "effort": 2.766619521654459,
+          "frustration": 2.5544071803426505
+        },
+        "sus_scores": {
+          "usefulness": 82.85730864261333,
+          "ease_of_use": 65.01995557666092,
+          "learnability": 75.25762918289111,
+          "satisfaction": 71.03487465814018
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Curry Masala",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 6.5
+        },
+        "llm_feedback": "I appreciate the health-focused suggestions."
+      },
+      {
+        "trial_id": "P008_adaptive_4",
+        "participant_id": "P008",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.906157",
+        "end_time": "2025-07-06 15:00:56.962243",
+        "task_completion_time": 112.0560856366428,
+        "satisfaction_score": 2.9395784641514644,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.396405313066439,
+          "physical_demand": 1,
+          "temporal_demand": 3.1293758914522534,
+          "performance": 5.247275592607853,
+          "effort": 1.9280574176987173,
+          "frustration": 4.1991297384159365
+        },
+        "sus_scores": {
+          "usefulness": 75.78236589066192,
+          "ease_of_use": 61.27586613818275,
+          "learnability": 70.8695524318806,
+          "satisfaction": 80.29380537361394
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P008_adaptive_5",
+        "participant_id": "P008",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:04.906278",
+        "end_time": "2025-07-06 15:00:54.113206",
+        "task_completion_time": 109.20692820309556,
+        "satisfaction_score": 2.839983239937036,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.9533236742223434,
+          "physical_demand": 2.7886987908819743,
+          "temporal_demand": 1.9401417180508373,
+          "performance": 5.595818735070236,
+          "effort": 5.515548206689143,
+          "frustration": 1.8145460449052182
+        },
+        "sus_scores": {
+          "usefulness": 51.58360397934092,
+          "ease_of_use": 74.66143296222158,
+          "learnability": 54.775633898721416,
+          "satisfaction": 59.43164587929678
+        },
+        "recommendation_acceptance_rate": 0.12395647410064489,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [
+          "Learned to trust recommendations more",
+          "Found interface shortcuts"
+        ],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_baseline_1",
+        "participant_id": "P009",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.007140",
+        "end_time": "2025-07-06 15:01:14.304488",
+        "task_completion_time": 129.29734848604548,
+        "satisfaction_score": 1.6598972797041072,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.0070273195302164,
+          "physical_demand": 2.6732039490758863,
+          "temporal_demand": 2.4275666527123545,
+          "performance": 2.2099076512288574,
+          "effort": 4.571082586244301,
+          "frustration": 4.384098916279015
+        },
+        "sus_scores": {
+          "usefulness": 45.1970784782756,
+          "ease_of_use": 43.54050473091175,
+          "learnability": 52.113411537351325,
+          "satisfaction": 41.92788638821569
+        },
+        "recommendation_acceptance_rate": 0.31759740170824363,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Malai Masala",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Hoagie Bun",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_baseline_2",
+        "participant_id": "P009",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.007205",
+        "end_time": "2025-07-06 15:01:12.164492",
+        "task_completion_time": 127.15728700038672,
+        "satisfaction_score": 3.065153492513775,
+        "nasa_tlx_scores": {
+          "mental_demand": 7,
+          "physical_demand": 2.1209534998807658,
+          "temporal_demand": 2.323435281197586,
+          "performance": 2.4360006794427727,
+          "effort": 4.513750994864912,
+          "frustration": 3.2908682408400063
+        },
+        "sus_scores": {
+          "usefulness": 61.35950480918705,
+          "ease_of_use": 59.45808065869036,
+          "learnability": 40.23175661618982,
+          "satisfaction": 37.151679214084176
+        },
+        "recommendation_acceptance_rate": 0.3092385674688839,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Yogurt/Raita",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_baseline_3",
+        "participant_id": "P009",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.007231",
+        "end_time": "2025-07-06 15:01:11.024457",
+        "task_completion_time": 126.01722551472791,
+        "satisfaction_score": 2.884804998725249,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.5887244532217584,
+          "physical_demand": 2.0255198736940865,
+          "temporal_demand": 2.531097479196808,
+          "performance": 1.9579497284066911,
+          "effort": 4.238310571155891,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 38.284822758673016,
+          "ease_of_use": 71.15572402030034,
+          "learnability": 45.77371341744325,
+          "satisfaction": 53.74047528231571
+        },
+        "recommendation_acceptance_rate": 0.1684601343732295,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Malai Masala",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Ciabatta",
+          "total_price": 5.0
+        },
+        "llm_feedback": "The system was okay, but I'm not sure about the recommendations."
+      },
+      {
+        "trial_id": "P009_baseline_4",
+        "participant_id": "P009",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.097477",
+        "end_time": "2025-07-06 15:01:09.974641",
+        "task_completion_time": 124.87716402906914,
+        "satisfaction_score": 2.4894450067988103,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.0121383637462973,
+          "physical_demand": 1.550147756041666,
+          "temporal_demand": 3.5862591229754424,
+          "performance": 2.8359871100004077,
+          "effort": 1.9507601888333295,
+          "frustration": 4.280782899681595
+        },
+        "sus_scores": {
+          "usefulness": 38.62241332551436,
+          "ease_of_use": 51.61007691177637,
+          "learnability": 70.40900059472662,
+          "satisfaction": 55.16376209998542
+        },
+        "recommendation_acceptance_rate": 0.10004222796787218,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Curry Masala",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_baseline_5",
+        "participant_id": "P009",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.097645",
+        "end_time": "2025-07-06 15:01:08.834748",
+        "task_completion_time": 123.73710254341036,
+        "satisfaction_score": 2.7057490344389272,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.918331930124729,
+          "physical_demand": 1.7128221622730777,
+          "temporal_demand": 5.942703439149689,
+          "performance": 2.9412136451833524,
+          "effort": 3.592187666522751,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 41.54940983966971,
+          "ease_of_use": 54.83221925149931,
+          "learnability": 52.04770889150371,
+          "satisfaction": 65.80387158908492
+        },
+        "recommendation_acceptance_rate": 0.16759578189715027,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Curry Special",
+          "base_type": "Wrap",
+          "base_option": "Pitta",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_adaptive_1",
+        "participant_id": "P009",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.097723",
+        "end_time": "2025-07-06 15:01:15.395071",
+        "task_completion_time": 130.29734848604548,
+        "satisfaction_score": 2.6046539441543315,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.5427992277078142,
+          "physical_demand": 1.6834915843127751,
+          "temporal_demand": 2.6208816795004153,
+          "performance": 1.5705593635801303,
+          "effort": 2.352499649829445,
+          "frustration": 6.255895885851968
+        },
+        "sus_scores": {
+          "usefulness": 80.11346505461971,
+          "ease_of_use": 76.11768773753543,
+          "learnability": 57.04520508236898,
+          "satisfaction": 74.79099828219404
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Mint Sauce",
+          "base_type": "Bowl",
+          "base_option": "Bowl",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_adaptive_2",
+        "participant_id": "P009",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.097879",
+        "end_time": "2025-07-06 15:01:14.255166",
+        "task_completion_time": 129.1572870003867,
+        "satisfaction_score": 3.149279456275291,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.895209672256392,
+          "physical_demand": 3.3421240003552084,
+          "temporal_demand": 4.095365115951898,
+          "performance": 1.631774156195732,
+          "effort": 5.888285005218306,
+          "frustration": 3.3818232207471155
+        },
+        "sus_scores": {
+          "usefulness": 57.623731833601575,
+          "ease_of_use": 72.0561375627626,
+          "learnability": 64.89279856680625,
+          "satisfaction": 64.58592064210191
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Soya",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Wrap",
+          "base_option": "Pitta",
+          "total_price": 5.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_adaptive_3",
+        "participant_id": "P009",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.098082",
+        "end_time": "2025-07-06 15:01:13.115308",
+        "task_completion_time": 128.0172255147279,
+        "satisfaction_score": 2.9818610846507965,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.9737024228072952,
+          "physical_demand": 3.3277129877819545,
+          "temporal_demand": 1.912618945329804,
+          "performance": 1.0326054025803457,
+          "effort": 4.324215395549435,
+          "frustration": 5.074983939286581
+        },
+        "sus_scores": {
+          "usefulness": 77.69653833509729,
+          "ease_of_use": 66.06945957200283,
+          "learnability": 76.88617849020495,
+          "satisfaction": 62.5998564506447
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Personalization feels invasive"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Curry Special",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 4.5
+        },
+        "llm_feedback": "I wish there were more options that fit my preferences."
+      },
+      {
+        "trial_id": "P009_adaptive_4",
+        "participant_id": "P009",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.185436",
+        "end_time": "2025-07-06 15:01:12.062600",
+        "task_completion_time": 126.87716402906914,
+        "satisfaction_score": 3.0681009919963023,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.697313692728278,
+          "physical_demand": 1.6500047931854542,
+          "temporal_demand": 2.216539919002445,
+          "performance": 3.9666464071986325,
+          "effort": 3.514087157796653,
+          "frustration": 3.8785931750589815
+        },
+        "sus_scores": {
+          "usefulness": 73.11556065042377,
+          "ease_of_use": 78.14904552938232,
+          "learnability": 75.71596855469039,
+          "satisfaction": 84.36045490270631
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [
+          "Personalization feels invasive"
+        ],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Marinara",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Ciabatta",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P009_adaptive_5",
+        "participant_id": "P009",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.185530",
+        "end_time": "2025-07-06 15:01:10.922633",
+        "task_completion_time": 125.73710254341036,
+        "satisfaction_score": 3.174661138279953,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.2735278950242326,
+          "physical_demand": 2.0587037653637332,
+          "temporal_demand": 5.207962338130327,
+          "performance": 4.360870694421556,
+          "effort": 5.177768999522243,
+          "frustration": 4.17958996641193
+        },
+        "sus_scores": {
+          "usefulness": 70.39421766650486,
+          "ease_of_use": 78.55575072764097,
+          "learnability": 77.96650418601298,
+          "satisfaction": 82.17257079417686
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Malai Masala",
+          "base_type": "Wrap",
+          "base_option": "Pitta",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_baseline_1",
+        "participant_id": "P010",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.286990",
+        "end_time": "2025-07-06 15:01:09.852792",
+        "task_completion_time": 124.5658023065316,
+        "satisfaction_score": 2.9369135127261132,
+        "nasa_tlx_scores": {
+          "mental_demand": 1.5184201779587032,
+          "physical_demand": 1,
+          "temporal_demand": 2.555036635098496,
+          "performance": 5.077873957461548,
+          "effort": 5.031726952343014,
+          "frustration": 4.827215561476086
+        },
+        "sus_scores": {
+          "usefulness": 38.01001768935797,
+          "ease_of_use": 26.13338181424296,
+          "learnability": 39.29170447133903,
+          "satisfaction": 60.72849581674761
+        },
+        "recommendation_acceptance_rate": 0.30680787717917907,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Marinara",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_baseline_2",
+        "participant_id": "P010",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.287093",
+        "end_time": "2025-07-06 15:01:08.871828",
+        "task_completion_time": 123.5847347601262,
+        "satisfaction_score": 3.6356406419524743,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 2.5581799837424484,
+          "temporal_demand": 2.937287889403391,
+          "performance": 4.5115566676590255,
+          "effort": 4.52834096868782,
+          "frustration": 3.867242345228578
+        },
+        "sus_scores": {
+          "usefulness": 30.061994410358928,
+          "ease_of_use": 35.56509170992003,
+          "learnability": 46.34998029244577,
+          "satisfaction": 68.75078954063441
+        },
+        "recommendation_acceptance_rate": 0.48044505657438585,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Recommendation system unavailable"
+        ],
+        "final_order": {
+          "protein": "Chicken",
+          "sauce": "Malai Masala",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_baseline_3",
+        "participant_id": "P010",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.287150",
+        "end_time": "2025-07-06 15:01:07.890817",
+        "task_completion_time": 122.60366721372084,
+        "satisfaction_score": 3.2627309801525843,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.4651834683039047,
+          "physical_demand": 1.817613177934489,
+          "temporal_demand": 2.4187289580271694,
+          "performance": 1,
+          "effort": 2.3370715041459436,
+          "frustration": 3.2710329398718954
+        },
+        "sus_scores": {
+          "usefulness": 55.65636088490996,
+          "ease_of_use": 54.77064933408272,
+          "learnability": 38.68583683687458,
+          "satisfaction": 53.885643132198645
+        },
+        "recommendation_acceptance_rate": 0.3476193821845125,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Mint Sauce",
+          "base_type": "Sandwich & Subs",
+          "base_option": "Sourdough",
+          "total_price": 5.0
+        },
+        "llm_feedback": "It took longer than expected to find what I wanted."
+      },
+      {
+        "trial_id": "P010_baseline_4",
+        "participant_id": "P010",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.384536",
+        "end_time": "2025-07-06 15:01:07.007136",
+        "task_completion_time": 121.62259966731548,
+        "satisfaction_score": 2.745042467699131,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.9524024493934564,
+          "physical_demand": 3.6716575962314733,
+          "temporal_demand": 2.3741123208046595,
+          "performance": 4.348094637050679,
+          "effort": 2.962492518683536,
+          "frustration": 2.731509115941541
+        },
+        "sus_scores": {
+          "usefulness": 46.48414592185351,
+          "ease_of_use": 55.30067606867513,
+          "learnability": 45.22771109025786,
+          "satisfaction": 45.65117467109105
+        },
+        "recommendation_acceptance_rate": 0.20790550897647714,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Paneer/Indian Cheese",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Bowl",
+          "base_option": "Bowl",
+          "total_price": 6.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_baseline_5",
+        "participant_id": "P010",
+        "trial_type": "baseline",
+        "start_time": "2025-07-06 14:59:05.384595",
+        "end_time": "2025-07-06 15:01:06.026127",
+        "task_completion_time": 120.64153212091011,
+        "satisfaction_score": 3.352957404554132,
+        "nasa_tlx_scores": {
+          "mental_demand": 1,
+          "physical_demand": 2.1482502641688916,
+          "temporal_demand": 2.3742072505937357,
+          "performance": 4.4332066350224535,
+          "effort": 5.438933151313035,
+          "frustration": 1
+        },
+        "sus_scores": {
+          "usefulness": 43.604367175141796,
+          "ease_of_use": 54.368288917481166,
+          "learnability": 54.28572615929731,
+          "satisfaction": 56.28729403681923
+        },
+        "recommendation_acceptance_rate": 0.15454243840215362,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Egg",
+          "sauce": "Mint Sauce",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 5.0
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_adaptive_1",
+        "participant_id": "P010",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.384620",
+        "end_time": "2025-07-06 15:01:11.950422",
+        "task_completion_time": 126.5658023065316,
+        "satisfaction_score": 2.9962567644771645,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.518752351364667,
+          "physical_demand": 1,
+          "temporal_demand": 1,
+          "performance": 2.5575998788899814,
+          "effort": 1.5915752069159856,
+          "frustration": 3.7079543064754015
+        },
+        "sus_scores": {
+          "usefulness": 71.76049969423616,
+          "ease_of_use": 67.46022999669366,
+          "learnability": 69.55692640057707,
+          "satisfaction": 88.7448364555056
+        },
+        "recommendation_acceptance_rate": 0.1,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Red Spicy Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_adaptive_2",
+        "participant_id": "P010",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.384642",
+        "end_time": "2025-07-06 15:01:10.969377",
+        "task_completion_time": 125.58473476012622,
+        "satisfaction_score": 2.5742906524647697,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.6380727799239607,
+          "physical_demand": 2.5562531844461596,
+          "temporal_demand": 5.533439283585868,
+          "performance": 1,
+          "effort": 3.096088226776937,
+          "frustration": 5.566762464944227
+        },
+        "sus_scores": {
+          "usefulness": 73.07986135590743,
+          "ease_of_use": 63.22800325821832,
+          "learnability": 58.571501723622575,
+          "satisfaction": 66.40436724595818
+        },
+        "recommendation_acceptance_rate": 0.2186466567932953,
+        "dietary_compliance": false,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [
+          "Dietary filtering error"
+        ],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Malai Masala",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_adaptive_3",
+        "participant_id": "P010",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.384668",
+        "end_time": "2025-07-06 15:01:09.988335",
+        "task_completion_time": 124.60366721372085,
+        "satisfaction_score": 3.0324405962350363,
+        "nasa_tlx_scores": {
+          "mental_demand": 3.6247460608088793,
+          "physical_demand": 3.647109703299039,
+          "temporal_demand": 3.124547451378099,
+          "performance": 1.995972000041149,
+          "effort": 1,
+          "frustration": 4.0066863515071764
+        },
+        "sus_scores": {
+          "usefulness": 72.84004555389748,
+          "ease_of_use": 56.970787105274084,
+          "learnability": 62.19524757556757,
+          "satisfaction": 78.36753181470603
+        },
+        "recommendation_acceptance_rate": 0.17024270235641195,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Mint Sauce",
+          "base_type": "Salad",
+          "base_option": "Mixed Greens",
+          "total_price": 4.5
+        },
+        "llm_feedback": "The system seemed to understand my preferences better over time."
+      },
+      {
+        "trial_id": "P010_adaptive_4",
+        "participant_id": "P010",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.466532",
+        "end_time": "2025-07-06 15:01:09.089132",
+        "task_completion_time": 123.62259966731548,
+        "satisfaction_score": 3.2158820423819314,
+        "nasa_tlx_scores": {
+          "mental_demand": 2.964635278961506,
+          "physical_demand": 3.354550156532376,
+          "temporal_demand": 1.1381817031458321,
+          "performance": 1.7952412055564042,
+          "effort": 2.9309747319033916,
+          "frustration": 1.2387038949481255
+        },
+        "sus_scores": {
+          "usefulness": 73.88136106711649,
+          "ease_of_use": 61.57390149373692,
+          "learnability": 69.15540002478811,
+          "satisfaction": 67.19916526184163
+        },
+        "recommendation_acceptance_rate": 0.13282638817965534,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Pepperoni",
+          "sauce": "Green Spicy Sauce",
+          "base_type": "Wrap",
+          "base_option": "Naan",
+          "total_price": 6.5
+        },
+        "llm_feedback": null
+      },
+      {
+        "trial_id": "P010_adaptive_5",
+        "participant_id": "P010",
+        "trial_type": "adaptive",
+        "start_time": "2025-07-06 14:59:05.466681",
+        "end_time": "2025-07-06 15:01:08.108213",
+        "task_completion_time": 122.64153212091011,
+        "satisfaction_score": 3.195837033371186,
+        "nasa_tlx_scores": {
+          "mental_demand": 4.6229446677078165,
+          "physical_demand": 1,
+          "temporal_demand": 5.230544096692965,
+          "performance": 1.9437554445347995,
+          "effort": 4.3321035256680105,
+          "frustration": 1.6226098772242323
+        },
+        "sus_scores": {
+          "usefulness": 71.27417902095952,
+          "ease_of_use": 71.84198285283567,
+          "learnability": 91.64912578789816,
+          "satisfaction": 61.99589223579875
+        },
+        "recommendation_acceptance_rate": 0.16888529539292582,
+        "dietary_compliance": true,
+        "privacy_concerns": [],
+        "cultural_mismatches": [],
+        "learning_insights": [],
+        "system_failures": [],
+        "final_order": {
+          "protein": "Potato",
+          "sauce": "Curry Masala",
+          "base_type": "Biryani",
+          "base_option": "Rice",
+          "total_price": 4.5
+        },
+        "llm_feedback": null
+      }
+    ],
+    "system_performance": [
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.018970709121688,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.12735624841799,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.152922026505014,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.813171738638194,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 1.955525821879669,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.72,
+        "response_time": 2.2693532233553757,
+        "recommendations_count": 6,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.74,
+        "response_time": 2.295041001614776,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.76,
+        "response_time": 1.9553254787419574,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7799999999999999,
+        "response_time": 2.6994430206620343,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7999999999999999,
+        "response_time": 2.566171990256067,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.6,
+        "response_time": 1.6554912532993225,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.455867536828328,
+        "recommendations_count": 6,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.6,
+        "response_time": 1.994443690787494,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.1363789900933656,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.4409311399795923,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.72,
+        "response_time": 2.345787984119986,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.74,
+        "response_time": 2.9745946426610006,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.76,
+        "response_time": 2.865713866382569,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7799999999999999,
+        "response_time": 1.9278774695315841,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7999999999999999,
+        "response_time": 2.121952287976373,
+        "recommendations_count": 6,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.1103150689039065,
+        "recommendations_count": 8,
+        "failures": [
+          "Dietary filtering error"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.666598814291332,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.7,
+        "response_time": 1.7756033923484533,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.7,
+        "response_time": 2.200068720857094,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.7,
+        "response_time": 2.9598492713911475,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.82,
+        "response_time": 2.3511839524615725,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.84,
+        "response_time": 1.4916215417902396,
+        "recommendations_count": 7,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.86,
+        "response_time": 2.179641043783767,
+        "recommendations_count": 3,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8799999999999999,
+        "response_time": 3.3638450658350534,
+        "recommendations_count": 6,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8999999999999999,
+        "response_time": 2.5149115588122104,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.7037902495782713,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.6020724502582693,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.1608276371307515,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.166167541798882,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.7764383057644502,
+        "recommendations_count": 5,
+        "failures": [
+          "Dietary filtering error"
+        ]
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.82,
+        "response_time": 3.118656706321305,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.84,
+        "response_time": 3.440404026035748,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.86,
+        "response_time": 2.189342845553969,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.8799999999999999,
+        "response_time": 2.3007200834787396,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8999999999999999,
+        "response_time": 2.605716818448649,
+        "recommendations_count": 4,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.3031783022624945,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.7,
+        "response_time": 2.675123142001229,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.9956041730024583,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.812120963649662,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.3294862084756702,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.82,
+        "response_time": 2.741411387532952,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.84,
+        "response_time": 3.3322987849166568,
+        "recommendations_count": 5,
+        "failures": [
+          "System slow response"
+        ]
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.86,
+        "response_time": 3.397797246898284,
+        "recommendations_count": 4,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8799999999999999,
+        "response_time": 2.4126726008232637,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8999999999999999,
+        "response_time": 1.9803956822692146,
+        "recommendations_count": 4,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.1981355959007813,
+        "recommendations_count": 6,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.7,
+        "response_time": 1.51862221274147,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.395255349544001,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.2469563464281697,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.3689947804984297,
+        "recommendations_count": 3,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.82,
+        "response_time": 3.0629807468471326,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.84,
+        "response_time": 2.3123761656568385,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.86,
+        "response_time": 3.084511397023418,
+        "recommendations_count": 4,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.8799999999999999,
+        "response_time": 1.7438891190270291,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8999999999999999,
+        "response_time": 1.3576072962501893,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.7404947475498838,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.8425242358010916,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 2.3319134598583076,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.562574745304068,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7,
+        "response_time": 1.756656918671946,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.82,
+        "response_time": 2.137358956873096,
+        "recommendations_count": 8,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.84,
+        "response_time": 3.0203555118643313,
+        "recommendations_count": 6,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.86,
+        "response_time": 2.799762482931174,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8799999999999999,
+        "response_time": 2.0735115643768083,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.8999999999999999,
+        "response_time": 1.9712077074186782,
+        "recommendations_count": 6,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.5499999999999999,
+        "response_time": 1.5922517232935642,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.5499999999999999,
+        "response_time": 1.4690411892293183,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.5499999999999999,
+        "response_time": 1.8069446134125522,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.5499999999999999,
+        "response_time": 1.839189394402427,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.5499999999999999,
+        "response_time": 2.85601365613307,
+        "recommendations_count": 6,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6699999999999999,
+        "response_time": 2.5027634066961304,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.69,
+        "response_time": 2.1335483847560166,
+        "recommendations_count": 3,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.71,
+        "response_time": 2.3484622545893323,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7299999999999999,
+        "response_time": 2.0894586364724077,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7499999999999999,
+        "response_time": 2.2437046479962754,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.6,
+        "response_time": 1.6005813124226513,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.6,
+        "response_time": 1.6472406399161297,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.6,
+        "response_time": 1.3401243208851141,
+        "recommendations_count": 6,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 0.7760191588526171,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.098752022435117,
+        "recommendations_count": 8,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.6,
+        "recommendation_quality": 0.72,
+        "response_time": 3.050013153237446,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.74,
+        "response_time": 3.0997054985322476,
+        "recommendations_count": 8,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.76,
+        "response_time": 2.3202631227118244,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7799999999999999,
+        "response_time": 2.445890381195076,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7999999999999999,
+        "response_time": 2.510234451878732,
+        "recommendations_count": 8,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.3499459650087067,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.4195497960081247,
+        "recommendations_count": 3,
+        "failures": [
+          "Recommendation system unavailable"
+        ]
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 1.4201633090331218,
+        "recommendations_count": 8,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 1.3793970687335113,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.6,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.6,
+        "response_time": 2.6313632127176363,
+        "recommendations_count": 4,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.72,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.72,
+        "response_time": 2.139706830027576,
+        "recommendations_count": 5,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.74,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.74,
+        "response_time": 3.1438873499393636,
+        "recommendations_count": 3,
+        "failures": [
+          "Dietary filtering error"
+        ]
+      },
+      {
+        "overall_quality": 0.76,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.76,
+        "response_time": 3.0012311628586152,
+        "recommendations_count": 7,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7799999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7799999999999999,
+        "response_time": 1.8379386841967036,
+        "recommendations_count": 3,
+        "failures": []
+      },
+      {
+        "overall_quality": 0.7999999999999999,
+        "dietary_accuracy": 0.85,
+        "recommendation_quality": 0.7999999999999999,
+        "response_time": 2.8561844821875786,
+        "recommendations_count": 3,
+        "failures": []
+      }
+    ]
+  }
+}

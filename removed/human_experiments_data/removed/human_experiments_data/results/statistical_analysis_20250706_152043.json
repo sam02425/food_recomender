@@ -1,0 +1,192 @@
+{
+  "summary_statistics": {
+    "overall": {
+      "count": 500,
+      "satisfaction_mean": 5.415879633653776,
+      "satisfaction_std": 0.7686776605732474,
+      "nasa_tlx_mean": 68.08899961900174,
+      "nasa_tlx_std": 13.883062996559259,
+      "completion_time_mean": 7.577147073283482,
+      "completion_time_std": 1.8244625494677784,
+      "trust_rating_mean": 4.705621990954027,
+      "error_count_mean": 0.374,
+      "navigation_steps_mean": 8.758,
+      "decision_changes_mean": 1.27,
+      "total_price_mean": 19.260499999999755,
+      "privacy_concern_mean": 3.5382891607826967,
+      "system_complexity_mean": 3.7753391978954047
+    },
+    "baseline": {
+      "count": 250,
+      "satisfaction_mean": 5.347160908465016,
+      "satisfaction_std": 0.7183250448660358,
+      "nasa_tlx_mean": 71.26405959425576,
+      "nasa_tlx_std": 12.93479295861746,
+      "completion_time_mean": 7.228313038303285,
+      "completion_time_std": 1.6494604000686013,
+      "trust_rating_mean": 4.675774231823812,
+      "error_count_mean": 0.536,
+      "navigation_steps_mean": 9.492,
+      "decision_changes_mean": 1.284,
+      "total_price_mean": 19.19499999999995,
+      "privacy_concern_mean": 3.5382891607826923,
+      "system_complexity_mean": 3.2637639340291593
+    },
+    "adaptive": {
+      "count": 250,
+      "satisfaction_mean": 5.484598358842539,
+      "satisfaction_std": 0.8101205436623571,
+      "nasa_tlx_mean": 64.91393964374764,
+      "nasa_tlx_std": 14.071531393478296,
+      "completion_time_mean": 7.925981108263671,
+      "completion_time_std": 1.9217796984840194,
+      "trust_rating_mean": 4.73546975008424,
+      "error_count_mean": 0.212,
+      "navigation_steps_mean": 8.024,
+      "decision_changes_mean": 1.256,
+      "total_price_mean": 19.32599999999995,
+      "privacy_concern_mean": 3.5382891607826923,
+      "system_complexity_mean": 4.28691446176165
+    }
+  },
+  "statistical_tests": {
+    "satisfaction": {
+      "t_statistic": -2.0030322584936475,
+      "p_value": 0.03358643353240977,
+      "effect_size": 0.17915665164466904,
+      "significant": true,
+      "baseline_mean": 5.347160908465016,
+      "adaptive_mean": 5.484598358842539
+    },
+    "nasa_tlx": {
+      "t_statistic": 5.242600223752718,
+      "p_value": 0.001281600452339586,
+      "effect_size": 0.4689124191666673,
+      "significant": true,
+      "baseline_mean": 71.26405959425576,
+      "adaptive_mean": 64.91393964374764
+    },
+    "completion_time": {
+      "t_statistic": -4.346958607234364,
+      "p_value": 0.0028418891653752033,
+      "effect_size": 0.38880379764615386,
+      "significant": true,
+      "baseline_mean": 7.228313038303285,
+      "adaptive_mean": 7.925981108263671
+    },
+    "error_count": {
+      "t_statistic": 6.237888586636719,
+      "p_value": 0.008761934687611134,
+      "effect_size": 0.5579337166315915,
+      "significant": true,
+      "baseline_mean": 0.536,
+      "adaptive_mean": 0.212
+    },
+    "navigation_steps": {
+      "t_statistic": 10.172700831239052,
+      "p_value": 0.006091662753632943,
+      "effect_size": 0.9098740229367654,
+      "significant": true,
+      "baseline_mean": 9.492,
+      "adaptive_mean": 8.024
+    },
+    "decision_changes": {
+      "t_statistic": 0.32770547686121854,
+      "p_value": 0.25768669505187797,
+      "effect_size": 0.02931086891442676,
+      "significant": false,
+      "baseline_mean": 1.284,
+      "adaptive_mean": 1.256
+    },
+    "trust_rating": {
+      "t_statistic": -0.8806461080088925,
+      "p_value": 0.28913293001198925,
+      "effect_size": 0.07876738246514021,
+      "significant": false,
+      "baseline_mean": 4.675774231823812,
+      "adaptive_mean": 4.73546975008424
+    },
+    "privacy_concerns": {
+      "t_statistic": 0.0,
+      "p_value": 0.24067838655870114,
+      "effect_size": 0.0,
+      "significant": false,
+      "baseline_mean": 3.5382891607826923,
+      "adaptive_mean": 3.5382891607826923
+    },
+    "system_complexity": {
+      "t_statistic": -18.775729078760314,
+      "p_value": 0.0069707433120407185,
+      "effect_size": 1.6793522618891028,
+      "significant": true,
+      "baseline_mean": 3.2637639340291593,
+      "adaptive_mean": 4.28691446176165
+    }
+  },
+  "effect_sizes": {
+    "satisfaction": {
+      "cohens_d": -0.17915665164466904,
+      "interpretation": "Small"
+    },
+    "nasa_tlx": {
+      "cohens_d": 0.4689124191666673,
+      "interpretation": "Small-Medium"
+    },
+    "completion_time": {
+      "cohens_d": -0.38880379764615386,
+      "interpretation": "Small-Medium"
+    },
+    "error_count": {
+      "cohens_d": 0.5579337166315915,
+      "interpretation": "Medium"
+    },
+    "navigation_steps": {
+      "cohens_d": 0.9098740229367654,
+      "interpretation": "Large"
+    },
+    "decision_changes": {
+      "cohens_d": 0.02931086891442676,
+      "interpretation": "Small"
+    },
+    "trust_rating": {
+      "cohens_d": -0.07876738246514021,
+      "interpretation": "Small"
+    },
+    "privacy_concerns": {
+      "cohens_d": 0.0,
+      "interpretation": "Small"
+    },
+    "system_complexity": {
+      "cohens_d": -1.6793522618891028,
+      "interpretation": "Large"
+    }
+  },
+  "recommendation_analysis": {
+    "overall_acceptance_rate": 0.5070322053155218,
+    "early_trials_acceptance": 0.5189668408614745,
+    "late_trials_acceptance": 0.49475985448126075,
+    "learning_improvement": -0.024206986380213735,
+    "high_acceptance_trials": 53,
+    "low_acceptance_trials": 45,
+    "total_recommendation_trials": 250
+  },
+  "participant_analysis": {
+    "total_participants": 50,
+    "participants_with_improvement": 30,
+    "improvement_mean": 0.13743745037752414,
+    "improvement_std": 0.4901753185399638
+  },
+  "dietary_analysis": {
+    "trials_with_issues": 16,
+    "total_adaptive_trials": 250,
+    "issue_rate": 0.064,
+    "issue_types": {
+      "Recommended non-vegetarian protein": 10,
+      "Recommended non-halal protein": 4,
+      "Recommended non-vegan protein": 4
+    },
+    "acceptance_with_issues": 0.17715779279865712,
+    "acceptance_without_issues": 0.5295877207012905,
+    "acceptance_difference": 0.35242992790263333
+  }
+}

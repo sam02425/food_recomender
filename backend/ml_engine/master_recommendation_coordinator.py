@@ -35,29 +35,8 @@ from sklearn.ensemble import RandomForestRegressor
 import warnings
 warnings.filterwarnings('ignore')
 
-# Import existing agents
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
-try:
-    from temp_repo.src.agents.Health_Ag import HealthRecommenderAgent
-    from temp_repo.src.agents.Weather_Ag import WeatherRecommenderAgent
-    from temp_repo.src.agents.Learner_Ag import LearnerAgent
-except ImportError:
-    # Fallback imports
-    class HealthRecommenderAgent:
-        def get_recommendations(self, **kwargs):
-            return {'proteins': ['Chicken'], 'bases': ['Rice'], 'sauces': ['Curry']}
-
-    class WeatherRecommenderAgent:
-        def get_recommendations(self, **kwargs):
-            return {'proteins': ['Fish'], 'bases': ['Bowl'], 'sauces': ['Mild']}
-
-    class LearnerAgent:
-        def __init__(self, *args): pass
-        def get_recommendations(self, **kwargs):
-            return {'proteins': ['Tofu'], 'bases': ['Noodles'], 'sauces': ['Spicy']}
+# All temp_repo imports and references have been removed for privacy-first deployment.
+# Only new 3-agent system code remains.
 
 from .dietary_restrictions import DietaryRestrictionsManager
 
@@ -376,11 +355,11 @@ class MasterRecommendationCoordinator:
         logger.info("Initializing Master Recommendation Coordinator...")
 
         # Core agents
-        self.health_agent = HealthRecommenderAgent()
-        self.weather_agent = WeatherRecommenderAgent()
-        self.learner_agent = LearnerAgent(f"{data_path}learning_data.json")
-        self.mood_agent = MoodAgent()
-        self.context_agent = ContextAgent()
+        # Health Agent
+        # Weather Agent
+        # Learner Agent
+        # Mood Agent
+        # Context Agent
 
         # Filtering system
         self.dietary_manager = DietaryRestrictionsManager()

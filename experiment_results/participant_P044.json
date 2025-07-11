@@ -1,0 +1,575 @@
+{
+  "participant": {
+    "id": "P044",
+    "name": "John Edwards",
+    "age": 65,
+    "gender": "Female",
+    "occupation": "Chef",
+    "tech_savviness": 0.14690671628524882,
+    "dietary_preferences": [],
+    "allergies": [],
+    "decision_speed": 3.854395433074063,
+    "attention_span": 44.765225368449485,
+    "experiment_phase": "A",
+    "current_step": "measurements",
+    "selections": {
+      "experiment_started": true,
+      "phone": "4155310410",
+      "restrictions": [],
+      "allergies": [],
+      "activity": "relaxation",
+      "protein": [
+        {
+          "name": "Chicken",
+          "price": 4.5,
+          "calories": 250,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 20,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 3.15,
+              "calories": 175,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 4.5,
+              "calories": 250,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 6.3,
+              "calories": 350,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "protein_portion": "low",
+      "base_type": "Sandwich & Subs",
+      "base_option": {
+        "name": "Sourdough",
+        "price": 0.0,
+        "calories": 220,
+        "status": "available",
+        "wait_time": null,
+        "stock_level": 15
+      },
+      "sauce": [
+        {
+          "name": "Curry Masala",
+          "price": 0.0,
+          "calories": 130,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 12,
+          "portion_sizes": {
+            "low": {
+              "name": "Light",
+              "price": 0.0,
+              "calories": 78,
+              "multiplier": 0.6
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.0,
+              "calories": 130,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Extra",
+              "price": 0.0,
+              "calories": 195,
+              "multiplier": 1.5
+            }
+          }
+        }
+      ],
+      "sauce_portion": "extra",
+      "veggies": [
+        {
+          "name": "Lettuce",
+          "price": 0.5,
+          "calories": 5,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 11,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.35,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.5,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.7,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "veggie_portions": {
+        "Lettuce": "extra"
+      },
+      "garnishes": [
+        {
+          "name": "Chili",
+          "price": 0.25,
+          "calories": 5,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 6,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        },
+        {
+          "name": "Lemon",
+          "price": 0.25,
+          "calories": 5,
+          "status": "low_stock",
+          "wait_time": null,
+          "stock_level": 4,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.17,
+              "calories": 4,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.25,
+              "calories": 5,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.35,
+              "calories": 7,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "garnish_portions": {
+        "Chili": "medium",
+        "Lemon": "extra"
+      },
+      "dish_name": "Signature Dish",
+      "order_reviewed": true,
+      "nasatlx": {
+        "mental_demand": 15,
+        "physical_demand": 3,
+        "temporal_demand": 8,
+        "performance": 9,
+        "effort": 3,
+        "frustration": 14
+      },
+      "sus": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        5,
+        2,
+        2,
+        3,
+        1
+      ],
+      "satisfaction": {
+        "overall_satisfaction": 4,
+        "ease_of_use": 4,
+        "recommendation_quality": 1,
+        "agent_helpfulness": null
+      }
+    },
+    "start_time": "2025-07-11T07:54:50.557334",
+    "completion_time": "2025-07-11T07:55:45.463159",
+    "nasatlx_scores": {
+      "mental_demand": 15,
+      "physical_demand": 3,
+      "temporal_demand": 8,
+      "performance": 9,
+      "effort": 3,
+      "frustration": 14
+    },
+    "sus_scores": [
+      3,
+      3,
+      3,
+      3,
+      3,
+      5,
+      2,
+      2,
+      3,
+      1
+    ],
+    "satisfaction_scores": {
+      "overall_satisfaction": 4,
+      "ease_of_use": 4,
+      "recommendation_quality": 1,
+      "agent_helpfulness": null
+    },
+    "agent_interactions": []
+  },
+  "experiment": {
+    "participant_id": "P044",
+    "phase": "A",
+    "start_time": "2025-07-11T07:54:50.557334",
+    "steps": [
+      {
+        "participant_id": "P044",
+        "step": "start",
+        "timestamp": "2025-07-11T07:54:50.557543",
+        "selections": {
+          "experiment_started": true
+        },
+        "time_spent": 2.1397600173950195,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "customer_identification",
+        "timestamp": "2025-07-11T07:54:53.383102",
+        "selections": {
+          "phone": "4155310410"
+        },
+        "time_spent": 2.4323220252990723,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "dietary_preferences",
+        "timestamp": "2025-07-11T07:54:57.039169",
+        "selections": {
+          "restrictions": [],
+          "allergies": []
+        },
+        "time_spent": 7.848588943481445,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "activity_selection",
+        "timestamp": "2025-07-11T07:55:06.561440",
+        "selections": {
+          "activity": "relaxation"
+        },
+        "time_spent": 3.0264527797698975,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "protein_selection",
+        "timestamp": "2025-07-11T07:55:10.377523",
+        "selections": {
+          "protein": [
+            {
+              "name": "Chicken",
+              "price": 4.5,
+              "calories": 250,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 20,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 3.15,
+                  "calories": 175,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 4.5,
+                  "calories": 250,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 6.3,
+                  "calories": 350,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "protein_portion": "low"
+        },
+        "time_spent": 4.4597179889678955,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "base_selection",
+        "timestamp": "2025-07-11T07:55:16.794647",
+        "selections": {
+          "base_type": "Sandwich & Subs",
+          "base_option": {
+            "name": "Sourdough",
+            "price": 0.0,
+            "calories": 220,
+            "status": "available",
+            "wait_time": null,
+            "stock_level": 15
+          }
+        },
+        "time_spent": 4.5930047035217285,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "sauce_selection",
+        "timestamp": "2025-07-11T07:55:21.911111",
+        "selections": {
+          "sauce": [
+            {
+              "name": "Curry Masala",
+              "price": 0.0,
+              "calories": 130,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 12,
+              "portion_sizes": {
+                "low": {
+                  "name": "Light",
+                  "price": 0.0,
+                  "calories": 78,
+                  "multiplier": 0.6
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.0,
+                  "calories": 130,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Extra",
+                  "price": 0.0,
+                  "calories": 195,
+                  "multiplier": 1.5
+                }
+              }
+            }
+          ],
+          "sauce_portion": "extra"
+        },
+        "time_spent": 3.2762720584869385,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "veggies_selection",
+        "timestamp": "2025-07-11T07:55:25.978851",
+        "selections": {
+          "veggies": [
+            {
+              "name": "Lettuce",
+              "price": 0.5,
+              "calories": 5,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 11,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.35,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.5,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.7,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "veggie_portions": {
+            "Lettuce": "extra"
+          }
+        },
+        "time_spent": 0.006662130355834961,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "garnishes_selection",
+        "timestamp": "2025-07-11T07:55:26.973901",
+        "selections": {
+          "garnishes": [
+            {
+              "name": "Chili",
+              "price": 0.25,
+              "calories": 5,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 6,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            },
+            {
+              "name": "Lemon",
+              "price": 0.25,
+              "calories": 5,
+              "status": "low_stock",
+              "wait_time": null,
+              "stock_level": 4,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.17,
+                  "calories": 4,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.25,
+                  "calories": 5,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.35,
+                  "calories": 7,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "garnish_portions": {
+            "Chili": "medium",
+            "Lemon": "extra"
+          }
+        },
+        "time_spent": 0.004071235656738281,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "dish_naming",
+        "timestamp": "2025-07-11T07:55:28.250854",
+        "selections": {
+          "dish_name": "Signature Dish"
+        },
+        "time_spent": 4.000787019729614,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "order_summary",
+        "timestamp": "2025-07-11T07:55:33.861487",
+        "selections": {
+          "order_reviewed": true
+        },
+        "time_spent": 2.954807758331299,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P044",
+        "step": "measurements",
+        "timestamp": "2025-07-11T07:55:37.856179",
+        "selections": {
+          "nasatlx": {
+            "mental_demand": 15,
+            "physical_demand": 3,
+            "temporal_demand": 8,
+            "performance": 9,
+            "effort": 3,
+            "frustration": 14
+          },
+          "sus": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            5,
+            2,
+            2,
+            3,
+            1
+          ],
+          "satisfaction": {
+            "overall_satisfaction": 4,
+            "ease_of_use": 4,
+            "recommendation_quality": 1,
+            "agent_helpfulness": null
+          }
+        },
+        "time_spent": 7.606945037841797,
+        "errors": [],
+        "agent_interactions": []
+      }
+    ],
+    "total_time": 54.905825,
+    "errors": [],
+    "completion_time": "2025-07-11T07:55:45.463159"
+  }
+}

@@ -38,13 +38,16 @@ const AgentStatus = () => {
   const startAutomatedExperiments = async () => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:8000'}/api/start-automated-experiments`, {
-        method: 'POST'
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
       });
       const result = await response.json();
-      if (result.success) {
-        alert('Automated experiments started! Check the backend logs for progress.');
+      if (response.ok) {
+        alert(`Automated experiments started! ${result.message}`);
       } else {
-        alert(`Failed to start experiments: ${result.error}`);
+        alert(`Failed to start experiments: ${result.detail || 'Unknown error'}`);
       }
     } catch (error) {
       alert(`Error starting experiments: ${error.message}`);

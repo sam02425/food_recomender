@@ -1,0 +1,455 @@
+{
+  "participant": {
+    "id": "P011",
+    "name": "Isabella Garcia",
+    "age": 59,
+    "gender": "Male",
+    "occupation": "Doctor",
+    "tech_savviness": 0.3613006178277214,
+    "dietary_preferences": [],
+    "allergies": [],
+    "decision_speed": 3.6815609142445065,
+    "attention_span": 26.52319225341808,
+    "experiment_phase": "A",
+    "current_step": "measurements",
+    "selections": {
+      "experiment_started": true,
+      "phone": "4156154449",
+      "restrictions": [],
+      "allergies": [],
+      "activity": "exercise",
+      "protein": [
+        {
+          "name": "Chicken",
+          "price": 4.5,
+          "calories": 250,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 20,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 3.15,
+              "calories": 175,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 4.5,
+              "calories": 250,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 6.3,
+              "calories": 350,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "protein_portion": "medium",
+      "base_type": "Biryani",
+      "base_option": {
+        "name": "Rice",
+        "price": 0.0,
+        "calories": 300,
+        "status": "low_stock",
+        "wait_time": null,
+        "stock_level": 6
+      },
+      "sauce": [
+        {
+          "name": "Marinara",
+          "price": 0.0,
+          "calories": 80,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 3,
+          "portion_sizes": {
+            "low": {
+              "name": "Light",
+              "price": 0.0,
+              "calories": 48,
+              "multiplier": 0.6
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.0,
+              "calories": 80,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Extra",
+              "price": 0.0,
+              "calories": 120,
+              "multiplier": 1.5
+            }
+          }
+        }
+      ],
+      "sauce_portion": "extra",
+      "veggies": [
+        {
+          "name": "Cucumber",
+          "price": 0.5,
+          "calories": 15,
+          "status": "available",
+          "wait_time": null,
+          "stock_level": 26,
+          "portion_sizes": {
+            "low": {
+              "name": "Small",
+              "price": 0.35,
+              "calories": 10,
+              "multiplier": 0.7
+            },
+            "medium": {
+              "name": "Regular",
+              "price": 0.5,
+              "calories": 15,
+              "multiplier": 1.0
+            },
+            "extra": {
+              "name": "Large",
+              "price": 0.7,
+              "calories": 21,
+              "multiplier": 1.4
+            }
+          }
+        }
+      ],
+      "veggie_portions": {
+        "Cucumber": "extra"
+      },
+      "garnishes": [],
+      "garnish_portions": {},
+      "dish_name": "Custom Creation",
+      "order_reviewed": true,
+      "nasatlx": {
+        "mental_demand": 17,
+        "physical_demand": 8,
+        "temporal_demand": 17,
+        "performance": 13,
+        "effort": 19,
+        "frustration": 4
+      },
+      "sus": [
+        1,
+        1,
+        2,
+        3,
+        5,
+        1,
+        2,
+        5,
+        2,
+        5
+      ],
+      "satisfaction": {
+        "overall_satisfaction": 3,
+        "ease_of_use": 4,
+        "recommendation_quality": 5,
+        "agent_helpfulness": null
+      }
+    },
+    "start_time": "2025-07-11T06:38:17.675310",
+    "completion_time": "2025-07-11T06:39:16.208450",
+    "nasatlx_scores": {
+      "mental_demand": 17,
+      "physical_demand": 8,
+      "temporal_demand": 17,
+      "performance": 13,
+      "effort": 19,
+      "frustration": 4
+    },
+    "sus_scores": [
+      1,
+      1,
+      2,
+      3,
+      5,
+      1,
+      2,
+      5,
+      2,
+      5
+    ],
+    "satisfaction_scores": {
+      "overall_satisfaction": 3,
+      "ease_of_use": 4,
+      "recommendation_quality": 5,
+      "agent_helpfulness": null
+    },
+    "agent_interactions": []
+  },
+  "experiment": {
+    "participant_id": "P011",
+    "phase": "A",
+    "start_time": "2025-07-11T06:38:17.675310",
+    "steps": [
+      {
+        "participant_id": "P011",
+        "step": "start",
+        "timestamp": "2025-07-11T06:38:17.675399",
+        "selections": {
+          "experiment_started": true
+        },
+        "time_spent": 1.7255327701568604,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "customer_identification",
+        "timestamp": "2025-07-11T06:38:19.974909",
+        "selections": {
+          "phone": "4156154449"
+        },
+        "time_spent": 4.474494934082031,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "dietary_preferences",
+        "timestamp": "2025-07-11T06:38:25.976015",
+        "selections": {
+          "restrictions": [],
+          "allergies": []
+        },
+        "time_spent": 6.779820919036865,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "activity_selection",
+        "timestamp": "2025-07-11T06:38:34.526287",
+        "selections": {
+          "activity": "exercise"
+        },
+        "time_spent": 3.6346418857574463,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "protein_selection",
+        "timestamp": "2025-07-11T06:38:39.080682",
+        "selections": {
+          "protein": [
+            {
+              "name": "Chicken",
+              "price": 4.5,
+              "calories": 250,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 20,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 3.15,
+                  "calories": 175,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 4.5,
+                  "calories": 250,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 6.3,
+                  "calories": 350,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "protein_portion": "medium"
+        },
+        "time_spent": 2.975619077682495,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "base_selection",
+        "timestamp": "2025-07-11T06:38:44.032048",
+        "selections": {
+          "base_type": "Biryani",
+          "base_option": {
+            "name": "Rice",
+            "price": 0.0,
+            "calories": 300,
+            "status": "low_stock",
+            "wait_time": null,
+            "stock_level": 6
+          }
+        },
+        "time_spent": 2.9760468006134033,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "sauce_selection",
+        "timestamp": "2025-07-11T06:38:47.789723",
+        "selections": {
+          "sauce": [
+            {
+              "name": "Marinara",
+              "price": 0.0,
+              "calories": 80,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 3,
+              "portion_sizes": {
+                "low": {
+                  "name": "Light",
+                  "price": 0.0,
+                  "calories": 48,
+                  "multiplier": 0.6
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.0,
+                  "calories": 80,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Extra",
+                  "price": 0.0,
+                  "calories": 120,
+                  "multiplier": 1.5
+                }
+              }
+            }
+          ],
+          "sauce_portion": "extra"
+        },
+        "time_spent": 3.264075994491577,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "veggies_selection",
+        "timestamp": "2025-07-11T06:38:52.894026",
+        "selections": {
+          "veggies": [
+            {
+              "name": "Cucumber",
+              "price": 0.5,
+              "calories": 15,
+              "status": "available",
+              "wait_time": null,
+              "stock_level": 26,
+              "portion_sizes": {
+                "low": {
+                  "name": "Small",
+                  "price": 0.35,
+                  "calories": 10,
+                  "multiplier": 0.7
+                },
+                "medium": {
+                  "name": "Regular",
+                  "price": 0.5,
+                  "calories": 15,
+                  "multiplier": 1.0
+                },
+                "extra": {
+                  "name": "Large",
+                  "price": 0.7,
+                  "calories": 21,
+                  "multiplier": 1.4
+                }
+              }
+            }
+          ],
+          "veggie_portions": {
+            "Cucumber": "extra"
+          }
+        },
+        "time_spent": 0.006371736526489258,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "garnishes_selection",
+        "timestamp": "2025-07-11T06:38:54.727803",
+        "selections": {
+          "garnishes": [],
+          "garnish_portions": {}
+        },
+        "time_spent": 0.0059702396392822266,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "dish_naming",
+        "timestamp": "2025-07-11T06:38:56.313102",
+        "selections": {
+          "dish_name": "Custom Creation"
+        },
+        "time_spent": 4.129956007003784,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "order_summary",
+        "timestamp": "2025-07-11T06:39:02.432461",
+        "selections": {
+          "order_reviewed": true
+        },
+        "time_spent": 3.5816378593444824,
+        "errors": [],
+        "agent_interactions": []
+      },
+      {
+        "participant_id": "P011",
+        "step": "measurements",
+        "timestamp": "2025-07-11T06:39:07.143122",
+        "selections": {
+          "nasatlx": {
+            "mental_demand": 17,
+            "physical_demand": 8,
+            "temporal_demand": 17,
+            "performance": 13,
+            "effort": 19,
+            "frustration": 4
+          },
+          "sus": [
+            1,
+            1,
+            2,
+            3,
+            5,
+            1,
+            2,
+            5,
+            2,
+            5
+          ],
+          "satisfaction": {
+            "overall_satisfaction": 3,
+            "ease_of_use": 4,
+            "recommendation_quality": 5,
+            "agent_helpfulness": null
+          }
+        },
+        "time_spent": 9.065305948257446,
+        "errors": [],
+        "agent_interactions": []
+      }
+    ],
+    "total_time": 58.53314,
+    "errors": [],
+    "completion_time": "2025-07-11T06:39:16.208450"
+  }
+}

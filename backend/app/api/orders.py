@@ -2,10 +2,10 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import List, Any
-from app.db import SessionLocal
-from app.models.order import Order
-from app.api.auth import get_current_user, get_db
-from app.models.user import User
+from backend.app.db import SessionLocal
+from backend.app.models.order import Order
+from backend.app.api.auth import get_current_user, get_db
+from backend.app.models.user import User
 
 router = APIRouter(prefix="/api/orders", tags=["orders"])
 

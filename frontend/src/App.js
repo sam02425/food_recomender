@@ -5,6 +5,7 @@ import ExperimentReport from './components/ExperimentReport';
 import AgentStatus from './components/AgentStatus';
 import MeasurementDemo from './components/MeasurementDemo';
 import ExperimentSetup from './components/ExperimentSetup';
+import AdminPage from './components/pages/AdminPage';
 
 import { OrderProvider } from './components/OrderContext';
 import { ExperimentProvider } from './context/ExperimentContext';
@@ -750,6 +751,7 @@ function App() {
               <Link to="/" style={{ marginRight: 16, fontWeight: 500 }}>Order</Link>
               <Link to="/report" style={{ marginRight: 16, fontWeight: 500 }}>Report</Link>
               <Link to="/measurements" style={{ fontWeight: 500 }}>Measurements</Link>
+              <Link to="/admin" style={{ marginRight: 16, fontWeight: 500 }}>Admin</Link>
             </nav>
 
             {/* Break Screen */}
@@ -851,6 +853,7 @@ function App() {
                 />
                 <Route path="/report" element={<ExperimentReport />} />
                 <Route path="/measurements" element={<MeasurementDemo />} />
+                <Route path="/admin" element={<AdminPage />} />
               </Routes>
             )}
 

@@ -1,5 +1,5 @@
-from app.db import SessionLocal
-from app.models.location import Location
+from backend.app.db import SessionLocal
+from backend.app.models.location import Location
 
 def seed_locations():
     db = SessionLocal()

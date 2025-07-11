@@ -1,0 +1,73 @@
+2025-07-11 01:01:30,209 - INFO - Generating 5 participants...
+2025-07-11 01:01:30,210 - INFO - Generated 5 participants
+2025-07-11 01:01:30,210 - INFO - Generating 1 participants...
+2025-07-11 01:01:30,210 - INFO - Generated 1 participants
+2025-07-11 01:01:30,210 - INFO - Starting experiment for participant P001
+2025-07-11 01:01:30,210 - INFO - Participant P001 - Step: start
+2025-07-11 01:01:33,826 - INFO - Participant P001 - Step: customer_identification
+2025-07-11 01:01:37,681 - INFO - Participant P001 - Step: dietary_preferences
+2025-07-11 01:01:43,858 - INFO - Participant P001 - Step: activity_selection
+2025-07-11 01:01:47,910 - INFO - Participant P001 - Step: protein_selection
+2025-07-11 01:01:52,847 - INFO - Participant P001 - Step: base_selection
+2025-07-11 01:01:57,241 - INFO - Participant P001 - Step: sauce_selection
+2025-07-11 01:02:00,702 - INFO - Participant P001 - Step: veggies_selection
+2025-07-11 01:02:02,430 - INFO - Participant P001 - Step: garnishes_selection
+2025-07-11 01:02:03,811 - INFO - Participant P001 - Step: dish_naming
+2025-07-11 01:02:07,137 - INFO - Participant P001 - Step: order_summary
+2025-07-11 01:02:10,323 - INFO - Participant P001 - Step: measurements
+2025-07-11 01:02:15,351 - INFO - Completed experiment for participant P001 in 45.14 seconds
+2025-07-11 01:02:43,773 - INFO - Generating 5 participants...
+2025-07-11 01:02:43,773 - INFO - Generated 5 participants
+2025-07-11 01:02:43,773 - INFO - Generating 1 participants...
+2025-07-11 01:02:43,773 - INFO - Generated 1 participants
+2025-07-11 01:02:43,774 - INFO - Starting experiment for participant P001
+2025-07-11 01:02:43,774 - INFO - Participant P001 - Step: start
+2025-07-11 01:02:47,816 - INFO - Participant P001 - Step: customer_identification
+2025-07-11 01:02:54,416 - INFO - Participant P001 - Step: dietary_preferences
+2025-07-11 01:03:02,016 - INFO - Participant P001 - Step: activity_selection
+2025-07-11 01:03:06,591 - INFO - Participant P001 - Step: protein_selection
+2025-07-11 01:03:12,541 - INFO - Participant P001 - Step: base_selection
+2025-07-11 01:03:17,866 - INFO - Participant P001 - Step: sauce_selection
+2025-07-11 01:03:23,142 - INFO - Participant P001 - Step: veggies_selection
+2025-07-11 01:03:24,051 - INFO - Participant P001 - Step: garnishes_selection
+2025-07-11 01:03:24,671 - INFO - Participant P001 - Step: dish_naming
+2025-07-11 01:03:29,123 - INFO - Participant P001 - Step: order_summary
+2025-07-11 01:03:32,798 - INFO - Participant P001 - Step: measurements
+2025-07-11 01:03:43,429 - INFO - Completed experiment for participant P001 in 59.65 seconds
+2025-07-11 01:05:29,707 - INFO - Generating 5 participants...
+2025-07-11 01:05:29,708 - INFO - Generated 5 participants
+2025-07-11 01:05:29,708 - INFO - Generating 1 participants...
+2025-07-11 01:05:29,708 - INFO - Generated 1 participants
+2025-07-11 01:05:29,708 - INFO - Starting experiment for participant P001
+2025-07-11 01:05:29,708 - INFO - Participant P001 - Step: start
+2025-07-11 01:05:31,436 - INFO - Participant P001 - Step: customer_identification
+2025-07-11 01:05:36,203 - INFO - Participant P001 - Step: dietary_preferences
+2025-07-11 01:05:42,550 - INFO - Participant P001 - Step: activity_selection
+2025-07-11 01:05:46,268 - INFO - Participant P001 - Step: protein_selection
+2025-07-11 01:05:50,870 - INFO - Participant P001 - Step: base_selection
+2025-07-11 01:05:56,256 - INFO - Participant P001 - Step: sauce_selection
+2025-07-11 01:06:02,936 - INFO - Participant P001 - Step: veggies_selection
+2025-07-11 01:06:04,652 - INFO - Participant P001 - Step: garnishes_selection
+2025-07-11 01:06:06,168 - INFO - Participant P001 - Step: dish_naming
+2025-07-11 01:06:09,846 - INFO - Participant P001 - Step: agent_recommendations
+2025-07-11 01:06:18,501 - INFO - Participant P001 - Step: order_summary
+2025-07-11 01:06:21,370 - INFO - Participant P001 - Step: measurements
+2025-07-11 01:06:32,466 - INFO - Completed experiment for participant P001 in 62.76 seconds
+2025-07-11 01:07:07,961 - INFO - Generating 5 participants...
+2025-07-11 01:07:07,962 - INFO - Generated 5 participants
+2025-07-11 01:07:07,962 - INFO - Generating 1 participants...
+2025-07-11 01:07:07,962 - INFO - Generated 1 participants
+2025-07-11 01:07:07,962 - INFO - Starting experiment for participant P001
+2025-07-11 01:07:07,962 - INFO - Participant P001 - Step: start
+2025-07-11 01:07:11,204 - INFO - Participant P001 - Step: customer_identification
+2025-07-11 01:07:17,551 - INFO - Participant P001 - Step: dietary_preferences
+2025-07-11 01:07:26,046 - INFO - Participant P001 - Step: activity_selection
+2025-07-11 01:07:29,874 - INFO - Participant P001 - Step: protein_selection
+2025-07-11 01:07:33,335 - INFO - Participant P001 - Step: base_selection
+2025-07-11 01:07:37,508 - INFO - Participant P001 - Step: sauce_selection
+2025-07-11 01:07:41,664 - INFO - Participant P001 - Step: veggies_selection
+2025-07-11 01:07:42,587 - INFO - Participant P001 - Step: garnishes_selection
+2025-07-11 01:07:43,341 - INFO - Participant P001 - Step: dish_naming
+2025-07-11 01:07:47,792 - INFO - Participant P001 - Step: order_summary
+2025-07-11 01:07:51,764 - INFO - Participant P001 - Step: measurements
+2025-07-11 01:07:59,466 - INFO - Completed experiment for participant P001 in 51.50 seconds

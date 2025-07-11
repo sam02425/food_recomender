@@ -6,14 +6,16 @@ import * as apiService from './services/api';
 import { getSmartRecommendations, submitMLFeedback } from './services/api';
 import CustomerIdentification from './CustomerIdentification';
 import ActivitySelection from './ActivitySelection';
+import DietaryRestrictionsPanel from './DietaryRestrictionsPanel';
 import OrderSummary from './OrderSummary';
 import SocialSharing from './SocialSharing';
 import CalorieCalculator from './CalorieCalculator';
+import AgentRecommendations from './AgentRecommendations';
+import PreviousOrders from './PreviousOrders';
 // Removed unused imports for now
 import MasterRecommendationPanel from './MasterRecommendationPanel';
 import { useExperiment } from '../context/ExperimentContext';
 import measurementService from './services/measurementService';
-import FaceMoodCapture from './FaceMoodCapture';
 
 /**
  * Enhanced order form component that manages the entire ordering flow.
@@ -81,6 +83,34 @@ const OrderForm = ({
   // Load persistent dietary preferences on component mount and when customer changes
   useEffect(() => {
     const loadCustomerDietaryPreferences = async () => {
+      // Load available restrictions and allergens data
+      try {
+        const [restrictionsRes, allergensRes] = await Promise.all([
+          fetch(`${API_URL}/api/dietary/restrictions/available`),
+          fetch(`${API_URL}/api/dietary/allergens/available`)
+        ]);
+
+        if (restrictionsRes.ok) {
+          const data = await restrictionsRes.json();
+          setAvailableRestrictions(data.data?.restrictions || {});
+        } else {
+          console.error('Failed to load restrictions:', restrictionsRes.status);
+          setAvailableRestrictions({});
+        }
+
+        if (allergensRes.ok) {
+          const data = await allergensRes.json();
+          setAvailableAllergens(data.data?.allergens || {});
+        } else {
+          console.error('Failed to load allergens:', allergensRes.status);
+          setAvailableAllergens({});
+        }
+      } catch (error) {
+        console.error('Error loading available dietary options:', error);
+        setAvailableRestrictions({});
+        setAvailableAllergens({});
+      }
+
       // Try to load from global experiment context first
       const persistentPrefs = getDietaryPreferences();
       if (persistentPrefs.restrictions?.length > 0 || persistentPrefs.allergens?.length > 0) {
@@ -145,6 +175,8 @@ const OrderForm = ({
 
   // Dietary restrictions state
   const [showDietaryPanel, setShowDietaryPanel] = useState(false);
+  const [availableRestrictions, setAvailableRestrictions] = useState({});
+  const [availableAllergens, setAvailableAllergens] = useState({});
 
   // Master recommendation panel state
   const [showMasterPanel, setShowMasterPanel] = useState(false);
@@ -186,50 +218,42 @@ const OrderForm = ({
     format_used: ""
   });
 
-  // Menu data with proper objects for proteins that include price and description
+  // Menu data from backend
   const [menuData, setMenuData] = useState(null);
-  const proteins = [
-    { name: "Chicken", price: 4.50, description: "Grilled chicken pieces" },
-    { name: "Egg", price: 3.00, description: "Boiled or fried egg" },
-    { name: "Paneer/Indian Cheese", price: 4.00, description: "Fresh Indian cheese cubes" },
-    { name: "Soya", price: 3.50, description: "Marinated soya chunks" },
-    { name: "Potato", price: 2.50, description: "Spiced potato cubes" },
-    { name: "Pepperoni", price: 4.50, description: "Sliced pepperoni" }
-  ];
 
-    const sauces = ['Curry Special', 'Malai Masala', 'Curry Masala', 'Marinara', 'Yogurt/Raita', 'Red Spicy Sauce', 'Mint Sauce', 'Green Spicy Sauce'];
-  const baseTypes = {
-    'Biryani': [
-      { name: 'Rice', price: 2.00, description: 'Fragrant basmati rice' }
-    ],
-    'Sandwich & Subs': [
-      { name: 'Sourdough', price: 2.50, description: 'Tangy artisan bread' },
-      { name: 'Ciabatta', price: 2.50, description: 'Italian white bread' },
-      { name: 'White Bread', price: 2.00, description: 'Classic soft bread' },
-      { name: 'Hoagie Bun', price: 2.50, description: 'Submarine sandwich roll' }
-    ],
-    'Wrap': [
-      { name: 'Naan', price: 2.00, description: 'Soft Indian flatbread' },
-      { name: 'Pitta', price: 2.00, description: 'Pocket-style bread' }
-    ],
-    'Bowl': [
-      { name: 'Bowl', price: 1.50, description: 'Regular serving bowl' },
-      { name: 'Rice Bowl', price: 2.00, description: 'Bowl with basmati rice' }
-    ],
-    'Salad': [
-      { name: 'Mixed Greens', price: 2.50, description: 'Fresh mixed greens salad' }
-    ]
+  // Helper function to get menu items with proper structure
+  const getMenuItems = (category) => {
+    if (!menuData || !menuData[category]) return [];
+    return menuData[category];
   };
-  const veggieOptions = [
-    'Grilled Onion', 'Bell Pepper', 'Tomato', 'Cilantro', 'Avocado',
-    'Pineapple', 'Spinach', 'Jalapeño', 'Banana Pepper', 'Fried Onions',
-    'Corn', 'Cabbage', 'Ghee', 'Mango Chutney'
-  ];
-  const premiumVeggies = ['Avocado'];
 
-  const garnishOptions = [
-    'Crispy Onions', 'Fresh Cilantro', 'Pomegranate Seeds', 'Toasted Almonds'
-  ];
+  // Get proteins with portion sizes
+  const getProteins = () => {
+    return getMenuItems('proteins');
+  };
+
+  // Get sauces
+  const getSauces = () => {
+    return getMenuItems('sauces');
+  };
+
+  // Get base types
+  const getBaseTypes = () => {
+    return menuData?.base_types || {};
+  };
+
+  // Get veggies
+  const getVeggies = () => {
+    return getMenuItems('veggies');
+  };
+
+  // Get garnishes
+  const getGarnishes = () => {
+    return getMenuItems('garnishes');
+  };
+
+  // Premium veggies (for pricing logic)
+  const premiumVeggies = ['Avocado'];
 
   // State for tracking task compliance
   const [taskInstructions, setTaskInstructions] = useState(null);
@@ -405,6 +429,26 @@ const OrderForm = ({
         measurementService.startTracking();
         setMeasurementData(prev => ({ ...prev, taskStartTime: new Date() }));
 
+        // Initialize inventory for new experiment trial (Trial B)
+        if (experimentCycleActive && currentPhase === 'trial_b') {
+          try {
+            const inventoryResponse = await fetch(`${API_URL}/api/inventory/initialize`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            });
+            if (inventoryResponse.ok) {
+              const inventoryData = await inventoryResponse.json();
+              console.log('Inventory initialized for new trial:', inventoryData.inventory_summary);
+            } else {
+              console.error('Failed to initialize inventory:', inventoryResponse.status);
+            }
+          } catch (error) {
+            console.error('Error initializing inventory:', error);
+          }
+        }
+
         // In experiment mode, set up mock customer data automatically
         if (experimentCycleActive && participantName) {
           setCustomerData({
@@ -431,8 +475,8 @@ const OrderForm = ({
 
         // Get menu data
         const menuResponse = await apiService.getMenuData();
-        if (menuResponse?.success) {
-          setMenuData(menuResponse.menu_data);
+        if (menuResponse) {
+          setMenuData(menuResponse);
         }
 
       } catch (error) {
@@ -862,11 +906,10 @@ const OrderForm = ({
       try {
         // Save restrictions
         if (restrictions.length > 0) {
-          await fetch(`${API_URL}/api/dietary/restrictions/set`, {
+          await fetch(`${API_URL}/api/dietary/restrictions/${identifier}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              user_id: identifier,
               restrictions: restrictions
             })
           });
@@ -874,11 +917,10 @@ const OrderForm = ({
 
         // Save allergens
         if (allergens.length > 0) {
-          await fetch(`${API_URL}/api/dietary/allergens/set`, {
+          await fetch(`${API_URL}/api/dietary/allergens/${identifier}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              user_id: identifier,
               allergens: allergens
             })
           });
@@ -916,6 +958,122 @@ const OrderForm = ({
   useEffect(() => {
     onStepChange(currentStep);
   }, [currentStep, onStepChange]);
+
+  // Add this function before renderStep or in the main body of OrderForm
+  const handleStartOrder = () => {
+    // Advance to the next step after 'start'. Adjust as needed for your flow.
+    setStep('customer');
+  };
+
+  // Add these stubs before renderStep
+  const handleCustomerIdentified = (customer) => {
+    setCustomerData(customer);
+    // Check if customer has previous orders
+    if (customer.phoneNumber && customer.phoneNumber !== 'experiment-user') {
+      setStep('previous_orders');
+    } else {
+    setStep('dietary');
+    }
+  };
+
+  const goToPreviousStep = () => {
+    // Simple back navigation: go to 'customer' from 'dietary', or adjust as needed
+    if (currentStep === 'dietary') setStep('customer');
+    if (currentStep === 'previous_orders') setStep('customer');
+    // Add more logic for other steps if needed
+  };
+
+  const handleLoadDietaryPreferences = (dietaryProfile) => {
+    setUserDietaryRestrictions(dietaryProfile.restrictions || []);
+    setUserAllergens(dietaryProfile.allergies || []);
+    setDietaryPreferences(dietaryProfile.restrictions || [], dietaryProfile.allergies || []);
+  };
+
+  const handlePreviousOrdersSkip = () => {
+    setStep('dietary');
+  };
+
+  const handlePreviousOrdersAddItem = (orderItems) => {
+    // Load the previous order items
+    if (orderItems.protein) setProtein(orderItems.protein);
+    if (orderItems.sauce) setSauce(orderItems.sauce);
+    if (orderItems.base_type) setBaseType(orderItems.base_type);
+    if (orderItems.base_option) setBaseOption(orderItems.base_option);
+    if (orderItems.veggies) setVeggies(orderItems.veggies);
+    if (orderItems.garnishes) setGarnishes(orderItems.garnishes);
+    if (orderItems.dish_name) setDishName(orderItems.dish_name);
+
+    setStep('summary');
+  };
+
+  const handlePreviousOrdersCheckout = () => {
+    setStep('summary');
+  };
+
+  const handleCompleteOrder = async () => {
+    try {
+      setIsLoading(true);
+
+      // Save order to customer history if not experiment user
+      if (customerData?.phoneNumber && customerData.phoneNumber !== 'experiment-user') {
+        await saveCustomerOrder();
+      }
+
+      // Complete experiment trial if active
+      if (experimentCycleActive) {
+        await completeTrial();
+      }
+
+      setStep('complete');
+    } catch (error) {
+      setError("Error completing order. Please try again.");
+      console.error("Order completion error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveCustomerOrder = async () => {
+    try {
+      const orderDetails = {
+        protein: protein,
+        sauce: sauce,
+        base_type: baseType,
+        base_option: baseOption,
+        veggies: veggies,
+        garnishes: garnishes,
+        dish_name: dishName
+      };
+
+      await fetch(`${API_URL}/api/customer/save-order`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customer_phone: customerData.phoneNumber,
+          order_details: orderDetails
+        })
+      });
+
+      // Also save dietary preferences
+      if (userDietaryRestrictions.length > 0 || userAllergens.length > 0) {
+        await fetch(`${API_URL}/api/customer/save-dietary`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            customer_phone: customerData.phoneNumber,
+            restrictions: userDietaryRestrictions,
+            allergens: userAllergens
+          })
+        });
+      }
+    } catch (error) {
+      console.error("Error saving customer order:", error);
+    }
+  };
 
   // Now define renderStep
   const renderStep = () => {
@@ -968,11 +1126,39 @@ const OrderForm = ({
             onCustomerIdentified={handleCustomerIdentified}
           />
         );
+      case 'previous_orders':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">📋 Select from Previously Ordered</h2>
+            <PreviousOrders
+              customerPhone={customerData?.phoneNumber}
+              onSkip={handlePreviousOrdersSkip}
+              onAddItem={handlePreviousOrdersAddItem}
+              onCheckout={handlePreviousOrdersCheckout}
+              onLoadDietaryPreferences={handleLoadDietaryPreferences}
+            />
+            <div className="mt-4">
+              <button onClick={goToPreviousStep} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">
+                Back
+              </button>
+            </div>
+          </div>
+        );
       case 'dietary':
         return (
           <div>
             <h2 className="text-xl font-semibold mb-6">🥗 Dietary Preferences & Allergies</h2>
-            {/* ... dietary UI ... */}
+            <DietaryRestrictionsPanel
+              customerId={customerData?.customerId || customerData?.phoneNumber}
+              onRestrictionsChange={(restrictions) => {
+                setUserDietaryRestrictions(restrictions);
+                setDietarySet(false); // Reset dietarySet to force re-fetch
+              }}
+              onAllergensChange={(allergens) => {
+                setUserAllergens(allergens);
+                setDietarySet(false); // Reset dietarySet to force re-fetch
+              }}
+            />
             <div className="mt-4 flex justify-between">
               <button onClick={goToPreviousStep} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
               <button onClick={handleDietaryContinue} className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">Continue to Activity Selection</button>
@@ -987,10 +1173,383 @@ const OrderForm = ({
             experimentConfig={currentTrialConfig}
           />
         );
-      // ... other steps as previously implemented ...
+      case 'protein':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🥩 Select Your Protein</h2>
+            {(userDietaryRestrictions.length > 0 || userAllergens.length > 0) && (
+              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                <p className="text-sm text-blue-800">
+                  🛡️ <strong>Filtered for your safety:</strong> Only showing proteins compatible with your dietary preferences and allergies.
+                </p>
+              </div>
+            )}
+            <MenuSelectionGrid
+              title="Choose Your Protein"
+              items={getFilteredProteins()}
+              category="Protein"
+              selectedItems={protein}
+              onSelect={setProtein}
+              recommendations={recommendations.proteins || []}
+              showPortionSizes={true}
+              showCalories={true}
+              multiSelect={false}
+            />
+            <div className="mt-4 flex justify-between">
+              <button onClick={() => setStep('activity')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+              <button
+                onClick={() => setStep('base')}
+                disabled={protein.length === 0}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Continue to Base Selection
+              </button>
+            </div>
+          </div>
+        );
+      case 'base':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🍚 Select Your Base</h2>
+            <BaseSelectionGrid
+              title="Choose Your Base"
+              baseTypes={getBaseTypes()}
+              selectedBaseType={baseType}
+              selectedBaseOption={baseOption}
+              onSelect={(type, option) => {
+                setBaseType(type);
+                setBaseOption(option);
+              }}
+              recommendations={recommendations.base_types || []}
+            />
+            <div className="mt-4 flex justify-between">
+              <button onClick={() => setStep('protein')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+              <button
+                onClick={() => setStep('sauce')}
+                disabled={!baseType || !baseOption}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Continue to Sauce Selection
+              </button>
+            </div>
+          </div>
+        );
+      case 'sauce':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🥘 Select Your Sauce</h2>
+            <MenuSelectionGrid
+              title="Choose Your Sauce"
+              items={getSauces()}
+              category="Sauce"
+              selectedItems={sauce}
+              onSelect={setSauce}
+              recommendations={recommendations.sauces || []}
+              showCalories={true}
+              showPortionSizes={true}
+              multiSelect={false}
+            />
+            <div className="mt-4 flex justify-between">
+              <button onClick={() => setStep('base')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+              <button
+                onClick={() => setStep('veggies')}
+                disabled={sauce.length === 0}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Continue to Veggies Selection
+              </button>
+            </div>
+          </div>
+        );
+      case 'veggies':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🥬 Select Your Veggies</h2>
+            <MenuSelectionGrid
+              title="Choose Your Veggies"
+              items={getVeggies()}
+              category="Veggies"
+              selectedItems={veggies}
+              onSelect={setVeggies}
+              maxFreeSelections={5}
+              premiumItems={premiumVeggies}
+              premiumPrice={1.00}
+              extraPrice={0.50}
+              showCalories={true}
+              showPortionSizes={true}
+              multiSelect={true}
+            />
+            <div className="mt-4 flex justify-between">
+              <button onClick={() => setStep('sauce')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+              <button
+                onClick={() => setStep('garnishes')}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Continue to Garnishes Selection
+              </button>
+            </div>
+          </div>
+        );
+      case 'garnishes':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🌿 Select Your Garnishes</h2>
+            <MenuSelectionGrid
+              title="Choose Your Garnishes"
+              items={getGarnishes()}
+              category="Garnishes"
+              selectedItems={garnishes}
+              onSelect={setGarnishes}
+              maxFreeSelections={2}
+              extraPrice={0.25}
+              showCalories={true}
+              showPortionSizes={true}
+              multiSelect={true}
+            />
+            <div className="mt-4 flex justify-between">
+              <button onClick={() => setStep('veggies')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+              <button
+                onClick={() => setStep('dish-name')}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              >
+                Continue to Dish Name
+              </button>
+            </div>
+          </div>
+        );
+      case 'dish-name':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">🍽️ Name Your Dish</h2>
+
+            {/* Suggested Names Section */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-3">
+                💡 Suggested names for your creation:
+              </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
+                {generateSuggestedDishNames().map((suggestion, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setDishName(suggestion)}
+                    className={`p-3 text-left rounded-lg border-2 transition-all hover:border-blue-300 ${
+                      dishName === suggestion
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <span className="font-medium text-gray-800">{suggestion}</span>
+                    {dishName === suggestion && (
+                      <span className="ml-2 text-blue-600">✓</span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Name Input */}
+            <div className="mb-4">
+              <label htmlFor="dish-name" className="block text-sm font-medium text-gray-700 mb-2">
+                ✏️ Or create your own custom name:
+              </label>
+              <input
+                type="text"
+                id="dish-name"
+                value={dishName}
+                onChange={(e) => setDishName(e.target.value)}
+                placeholder="e.g., Spicy Chicken Curry Bowl"
+                className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Current Selection Preview */}
+            {dishName && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-md">
+                <p className="text-sm text-green-800">
+                  <strong>Your dish will be called:</strong> "{dishName}"
+                </p>
+              </div>
+            )}
+
+            <div className="mt-4 flex justify-between">
+              <button onClick={() => setStep('garnishes')} className="px-6 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors">Back</button>
+              <button
+                onClick={() => setStep('summary')}
+                disabled={!dishName.trim()}
+                className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Review Order
+              </button>
+            </div>
+          </div>
+        );
+      case 'summary':
+        return (
+          <div>
+            <h2 className="text-xl font-semibold mb-6">📋 Order Summary</h2>
+
+            {/* Agent Recommendations for Trial B */}
+            {isTrialB && (
+              <AgentRecommendations
+                isVisible={true}
+                orderDetails={{
+                  protein,
+                  sauce,
+                  baseType,
+                  baseOption,
+                  veggies,
+                  garnishes,
+                  dishName
+                }}
+                onRefreshmentSelect={(refreshment) => {
+                  console.log('Refreshment selected:', refreshment);
+                  // Add refreshment to order
+                }}
+                onAgentInteraction={(interaction) => {
+                  console.log('Agent interaction:', interaction);
+                  // Track for experiment
+                }}
+              />
+            )}
+
+            <OrderSummary
+              protein={protein}
+              baseType={baseType}
+              baseOption={baseOption}
+              sauce={sauce}
+              veggies={veggies}
+              garnishes={garnishes}
+              dishName={dishName}
+              onEdit={() => setStep('protein')}
+              onComplete={handleCompleteOrder}
+              customerData={customerData}
+            />
+          </div>
+        );
+      case 'complete':
+        return (
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-4 text-green-600">✅ Order Complete!</h2>
+            <p className="text-gray-600 mb-6">Thank you for your order. Your food will be ready soon!</p>
+            <SocialSharing dishName={dishName} />
+          </div>
+        );
       default:
         return null;
     }
+  };
+
+          // Helper to generate suggested dish names
+  const generateSuggestedDishNames = () => {
+    const customerName = customerData?.name || participantName || 'Chef';
+    const proteinName = protein.length > 0 ? (typeof protein[0] === 'object' ? protein[0].name : protein[0]) : 'Special';
+    const baseTypeName = baseType || 'Bowl';
+    const sauceName = sauce.length > 0 ? (typeof sauce[0] === 'object' ? sauce[0].name : sauce[0]) : 'Special';
+
+    // Clean up names for better formatting
+    const cleanCustomerName = customerName.split(' ')[0]; // Use first name only
+    const cleanProteinName = proteinName.replace('/', ' ').replace('Indian Cheese', 'Paneer');
+    const cleanBaseTypeName = baseTypeName.replace(' & ', ' ').replace('Sandwich', 'Sub');
+    const cleanSauceName = sauceName.replace('Special', 'Signature').replace('Masala', 'Spice');
+
+    // Create variations based on selections
+    const suggestions = [
+      `${cleanCustomerName}'s ${cleanProteinName} ${cleanBaseTypeName}`,
+      `${cleanCustomerName}'s Special ${cleanBaseTypeName}`,
+      `${cleanProteinName} ${cleanSauceName} ${cleanBaseTypeName}`,
+      `${cleanCustomerName}'s ${cleanSauceName} Creation`,
+      `${cleanProteinName} ${cleanBaseTypeName} Delight`,
+      `${cleanCustomerName}'s Signature ${cleanBaseTypeName}`,
+      `${cleanSauceName} ${cleanProteinName} ${cleanBaseTypeName}`,
+      `${cleanCustomerName}'s Ultimate ${cleanBaseTypeName}`
+    ];
+
+    // Add dietary-specific suggestions
+    if (userDietaryRestrictions.length > 0) {
+      const restriction = userDietaryRestrictions[0];
+      const restrictionLabel = restriction.charAt(0).toUpperCase() + restriction.slice(1).replace('_', ' ');
+      suggestions.push(
+        `${cleanCustomerName}'s ${restrictionLabel} ${cleanBaseTypeName}`,
+        `${restrictionLabel} ${cleanProteinName} ${cleanBaseTypeName}`
+      );
+    }
+
+    // Add veggie-based suggestions if veggies are selected
+    if (veggies.length > 0) {
+      const veggieName = typeof veggies[0] === 'object' ? veggies[0].name : veggies[0];
+      const cleanVeggieName = veggieName.replace('Grilled ', '').replace('Bell ', '');
+      suggestions.push(
+        `${cleanCustomerName}'s ${cleanVeggieName} ${cleanBaseTypeName}`,
+        `${cleanVeggieName} ${cleanProteinName} ${cleanBaseTypeName}`
+      );
+    }
+
+    return suggestions.slice(0, 6); // Return top 6 suggestions
+  };
+
+    // Auto-suggest dish name when reaching the dish-name step
+  useEffect(() => {
+    if (currentStep === 'dish-name' && !dishName.trim()) {
+      const suggestions = generateSuggestedDishNames();
+      if (suggestions.length > 0) {
+        setDishName(suggestions[0]); // Auto-select the first suggestion
+      }
+    }
+  }, [currentStep, dishName, customerData, participantName, protein, baseType, sauce, veggies, userDietaryRestrictions]);
+
+  // Helper to filter proteins based on dietary restrictions and allergies
+  const getFilteredProteins = () => {
+    const allProteins = getProteins();
+
+    // If data is still loading, return all proteins
+    if (!availableRestrictions || !availableAllergens) {
+      return allProteins;
+    }
+
+    // First, filter by dietary restrictions
+    let filteredProteins = allProteins;
+
+    if (userDietaryRestrictions.length > 0) {
+      // Get allowed proteins from all selected dietary restrictions
+      const allowedProteins = new Set();
+
+      userDietaryRestrictions.forEach(restriction => {
+        // Get allowed proteins for this restriction from the backend data
+        const restrictionData = availableRestrictions[restriction];
+        if (restrictionData?.allowed_proteins) {
+          restrictionData.allowed_proteins.forEach(protein => {
+            allowedProteins.add(protein.toLowerCase());
+          });
+        }
+      });
+
+      // Filter proteins based on allowed list
+      filteredProteins = allProteins.filter(protein => {
+        const proteinName = protein.name.toLowerCase();
+        return allowedProteins.has(proteinName);
+      });
+    }
+
+    // Then, filter by allergies (this applies regardless of dietary restrictions)
+    if (userAllergens.length > 0) {
+      filteredProteins = filteredProteins.filter(protein => {
+        const proteinName = protein.name.toLowerCase();
+
+        const isAllergic = userAllergens.some(allergen => {
+          const allergenData = availableAllergens[allergen];
+          if (allergenData?.ingredients) {
+            return allergenData.ingredients.some(ingredient =>
+              ingredient.toLowerCase() === proteinName
+            );
+          }
+          return false;
+        });
+
+        return !isAllergic;
+      });
+    }
+
+    return filteredProteins;
   };
 
   return (
@@ -1007,11 +1566,11 @@ const OrderForm = ({
         <div className="border-t border-red-300 pt-2">
           <h4 className="font-bold text-red-800 mb-1">Current Selections:</h4>
           <div className="text-xs grid grid-cols-3 gap-2">
-            <div><strong>Protein:</strong> {protein.length > 0 ? protein.join(', ') : 'None'}</div>
+            <div><strong>Protein:</strong> {protein.length > 0 ? protein.map(p => typeof p === 'object' ? p.name : p).join(', ') : 'None'}</div>
             <div><strong>Base:</strong> {baseType && baseOption ? `${baseType} - ${baseOption}` : 'None'}</div>
-            <div><strong>Sauce:</strong> {sauce.length > 0 ? sauce.join(', ') : 'None'}</div>
-            <div><strong>Veggies:</strong> {veggies.length > 0 ? veggies.join(', ') : 'None'}</div>
-            <div><strong>Garnishes:</strong> {garnishes.length > 0 ? garnishes.join(', ') : 'None'}</div>
+            <div><strong>Sauce:</strong> {sauce.length > 0 ? sauce.map(s => typeof s === 'object' ? s.name : s).join(', ') : 'None'}</div>
+            <div><strong>Veggies:</strong> {veggies.length > 0 ? veggies.map(v => typeof v === 'object' ? v.name : v).join(', ') : 'None'}</div>
+            <div><strong>Garnishes:</strong> {garnishes.length > 0 ? garnishes.map(g => typeof g === 'object' ? g.name : g).join(', ') : 'None'}</div>
             <div><strong>Dish Name:</strong> {dishName || 'None'}</div>
           </div>
         </div>

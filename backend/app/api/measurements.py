@@ -6,7 +6,7 @@ import json
 import csv
 import os
 import random
-from logging_config import logger
+from backend.logging_config import logger
 
 router = APIRouter(prefix="/api/measurements", tags=["measurements"])
 
