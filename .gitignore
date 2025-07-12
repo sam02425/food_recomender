@@ -138,6 +138,37 @@ EXPERIMENT_ANALYSIS_REPORT.md
 *experiment_summary*
 *experiment_report*
 
+# Additional Experiment File Patterns
+*experiment*.py
+*participant*.py
+*agent_interaction*.py
+*experiment*.csv
+*participant*.csv
+*agent_interaction*.csv
+*experiment*.json
+*participant*.json
+*agent_interaction*.json
+*experiment*.md
+*participant*.md
+*agent_interaction*.md
+*experiment*.txt
+*participant*.txt
+*agent_interaction*.txt
+
+# Backend experiment endpoints and models
+backend/app/api/experiment.py
+backend/app/models/participant.py
+backend/utils/experiment_logger.py
+
+# MPID experiment data
+data/mpid_experiments/
+data/mpid_experiments/*
+
+# Experiment progress and monitoring files
+data/experiment_progress.json
+data/experiment_monitor.py
+data/experiment_status.json
+
 # ============= CONFIDENTIAL EXPERIMENTAL DATA =============
 # CRITICAL: These files contain sensitive research participant data
 
