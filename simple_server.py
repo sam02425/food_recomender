@@ -10,6 +10,11 @@ import random
 from datetime import datetime, timedelta
 import openai
 from dotenv import load_dotenv
+import numpy as np
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+from collections import defaultdict, Counter
+import pickle
 
 app = FastAPI(title="Food Recommender API", version="1.0.0")
 
@@ -443,21 +448,11 @@ class ExperimentSubmission(BaseModel):
 class OrderItem(BaseModel):
     selections: Dict[str, Any]
 
-class HealthRecommendationsRequest(BaseModel):
-    activity_level: str
-    customer_phone: Optional[str] = None
-
-class WeatherRecommendationsRequest(BaseModel):
-    customer_phone: Optional[str] = None
-
-class DishNameRequest(BaseModel):
-    selections: Dict[str, Any]
-
-class FeedbackRequest(BaseModel):
-    recommendation_type: str
-    feedback: str
-    custom_suggestion: Optional[str] = None
-    customer_phone: Optional[str] = None
+# Removed old request models - no longer needed
+# class HealthRecommendationsRequest(BaseModel):
+# class WeatherRecommendationsRequest(BaseModel):
+# class DishNameRequest(BaseModel):
+# class FeedbackRequest(BaseModel):
 
 class CompleteOrderRequest(BaseModel):
     customer_phone: Optional[str] = None
@@ -552,73 +547,6 @@ async def complete_order(request: CompleteOrderRequest):
         "customer_phone": request.customer_phone,
         "customer_name": request.customer_name
     }
-
-# Recommendation endpoints
-@app.post("/api/health-recommendations")
-async def get_health_recommendations(request: HealthRecommendationsRequest):
-    # Sample health recommendations based on activity level
-    recommendations = {
-        "work": [
-            {"name": "Light Curry with Rice", "reason": "Sustained energy for work"},
-            {"name": "Grilled Chicken Wrap", "reason": "Protein-rich for focus"}
-        ],
-        "exercise": [
-            {"name": "Protein Bowl with Quinoa", "reason": "High protein for recovery"},
-            {"name": "Lean Chicken Biryani", "reason": "Complex carbs for energy"}
-        ],
-        "relaxation": [
-            {"name": "Comfort Curry", "reason": "Warming and satisfying"},
-            {"name": "Paneer Masala", "reason": "Rich and indulgent"}
-        ]
-    }
-
-    return {
-        "recommendations": recommendations.get(request.activity_level, recommendations["work"]),
-        "activity_level": request.activity_level
-    }
-
-@app.post("/api/weather-recommendations")
-async def get_weather_recommendations(request: WeatherRecommendationsRequest):
-    # Sample weather-based recommendations
-    return {
-        "recommendations": [
-            {"name": "Hot Spicy Curry", "reason": "Warming for cold weather"},
-            {"name": "Cool Raita Bowl", "reason": "Refreshing for hot weather"}
-        ],
-        "weather_condition": "sunny"
-    }
-
-@app.post("/api/dish-name")
-async def get_dish_name(request: DishNameRequest):
-    # Generate a dish name based on selections
-    selections = request.selections
-    protein = selections.get("protein", "Mixed")
-    sauce = selections.get("sauce", "Special")
-    base = selections.get("base", "Rice")
-
-    dish_name = f"{protein} {sauce} {base}"
-    return {"dish_name": dish_name, "selections": selections}
-
-@app.post("/api/recommendation-feedback")
-async def submit_recommendation_feedback(request: FeedbackRequest):
-    # Save feedback to CSV
-    feedback_file = os.path.join(data_path, "recommendation_feedback.csv")
-    file_exists = os.path.exists(feedback_file)
-
-    with open(feedback_file, 'a', newline='') as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(['timestamp', 'recommendation_type', 'feedback', 'custom_suggestion', 'customer_phone'])
-
-        writer.writerow([
-            datetime.now().isoformat(),
-            request.recommendation_type,
-            request.feedback,
-            request.custom_suggestion or "",
-            request.customer_phone or ""
-        ])
-
-    return {"message": "Feedback submitted successfully"}
 
 # Customer management endpoints
 def generate_personalized_dish_suggestion(order_history, dietary_profile, inventory):
@@ -895,6 +823,269 @@ async def get_ml_model_insights():
 async def retrain_ml_models():
     return {"message": "ML models retraining initiated"}
 
+# Add preference learning system
+class PreferenceLearningSystem:
+    def __init__(self, data_path="data/"):
+        self.data_path = data_path
+        self.user_preferences = defaultdict(dict)
+        self.item_features = {}
+        self.user_order_history = defaultdict(list)
+        self.collaborative_matrix = {}
+        self.preference_model_path = os.path.join(data_path, "preference_model.pkl")
+        self.load_preference_model()
+
+    def load_preference_model(self):
+        """Load existing preference model"""
+        try:
+            if os.path.exists(self.preference_model_path):
+                with open(self.preference_model_path, 'rb') as f:
+                    data = pickle.load(f)
+                    self.user_preferences = data.get('user_preferences', defaultdict(dict))
+                    self.item_features = data.get('item_features', {})
+                    self.collaborative_matrix = data.get('collaborative_matrix', {})
+                print(f"Loaded preference model with {len(self.user_preferences)} users")
+        except Exception as e:
+            print(f"Could not load preference model: {e}")
+
+    def save_preference_model(self):
+        """Save preference model"""
+        try:
+            os.makedirs(self.data_path, exist_ok=True)
+            data = {
+                'user_preferences': dict(self.user_preferences),
+                'item_features': self.item_features,
+                'collaborative_matrix': self.collaborative_matrix
+            }
+            with open(self.preference_model_path, 'wb') as f:
+                pickle.dump(data, f)
+        except Exception as e:
+            print(f"Could not save preference model: {e}")
+
+    def extract_item_features(self, item_name):
+        """Extract features from item name for similarity calculation"""
+        features = {
+            'protein': any(protein in item_name.lower() for protein in ['chicken', 'paneer', 'egg', 'soya', 'potato']),
+            'spice_level': any(spice in item_name.lower() for spice in ['spicy', 'hot', 'mild', 'curry']),
+            'cuisine_type': any(cuisine in item_name.lower() for cuisine in ['indian', 'biryani', 'curry', 'masala']),
+            'base_type': any(base in item_name.lower() for base in ['rice', 'bread', 'naan', 'wrap', 'bowl']),
+            'vegetarian': any(veg in item_name.lower() for veg in ['paneer', 'soya', 'potato', 'vegetable'])
+        }
+        return features
+
+    def update_user_preferences(self, user_id, order_details, feedback=None):
+        """Update user preferences based on order and feedback"""
+        try:
+            # Extract order features
+            order_features = self.extract_order_features(order_details)
+
+            # Update user preferences
+            if user_id not in self.user_preferences:
+                self.user_preferences[user_id] = {
+                    'protein_preferences': defaultdict(float),
+                    'spice_preferences': defaultdict(float),
+                    'cuisine_preferences': defaultdict(float),
+                    'base_preferences': defaultdict(float),
+                    'order_count': 0,
+                    'last_order': None
+                }
+
+            user_prefs = self.user_preferences[user_id]
+
+            # Update preferences based on order
+            for feature, value in order_features.items():
+                if feature in user_prefs:
+                    if isinstance(user_prefs[feature], defaultdict):
+                        user_prefs[feature][value] += 1.0
+                    else:
+                        user_prefs[feature] = value
+
+            # Update order count and last order
+            user_prefs['order_count'] += 1
+            user_prefs['last_order'] = datetime.now().isoformat()
+
+            # Store order in history
+            self.user_order_history[user_id].append({
+                'order_details': order_details,
+                'features': order_features,
+                'feedback': feedback,
+                'timestamp': datetime.now().isoformat()
+            })
+
+            # Keep only last 20 orders for memory efficiency
+            if len(self.user_order_history[user_id]) > 20:
+                self.user_order_history[user_id] = self.user_order_history[user_id][-20:]
+
+            # Save updated model
+            self.save_preference_model()
+
+            return True
+
+        except Exception as e:
+            print(f"Error updating user preferences: {e}")
+            return False
+
+    def extract_order_features(self, order_details):
+        """Extract features from order details"""
+        features = {}
+
+        # Extract protein preference
+        protein = order_details.get('protein', '')
+        if protein:
+            features['protein'] = protein.lower()
+
+        # Extract spice level from sauce
+        sauce = order_details.get('sauce', '')
+        if 'curry' in sauce.lower():
+            features['spice_level'] = 'spicy'
+        elif 'malai' in sauce.lower():
+            features['spice_level'] = 'mild'
+        else:
+            features['spice_level'] = 'medium'
+
+        # Extract base type
+        base = order_details.get('base_type', '')
+        if base:
+            features['base_type'] = base.lower()
+
+        # Determine cuisine type
+        if any(indian in str(order_details).lower() for indian in ['curry', 'biryani', 'masala', 'paneer']):
+            features['cuisine_type'] = 'indian'
+        else:
+            features['cuisine_type'] = 'general'
+
+        return features
+
+    def get_personalized_recommendations(self, user_id, current_context=None, n_recommendations=3):
+        """Get personalized recommendations based on user preferences"""
+        try:
+            if user_id not in self.user_preferences:
+                return self.get_popular_recommendations(n_recommendations)
+
+            user_prefs = self.user_preferences[user_id]
+            recommendations = []
+
+            # Get user's most preferred features
+            preferred_protein = max(user_prefs['protein_preferences'].items(), key=lambda x: x[1])[0] if user_prefs['protein_preferences'] else 'chicken'
+            preferred_spice = max(user_prefs['spice_preferences'].items(), key=lambda x: x[1])[0] if user_prefs['spice_preferences'] else 'medium'
+            preferred_base = max(user_prefs['base_preferences'].items(), key=lambda x: x[1])[0] if user_prefs['base_preferences'] else 'rice'
+
+            # Generate personalized recommendations
+            if preferred_protein == 'chicken':
+                recommendations.append({
+                    "type": "preference_learning",
+                    "title": "Your Favorite Protein",
+                    "message": f"Based on your {user_prefs['order_count']} previous orders, you love {preferred_protein.title()} dishes",
+                    "priority": "high",
+                    "confidence": min(0.9, user_prefs['order_count'] * 0.1),
+                    "reasoning": f"You've ordered {preferred_protein} {user_prefs['protein_preferences'][preferred_protein]:.0f} times"
+                })
+
+            if preferred_spice == 'spicy':
+                recommendations.append({
+                    "type": "preference_learning",
+                    "title": "Spice Level Preference",
+                    "message": f"You prefer {preferred_spice} dishes - try our hottest curry options",
+                    "priority": "medium",
+                    "confidence": min(0.8, user_prefs['order_count'] * 0.08),
+                    "reasoning": f"Your spice preference: {preferred_spice}"
+                })
+
+            # Collaborative filtering: find similar users
+            similar_users = self.find_similar_users(user_id)
+            if similar_users:
+                recommendations.append({
+                    "type": "preference_learning",
+                    "title": "Popular Among Similar Users",
+                    "message": "Users with similar tastes love our signature dishes",
+                    "priority": "medium",
+                    "confidence": 0.7,
+                    "reasoning": f"Based on {len(similar_users)} similar users"
+                })
+
+            # Context-aware recommendations
+            if current_context:
+                time_of_day = current_context.get('time_of_day', 'afternoon')
+                if time_of_day == 'morning' and user_prefs['order_count'] > 0:
+                    recommendations.append({
+                        "type": "preference_learning",
+                        "title": "Morning Preference",
+                        "message": "Perfect morning fuel based on your preferences",
+                        "priority": "low",
+                        "confidence": 0.6,
+                        "reasoning": "Optimized for morning consumption"
+                    })
+
+            return recommendations[:n_recommendations]
+
+        except Exception as e:
+            print(f"Error getting personalized recommendations: {e}")
+            return self.get_popular_recommendations(n_recommendations)
+
+    def find_similar_users(self, user_id, n_similar=3):
+        """Find users with similar preferences using collaborative filtering"""
+        try:
+            if user_id not in self.user_preferences:
+                return []
+
+            target_user = self.user_preferences[user_id]
+            similarities = []
+
+            for other_user_id, other_user in self.user_preferences.items():
+                if other_user_id == user_id:
+                    continue
+
+                # Calculate similarity based on preferences
+                similarity = 0
+                common_features = 0
+
+                for feature in ['protein_preferences', 'spice_preferences', 'base_preferences']:
+                    if feature in target_user and feature in other_user:
+                        target_items = set(target_user[feature].keys())
+                        other_items = set(other_user[feature].keys())
+                        if target_items and other_items:
+                            common = len(target_items.intersection(other_items))
+                            total = len(target_items.union(other_items))
+                            if total > 0:
+                                similarity += common / total
+                                common_features += 1
+
+                if common_features > 0:
+                    avg_similarity = similarity / common_features
+                    similarities.append((other_user_id, avg_similarity))
+
+            # Return top similar users
+            similarities.sort(key=lambda x: x[1], reverse=True)
+            return [user_id for user_id, sim in similarities[:n_similar] if sim > 0.3]
+
+        except Exception as e:
+            print(f"Error finding similar users: {e}")
+            return []
+
+    def get_popular_recommendations(self, n_recommendations=3):
+        """Get popular recommendations when no user data is available"""
+        return [
+            {
+                "type": "preference_learning",
+                "title": "Most Popular Choice",
+                "message": "Our most loved dish by all customers",
+                "priority": "medium",
+                "confidence": 0.6,
+                "reasoning": "Based on overall popularity"
+            },
+            {
+                "type": "preference_learning",
+                "title": "Chef's Recommendation",
+                "message": "Our signature dish with perfect balance",
+                "priority": "medium",
+                "confidence": 0.7,
+                "reasoning": "Chef's special selection"
+            }
+        ]
+
+# Initialize preference learning system
+preference_learning_system = PreferenceLearningSystem(data_path)
+
+# Update the agent recommendations endpoint
 @app.post("/api/agent-recommendations")
 async def get_agent_recommendations(request: Request):
     """Get recommendations from all 3 agents working together with inventory-aware preparation time"""
@@ -934,14 +1125,10 @@ async def get_agent_recommendations(request: Request):
             "priority": "medium"
         })
 
-    preference_recommendations = [
-        {
-            "type": "preference_learning",
-            "title": "Personalized Choice",
-            "message": "Based on your previous orders, you might enjoy this combination",
-            "priority": "low"
-        }
-    ]
+    # REAL Preference Learning - not static messages
+    preference_recommendations = preference_learning_system.get_personalized_recommendations(
+        user_id, context, n_recommendations=3
+    )
 
     preparation_recommendations = [
         {
@@ -997,6 +1184,51 @@ async def get_agent_recommendations(request: Request):
             }
         ] if prep_time_data['queue_position'] > 20 else []
     }
+
+# Add endpoint to update user preferences
+@app.post("/api/preferences/update")
+async def update_user_preferences(request: Request):
+    """Update user preferences based on order and feedback"""
+    data = await request.json()
+    user_id = data.get("user_id")
+    order_details = data.get("order_details", {})
+    feedback = data.get("feedback")
+
+    if not user_id:
+        raise HTTPException(status_code=400, detail="user_id is required")
+
+    success = preference_learning_system.update_user_preferences(user_id, order_details, feedback)
+
+    return {
+        "success": success,
+        "user_id": user_id,
+        "preferences_updated": success,
+        "timestamp": datetime.now().isoformat()
+    }
+
+# Add endpoint to get user preferences
+@app.get("/api/preferences/{user_id}")
+async def get_user_preferences(user_id: str):
+    """Get user preferences and order history"""
+    if user_id in preference_learning_system.user_preferences:
+        user_prefs = preference_learning_system.user_preferences[user_id]
+        order_history = preference_learning_system.user_order_history[user_id]
+
+        return {
+            "user_id": user_id,
+            "preferences": dict(user_prefs),
+            "order_count": user_prefs.get('order_count', 0),
+            "last_order": user_prefs.get('last_order'),
+            "order_history": order_history[-5:] if order_history else [],  # Last 5 orders
+            "similar_users": preference_learning_system.find_similar_users(user_id)
+        }
+    else:
+        return {
+            "user_id": user_id,
+            "preferences": None,
+            "order_count": 0,
+            "message": "No preference data available"
+        }
 
 # Dietary restrictions endpoints
 @app.post("/api/dietary/restrictions/{user_id}")
@@ -1134,6 +1366,177 @@ def log_experiment_to_csv(participant_name, participant_email, experiment_number
         if not file_exists:
             writer.writerow(fieldnames)
         writer.writerow(row)
+
+# Participant registration models
+class ParticipantRegistration(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    age: int
+    gender: str
+    country: str
+    ethnicity: Optional[str] = None
+    occupation: Optional[str] = None
+    tech_proficiency: Optional[str] = "intermediate"
+    ordering_frequency: Optional[str] = "medium"
+    personality_traits: Optional[Dict[str, float]] = {}
+    activity_preferences: Optional[List[str]] = ["work", "study"]
+    protein_preferences: Optional[List[str]] = ["Chicken"]
+    feedback_pattern: Optional[str] = "selective"
+    baseline_emotions: Optional[List[str]] = ["neutral"]
+    decision_style: Optional[str] = "cautious_deliberate"
+
+class ParticipantResponse(BaseModel):
+    participant_id: str
+    experiment_number: str
+    nasa_tlx_scores: Optional[Dict[str, int]] = None
+    sus_scores: Optional[Dict[str, int]] = None
+    satisfaction_scores: Optional[Dict[str, int]] = None
+    task_completion_time: Optional[float] = None
+    errors_made: Optional[int] = None
+    decision_changes: Optional[int] = None
+    agent_interactions: Optional[Dict[str, Any]] = None
+    comments: Optional[str] = None
+
+# Global storage for registered participants
+registered_participants = {}
+participant_counter = 1
+
+@app.post("/api/participants/register")
+async def register_participant(registration: ParticipantRegistration):
+    """Register a new participant for the experiment"""
+    global participant_counter
+
+    # Validate age
+    if registration.age < 18 or registration.age > 100:
+        raise HTTPException(status_code=400, detail="Age must be between 18 and 100")
+
+    # Check if email already registered
+    for participant in registered_participants.values():
+        if participant["email"] == registration.email:
+            raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Generate participant ID
+    participant_id = f"P{participant_counter:03d}"
+    participant_counter += 1
+
+    # Create participant record
+    participant = {
+        "participant_id": participant_id,
+        "name": registration.name,
+        "email": registration.email,
+        "phone": registration.phone,
+        "age": registration.age,
+        "gender": registration.gender,
+        "country": registration.country,
+        "ethnicity": registration.ethnicity,
+        "occupation": registration.occupation,
+        "tech_proficiency": registration.tech_proficiency,
+        "ordering_frequency": registration.ordering_frequency,
+        "personality_traits": registration.personality_traits,
+        "activity_preferences": registration.activity_preferences,
+        "protein_preferences": registration.protein_preferences,
+        "feedback_pattern": registration.feedback_pattern,
+        "baseline_emotions": registration.baseline_emotions,
+        "decision_style": registration.decision_style,
+        "registration_time": datetime.now().isoformat(),
+        "experiments_completed": 0,
+        "status": "registered"
+    }
+
+    registered_participants[participant_id] = participant
+
+    # Save to CSV
+    participants_file = os.path.join(data_path, "registered_participants.csv")
+    file_exists = os.path.exists(participants_file)
+
+    with open(participants_file, "a", newline="") as f:
+        writer = csv.writer(f)
+        if not file_exists:
+            writer.writerow([
+                "participant_id", "name", "email", "phone", "age", "gender", "country",
+                "ethnicity", "occupation", "tech_proficiency", "ordering_frequency",
+                "registration_time", "status"
+            ])
+        writer.writerow([
+            participant_id, registration.name, registration.email, registration.phone,
+            registration.age, registration.gender, registration.country,
+            registration.ethnicity, registration.occupation, registration.tech_proficiency,
+            registration.ordering_frequency, participant["registration_time"], "registered"
+        ])
+
+    return {
+        "success": True,
+        "participant_id": participant_id,
+        "message": f"Participant {registration.name} registered successfully"
+    }
+
+@app.get("/api/participants")
+async def get_participants():
+    """Get list of all registered participants"""
+    return {
+        "participants": list(registered_participants.values()),
+        "total_count": len(registered_participants)
+    }
+
+@app.get("/api/participants/{participant_id}")
+async def get_participant(participant_id: str):
+    """Get specific participant details"""
+    if participant_id not in registered_participants:
+        raise HTTPException(status_code=404, detail="Participant not found")
+
+    return registered_participants[participant_id]
+
+@app.post("/api/participants/{participant_id}/submit-response")
+async def submit_participant_response(participant_id: str, response: ParticipantResponse):
+    """Submit experiment response from a participant"""
+    if participant_id not in registered_participants:
+        raise HTTPException(status_code=404, detail="Participant not found")
+
+    # Validate that all required subjective scores are provided
+    missing_scores = []
+    if not response.nasa_tlx_scores:
+        missing_scores.append("NASA-TLX scores")
+    if not response.sus_scores:
+        missing_scores.append("SUS scores")
+    if not response.satisfaction_scores:
+        missing_scores.append("Satisfaction scores")
+
+    if missing_scores:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Missing required subjective scores: {', '.join(missing_scores)}"
+        )
+
+    # Save response to CSV
+    responses_file = os.path.join(data_path, "participant_responses.csv")
+    file_exists = os.path.exists(responses_file)
+
+    with open(responses_file, "a", newline="") as f:
+        writer = csv.writer(f)
+        if not file_exists:
+            writer.writerow([
+                "participant_id", "experiment_number", "submission_time",
+                "nasa_tlx_scores", "sus_scores", "satisfaction_scores",
+                "task_completion_time", "errors_made", "decision_changes",
+                "agent_interactions", "comments"
+            ])
+
+        writer.writerow([
+            participant_id, response.experiment_number, datetime.now().isoformat(),
+            json.dumps(response.nasa_tlx_scores), json.dumps(response.sus_scores),
+            json.dumps(response.satisfaction_scores), response.task_completion_time,
+            response.errors_made, response.decision_changes,
+            json.dumps(response.agent_interactions), response.comments
+        ])
+
+    # Update participant record
+    registered_participants[participant_id]["experiments_completed"] += 1
+
+    return {
+        "success": True,
+        "message": f"Response submitted for experiment {response.experiment_number}"
+    }
 
 @app.post("/api/agent-interaction")
 async def log_agent_interaction(

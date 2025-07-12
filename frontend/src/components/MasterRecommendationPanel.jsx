@@ -34,20 +34,81 @@ const MasterRecommendationPanel = ({ userId }) => {
   const getComprehensiveRecommendations = async () => {
     setLoading(true);
     try {
-      // Simulate recommendations based on context
-      const mockRecommendations = [
-        { item: 'Grilled Chicken', category: 'protein', confidence: 0.9, reasoning: 'Based on your active lifestyle' },
-        { item: 'Brown Rice', category: 'base', confidence: 0.85, reasoning: 'Healthy carb option for sustained energy' },
-        { item: 'Mixed Vegetables', category: 'vegetables', confidence: 0.8, reasoning: 'Nutrient-rich option for work day' }
-      ];
+      // Call the real 3-agent system endpoint
+      const response = await fetch('http://localhost:8000/api/agent-recommendations', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userContext.user_id,
+          context: {
+            activity_level: userContext.activity_level,
+            mood: userContext.mood,
+            time_of_day: userContext.time_of_day,
+            weather: userContext.weather,
+            location: userContext.location
+          },
+          order_details: {} // Empty for initial recommendations
+        })
+      });
 
-      setTimeout(() => {
-        setRecommendations(mockRecommendations);
-        setLoading(false);
-      }, 1000);
+      if (response.ok) {
+        const data = await response.json();
 
+        // Transform agent recommendations into displayable format
+        const transformedRecommendations = [];
+
+        if (data.recommendations) {
+          // Add context intelligence recommendations
+          if (data.recommendations.context_intelligence) {
+            data.recommendations.context_intelligence.forEach(rec => {
+              transformedRecommendations.push({
+                item: rec.title,
+                category: 'context_intelligence',
+                confidence: 0.8,
+                reasoning: rec.message,
+                priority: rec.priority
+              });
+            });
+          }
+
+          // Add preference learning recommendations
+          if (data.recommendations.preference_learning) {
+            data.recommendations.preference_learning.forEach(rec => {
+              transformedRecommendations.push({
+                item: rec.title,
+                category: 'preference_learning',
+                confidence: rec.confidence || 0.7,
+                reasoning: rec.reasoning || rec.message,
+                priority: rec.priority
+              });
+            });
+          }
+
+          // Add preparation time recommendations
+          if (data.recommendations.preparation_time) {
+            data.recommendations.preparation_time.forEach(rec => {
+              transformedRecommendations.push({
+                item: rec.title,
+                category: 'preparation_time',
+                confidence: 0.9,
+                reasoning: rec.message,
+                priority: rec.priority
+              });
+            });
+          }
+        }
+
+        setRecommendations(transformedRecommendations);
+      } else {
+        console.error('Failed to get recommendations:', response.status);
+        setRecommendations([]);
+      }
     } catch (error) {
       console.error('Error getting recommendations:', error);
+      setRecommendations([]);
+    } finally {
       setLoading(false);
     }
   };
@@ -107,6 +168,7 @@ const MasterRecommendationPanel = ({ userId }) => {
                 <h4>{rec.item}</h4>
                 <p>Category: {rec.category}</p>
                 <p>Confidence: {(rec.confidence * 100).toFixed(0)}%</p>
+                <p>Priority: {rec.priority}</p>
                 {rec.reasoning && <p>&quot;{rec.reasoning}&quot;</p>}
               </div>
             ))}

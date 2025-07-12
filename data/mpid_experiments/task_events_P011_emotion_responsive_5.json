@@ -1,0 +1,133 @@
+[
+  {
+    "timestamp": 1752266805.901833,
+    "event_type": "system_initialization",
+    "data": {
+      "condition": "emotion_responsive"
+    }
+  },
+  {
+    "timestamp": 1752266805.906528,
+    "event_type": "order_started",
+    "data": {}
+  },
+  {
+    "timestamp": 1752266805.9065359,
+    "event_type": "face_recognition",
+    "data": {
+      "recognized": false,
+      "emotional_state": "sad",
+      "confidence": 0.7540096879352681
+    }
+  },
+  {
+    "timestamp": 1752266805.9123268,
+    "event_type": "activity_selection",
+    "data": {
+      "activity": "active"
+    }
+  },
+  {
+    "timestamp": 1752266805.9402628,
+    "event_type": "agent_recommendations_shown",
+    "data": {
+      "success": true,
+      "agents_called": [
+        "context_intelligence",
+        "preference_learning",
+        "preparation_time"
+      ],
+      "preparation_time": {
+        "total_minutes": 79,
+        "ready_time": "17:05",
+        "formatted_duration": "01:19",
+        "queue_position": 50,
+        "complexity_multiplier": 1.8,
+        "queue_multiplier": 2.0,
+        "additional_wait_time": 0,
+        "unavailable_items": [],
+        "low_stock_items": [
+          "Lemon"
+        ],
+        "preparing_items": []
+      },
+      "recommendations": {
+        "context_intelligence": [
+          {
+            "type": "context_intelligence",
+            "title": "Inventory-Aware Suggestion",
+            "message": "Queue position: #50",
+            "priority": "medium"
+          }
+        ],
+        "preference_learning": [
+          {
+            "type": "preference_learning",
+            "title": "Your Favorite Protein",
+            "message": "Based on your 4 previous orders, you love Chicken dishes",
+            "priority": "high",
+            "confidence": 0.4,
+            "reasoning": "You've ordered chicken 0 times"
+          },
+          {
+            "type": "preference_learning",
+            "title": "Popular Among Similar Users",
+            "message": "Users with similar tastes love our signature dishes",
+            "priority": "medium",
+            "confidence": 0.7,
+            "reasoning": "Based on 3 similar users"
+          },
+          {
+            "type": "preference_learning",
+            "title": "Morning Preference",
+            "message": "Perfect morning fuel based on your preferences",
+            "priority": "low",
+            "confidence": 0.6,
+            "reasoning": "Optimized for morning consumption"
+          }
+        ],
+        "preparation_time": [
+          {
+            "type": "preparation_time",
+            "title": "Preparation Time Estimate",
+            "message": "Your order will be ready at 17:05",
+            "priority": "high"
+          }
+        ]
+      },
+      "refreshment_suggestions": [
+        {
+          "name": "Masala Chai",
+          "price": 3.5,
+          "reason": "Perfect for longer waits"
+        },
+        {
+          "name": "Mango Lassi",
+          "price": 4.0,
+          "reason": "Refreshing yogurt drink"
+        }
+      ],
+      "optimization_strategies": [
+        {
+          "type": "queue_optimization",
+          "title": "Queue Management",
+          "message": "You are #50 in the queue",
+          "suggestions": [
+            "Consider simpler order",
+            "Add refreshment drink"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": 1752266805.940366,
+    "event_type": "menu_selections",
+    "data": {
+      "protein": "Chicken",
+      "base_type": "Bowl",
+      "veggies": [],
+      "garnishes": []
+    }
+  }
+]

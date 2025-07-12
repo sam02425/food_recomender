@@ -1,0 +1,109 @@
+[
+  {
+    "timestamp": 1752263579.4966762,
+    "event_type": "system_initialization",
+    "data": {
+      "condition": "emotion_responsive"
+    }
+  },
+  {
+    "timestamp": 1752263579.4992971,
+    "event_type": "order_started",
+    "data": {}
+  },
+  {
+    "timestamp": 1752263579.499302,
+    "event_type": "activity_selection",
+    "data": {
+      "activity": "study"
+    }
+  },
+  {
+    "timestamp": 1752263579.501607,
+    "event_type": "health_recommendations_shown",
+    "data": {
+      "recommendations": [
+        {
+          "name": "Light Curry with Rice",
+          "reason": "Sustained energy for work"
+        },
+        {
+          "name": "Grilled Chicken Wrap",
+          "reason": "Protein-rich for focus"
+        }
+      ],
+      "activity_level": "study"
+    }
+  },
+  {
+    "timestamp": 1752263579.5074759,
+    "event_type": "health_feedback",
+    "data": {
+      "feedback_type": "accept",
+      "custom_suggestion": null,
+      "response": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "recommendation_type"
+            ],
+            "msg": "Field required",
+            "input": {
+              "type": "health",
+              "feedback": "accept",
+              "custom_suggestion": null,
+              "customer_id": null
+            },
+            "url": "https://errors.pydantic.dev/2.4/v/missing"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "timestamp": 1752263579.513674,
+    "event_type": "weather_recommendations_shown",
+    "data": {
+      "recommendations": [
+        {
+          "name": "Hot Spicy Curry",
+          "reason": "Warming for cold weather"
+        },
+        {
+          "name": "Cool Raita Bowl",
+          "reason": "Refreshing for hot weather"
+        }
+      ],
+      "weather_condition": "sunny"
+    }
+  },
+  {
+    "timestamp": 1752263579.517633,
+    "event_type": "weather_feedback",
+    "data": {
+      "feedback_type": "custom",
+      "custom_suggestion": "Paneer/Indian Cheese",
+      "response": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "body",
+              "recommendation_type"
+            ],
+            "msg": "Field required",
+            "input": {
+              "type": "weather",
+              "feedback": "custom",
+              "custom_suggestion": "Paneer/Indian Cheese",
+              "customer_id": null
+            },
+            "url": "https://errors.pydantic.dev/2.4/v/missing"
+          }
+        ]
+      }
+    }
+  }
+]

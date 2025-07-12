@@ -22,12 +22,12 @@ import json
 
 # ML libraries for emotion detection
 try:
-    import cv2
+    # ML imports removed
     import numpy as np
-    from fer import FER
-    import base64
+    # FER import removed
+    # base64 import removed
     import io
-    from PIL import Image
+    # PIL import removed
     ML_AVAILABLE = True
     logger.info("✅ ML libraries loaded successfully")
 except ImportError as e:
@@ -244,100 +244,7 @@ class LogEntry(BaseModel):
     message: str
     data: dict = None
 
-class FaceRecognitionRequest(BaseModel):
-    image_data: str
-
-class StoreCustomerFaceRequest(BaseModel):
-    name: str = ""
-    phone_number: str = ""
-    image_data: str
-    customer_id: str = None
-
-class ExperimentData(BaseModel):
-    experiment_id: str
-    customer_id: Optional[str] = None
-    customer_name: Optional[str] = None
-    face_recognized: bool = False
-    activity_level_input: Optional[str] = None
-    health_agent_recommendations: Optional[dict] = None
-    weather_condition: Optional[dict] = None
-    weather_agent_recommendations: Optional[dict] = None
-    selected_base: Optional[str] = None
-    selected_protein: Optional[str] = None
-    selected_veggies: Optional[List[str]] = None
-    selected_sauce: Optional[str] = None
-    final_order_details: dict
-    dish_name_agent_suggestions: Optional[dict] = None
-    final_dish_name: Optional[str] = None
-
-# Add these new Pydantic models after the existing ones
-class MoodDetectionRequest(BaseModel):
-    image_data: str  # Base64 encoded image
-
-class MoodDetectionResponse(BaseModel):
-    success: bool
-    mood: str
-    confidence: float
-    emotions: Optional[Dict[str, float]] = None
-    error: Optional[str] = None
-
-# Initialize emotion detector globally
-emotion_detector = None
-
-def initialize_emotion_detector():
-    """Initialize the FER emotion detection model"""
-    global emotion_detector
-    if not ML_AVAILABLE:
-        return False
-
-    try:
-        emotion_detector = FER(mtcnn=True)  # Use MTCNN for better face detection
-        logger.info("✅ FER emotion detection model initialized successfully")
-        return True
-    except Exception as e:
-        logger.error(f"❌ Failed to initialize emotion detector: {e}")
-        return False
-
-def base64_to_opencv_image(base64_string):
-    """Convert base64 string to OpenCV image"""
-    if not ML_AVAILABLE:
-        return None
-
-    try:
-        # Remove data URL prefix if present
-        if base64_string.startswith('data:image'):
-            base64_string = base64_string.split(',')[1]
-
-        # Decode base64
-        image_data = base64.b64decode(base64_string)
-
-        # Convert to PIL Image
-        pil_image = Image.open(io.BytesIO(image_data))
-
-        # Convert PIL to OpenCV format
-        opencv_image = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
-
-        return opencv_image
-    except Exception as e:
-        logger.error(f"Error converting base64 to OpenCV image: {e}")
-        return None
-
-def detect_emotion_with_fer(image):
-    """Detect emotion using FER library"""
-    global emotion_detector
-
-    if emotion_detector is None or not ML_AVAILABLE:
-        return None
-
-    try:
-        # Detect emotions
-        emotions = emotion_detector.detect_emotions(image)
-
-        if not emotions:
-            return {
-                'mood': 'neutral',
-                'confidence': 0.5,
-                'emotions': {'neutral': 1.0}
+# FaceRecognitionRequest model removed
             }
 
         # Get the first (most prominent) face
@@ -483,257 +390,17 @@ async def start_order():
         }
     }
 
-@app.post("/api/face-recognition")
-async def face_recognition(request: FaceRecognitionRequest):
-    """Enhanced face recognition with authentication and mood tracking"""
-    image_data = request.image_data
-    try:
-        import base64
-        image_bytes = base64.b64decode(image_data.split(',')[1])
-        from backend.api.agents.Context_Intelligence_Ag import ContextIntelligenceAgent
-        from backend.api.agents.Preference_Learning_Ag import PreferenceLearningAgent
-        from backend.api.agents.Problem_Prevention_Ag import ProblemPreventionAgent
+# Face recognition endpoint removed - no longer needed for experiment
 
-        # Create data directory if it doesn't exist
-        os.makedirs("/app/data", exist_ok=True)
-        os.makedirs("/app/data/face_images", exist_ok=True)
+# Face recognition endpoint removed
 
-        context_intelligence_agent = ContextIntelligenceAgent(
-            customer_data_path="data/customers.csv",
-            face_images_dir="/app/data/face_images"
-        )
-        preference_learning_agent = PreferenceLearningAgent(
-            orders_path="data/orders.csv",
-            feedback_path="data/feedback.csv",
-            customers_path="data/customers.csv"
-        )
-        problem_prevention_agent = ProblemPreventionAgent(
-            orders_path="data/orders.csv",
-            customers_path="data/customers.csv"
-        )
+# Face recognition endpoint removed
 
-        # Use enhanced authentication
-        auth_result = context_intelligence_agent.authenticate_customer(image_bytes)
+# Face recognition endpoint removed
 
-        if auth_result["authenticated"]:
-            customer_data = auth_result["customer_profile"]
-            return {
-                "success": True,
-                "recognized": True,
-                "customer_data": customer_data,
-                "confidence": auth_result["confidence"],
-                "session_id": auth_result["session_id"],
-                "message": f"Welcome back, {customer_data.get('name', 'Valued Customer')}!",
-                "mood_tracking_enabled": True
-            }
-        else:
-            return {
-                "success": True,
-                "recognized": False,
-                "new_customer": auth_result.get("new_customer", True),
-                "message": "New customer detected. Please provide your information.",
-                "confidence": auth_result.get("confidence", 0.0)
-            }
-    except Exception as e:
-        logger.error(f"Face recognition error: {str(e)}")
-        return {
-            "success": False,
-            "error": "Face recognition failed",
-            "message": "Unable to process image. Please try again."
-        }
+# Face recognition endpoint removed
 
-@app.post("/api/track-mood")
-async def track_real_time_mood(request: dict):
-    """Track customer mood in real-time for feedback analysis"""
-    try:
-        image_data = request.get("image_data")
-        customer_id = request.get("customer_id")
-        context = request.get("context", "general")
-
-        if not image_data:
-            return {"success": False, "error": "No image data provided"}
-
-        import base64
-        image_bytes = base64.b64decode(image_data.split(',')[1])
-        from backend.api.agents.Context_Intelligence_Ag import ContextIntelligenceAgent
-
-        os.makedirs("/app/data/face_images", exist_ok=True)
-
-        context_intelligence_agent = ContextIntelligenceAgent(
-            customer_data_path="data/customers.csv",
-            face_images_dir="/app/data/face_images"
-        )
-
-        mood_result = context_intelligence_agent.track_real_time_mood(
-            image_bytes,
-            customer_id,
-            context
-        )
-
-        return {
-            "success": True,
-            "mood_analysis": mood_result
-        }
-
-    except Exception as e:
-        logger.error(f"Real-time mood tracking error: {str(e)}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
-
-@app.post("/api/analyze-recommendation-reaction")
-async def analyze_recommendation_reaction(request: dict):
-    """Analyze customer's facial reaction to specific recommendations"""
-    try:
-        image_data = request.get("image_data")
-        customer_id = request.get("customer_id")
-        recommendation_type = request.get("recommendation_type")
-        recommendation_data = request.get("recommendation_data", {})
-
-        if not all([image_data, customer_id, recommendation_type]):
-            return {"success": False, "error": "Missing required parameters"}
-
-        import base64
-        image_bytes = base64.b64decode(image_data.split(',')[1])
-        from backend.api.agents.Context_Intelligence_Ag import ContextIntelligenceAgent
-
-        os.makedirs("/app/data/face_images", exist_ok=True)
-
-        context_intelligence_agent = ContextIntelligenceAgent(
-            customer_data_path="data/customers.csv",
-            face_images_dir="/app/data/face_images"
-        )
-
-        reaction_result = context_intelligence_agent.analyze_recommendation_reaction(
-            image_bytes,
-            customer_id,
-            recommendation_type,
-            recommendation_data
-        )
-
-        return {
-            "success": True,
-            "reaction_analysis": reaction_result
-        }
-
-    except Exception as e:
-        logger.error(f"Recommendation reaction analysis error: {str(e)}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
-
-@app.post("/api/end-mood-session")
-async def end_mood_tracking_session(request: dict):
-    """End mood tracking session and get feedback summary"""
-    try:
-        customer_id = request.get("customer_id")
-
-        if not customer_id:
-            return {"success": False, "error": "Customer ID required"}
-
-        from backend.api.agents.Context_Intelligence_Ag import ContextIntelligenceAgent
-
-        context_intelligence_agent = ContextIntelligenceAgent(
-            customer_data_path="data/customers.csv",
-            face_images_dir="/app/data/face_images"
-        )
-
-        session_result = context_intelligence_agent.end_session(customer_id)
-
-        return {
-            "success": True,
-            "session_summary": session_result
-        }
-
-    except Exception as e:
-        logger.error(f"End mood session error: {str(e)}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
-
-@app.get("/api/mood-statistics")
-async def get_mood_statistics():
-    """Get overall mood statistics from history"""
-    try:
-        from backend.api.agents.Context_Intelligence_Ag import ContextIntelligenceAgent
-
-        context_intelligence_agent = ContextIntelligenceAgent(
-            customer_data_path="data/customers.csv",
-            face_images_dir="/app/data/face_images"
-        )
-
-        stats = context_intelligence_agent.get_mood_statistics()
-
-        return {
-            "success": True,
-            "statistics": stats
-        }
-
-    except Exception as e:
-        logger.error(f"Mood statistics error: {str(e)}")
-        return {
-            "success": False,
-            "error": str(e)
-        }
-
-@app.post("/api/store-customer-face")
-async def store_customer_face(request: StoreCustomerFaceRequest):
-    """Store customer face with enhanced tracking capabilities"""
-    try:
-        import base64
-        image_data = request.image_data
-        if not image_data:
-            return {"success": False, "error": "No image data provided"}
-        image_bytes = base64.b64decode(image_data.split(',')[1])
-        from backend.api.agents.Context_Intelligence_Ag import ContextIntelligenceAgent
-        from backend.api.agents.Preference_Learning_Ag import PreferenceLearningAgent
-        from backend.api.agents.Problem_Prevention_Ag import ProblemPreventionAgent
-
-        # Create data directory if it doesn't exist
-        os.makedirs("/app/data", exist_ok=True)
-        os.makedirs("/app/data/face_images", exist_ok=True)
-
-        context_intelligence_agent = ContextIntelligenceAgent(
-            customer_data_path="data/customers.csv",
-            face_images_dir="/app/data/face_images"
-        )
-        preference_learning_agent = PreferenceLearningAgent(
-            orders_path="data/orders.csv",
-            feedback_path="data/feedback.csv",
-            customers_path="data/customers.csv"
-        )
-        problem_prevention_agent = ProblemPreventionAgent(
-            orders_path="data/orders.csv",
-            customers_path="data/customers.csv"
-        )
-        customer_id = request.customer_id
-        if not customer_id:
-            customer_id = f"CUST{int(datetime.now().timestamp())}"
-        face_result = context_intelligence_agent.store_face(image_bytes, customer_id)
-        if face_result["success"]:
-            customer_record = {
-                "customer_id": customer_id,
-                "name": request.name,
-                "phone_number": request.phone_number,
-                "face_id": face_result["face_id"]
-            }
-            preference_learning_agent.update_customer(customer_record)
-            return {
-                "success": True,
-                "face_id": face_result["face_id"],
-                "customer_id": customer_id,
-                "message": "Face stored successfully for future recognition and mood tracking"
-            }
-        return {"success": False, "error": "Failed to store face"}
-    except Exception as e:
-        logger.error(f"Store customer face error: {str(e)}")
-        return {
-            "success": False,
-            "error": "Failed to store customer face"
-        }
+# Face recognition endpoint removed
 
 @app.get("/api/menu-data")
 async def get_menu_data():
@@ -844,61 +511,7 @@ async def get_weather_recommendations(request: dict):
             "error": f"Weather recommendation system failed: {str(e)}"
         }
 
-@app.post("/api/dish-name")
-async def get_dish_name(request: dict):
-    """Generate dish name suggestions using AI agent"""
-    try:
-        # update_agent_activity("entertainer_agent", "Generating dish name") # Removed
-
-        selections = request.get("selections", {})
-
-        # Extract selections
-        protein = selections.get("protein", ["Chicken"])[0] if isinstance(selections.get("protein"), list) else selections.get("protein", "Chicken")
-        base_type = selections.get("base_type", "Bowl")
-        customer_name = selections.get("customer_name", "Guest")
-
-        # Generate dish name using the agent
-        # entertainer_agent = None # Removed
-        # dish_name_result = entertainer_agent.generate_dish_name( # Removed
-        #     customer_name=customer_name, # Removed
-        #     protein=protein, # Removed
-        #     base_type=base_type, # Removed
-        #     weather="sunny",  # Default weather, could be enhanced to get real weather # Removed
-        #     mood="happy"      # Default mood, could be enhanced to get customer mood # Removed
-        # ) # Removed
-
-        # update_agent_activity("entertainer_agent", "Dish name generated") # Removed
-        return { # Modified
-            "success": True, # Modified
-            "suggestions": { # Modified
-                "name": f"{customer_name}'s Special {protein} {base_type}", # Modified
-                "alternatives": [ # Modified
-                    f"Chef's Special {protein} {base_type}", # Modified
-                    f"Fusion {protein} {base_type}", # Modified
-                    f"Signature {protein} {base_type}" # Modified
-                ], # Modified
-                "format_used": "fallback_template" # Modified
-            } # Modified
-        } # Modified
-
-    except Exception as e:
-        logger.error(f"Dish name generation error: {str(e)}")
-        # Fallback to simple naming
-        protein = selections.get("protein", ["Chicken"])[0] if isinstance(selections.get("protein"), list) else selections.get("protein", "Chicken")
-        base_type = selections.get("base_type", "Bowl")
-        customer_name = selections.get("customer_name", "Guest")
-
-        return {
-            "success": True,
-            "suggestions": {
-                "name": f"{customer_name}'s Special {protein} {base_type}",
-                "alternatives": [
-                    f"Chef's Special {protein} {base_type}",
-                    f"Fusion {protein} {base_type}",
-                    f"Signature {protein} {base_type}"
-                ],
-                "format_used": "fallback_template"
-            }
+# Dish name endpoint removed
         }
 
 @app.post("/api/recommendation-feedback")

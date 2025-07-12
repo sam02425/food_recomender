@@ -1,0 +1,36 @@
+[
+  {
+    "timestamp": 1752263626.539789,
+    "event_type": "system_initialization",
+    "data": {
+      "condition": "traditional"
+    }
+  },
+  {
+    "timestamp": 1752263626.587921,
+    "event_type": "order_started",
+    "data": {}
+  },
+  {
+    "timestamp": 1752263626.587924,
+    "event_type": "traditional_menu_access",
+    "data": {}
+  },
+  {
+    "timestamp": 1752263626.587931,
+    "event_type": "activity_selection",
+    "data": {
+      "activity": "gym"
+    }
+  },
+  {
+    "timestamp": 1752263626.58812,
+    "event_type": "menu_selections",
+    "data": {
+      "protein": "Chicken",
+      "base_type": "Bowl",
+      "veggies": [],
+      "garnishes": []
+    }
+  }
+]

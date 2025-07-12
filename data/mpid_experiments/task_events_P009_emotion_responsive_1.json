@@ -1,0 +1,129 @@
+[
+  {
+    "timestamp": 1752266755.576322,
+    "event_type": "system_initialization",
+    "data": {
+      "condition": "emotion_responsive"
+    }
+  },
+  {
+    "timestamp": 1752266755.577919,
+    "event_type": "order_started",
+    "data": {}
+  },
+  {
+    "timestamp": 1752266755.577923,
+    "event_type": "face_recognition",
+    "data": {
+      "recognized": false,
+      "emotional_state": "sad",
+      "confidence": 0.753562200883166
+    }
+  },
+  {
+    "timestamp": 1752266755.5803719,
+    "event_type": "activity_selection",
+    "data": {
+      "activity": "chilling"
+    }
+  },
+  {
+    "timestamp": 1752266755.601975,
+    "event_type": "agent_recommendations_shown",
+    "data": {
+      "success": true,
+      "agents_called": [
+        "context_intelligence",
+        "preference_learning",
+        "preparation_time"
+      ],
+      "preparation_time": {
+        "total_minutes": 24,
+        "ready_time": "16:09",
+        "formatted_duration": "00:24",
+        "queue_position": 1,
+        "complexity_multiplier": 1.8,
+        "queue_multiplier": 1.0,
+        "additional_wait_time": 9,
+        "unavailable_items": [],
+        "low_stock_items": [
+          "Lemon"
+        ],
+        "preparing_items": [
+          "Curry Special"
+        ]
+      },
+      "recommendations": {
+        "context_intelligence": [
+          {
+            "type": "context_intelligence",
+            "title": "Inventory-Aware Suggestion",
+            "message": "Queue position: #1",
+            "priority": "medium"
+          },
+          {
+            "type": "context_intelligence",
+            "title": "Items Being Prepared",
+            "message": "These items are being prepared: Curry Special",
+            "priority": "medium"
+          }
+        ],
+        "preference_learning": [
+          {
+            "type": "preference_learning",
+            "title": "Most Popular Choice",
+            "message": "Our most loved dish by all customers",
+            "priority": "medium",
+            "confidence": 0.6,
+            "reasoning": "Based on overall popularity"
+          },
+          {
+            "type": "preference_learning",
+            "title": "Chef's Recommendation",
+            "message": "Our signature dish with perfect balance",
+            "priority": "medium",
+            "confidence": 0.7,
+            "reasoning": "Chef's special selection"
+          }
+        ],
+        "preparation_time": [
+          {
+            "type": "preparation_time",
+            "title": "Preparation Time Estimate",
+            "message": "Your order will be ready at 16:09",
+            "priority": "high"
+          },
+          {
+            "type": "preparation_time",
+            "title": "Additional Wait Time",
+            "message": "Some ingredients need 9 more minutes to prepare",
+            "priority": "high"
+          }
+        ]
+      },
+      "refreshment_suggestions": [
+        {
+          "name": "Masala Chai",
+          "price": 3.5,
+          "reason": "Perfect for longer waits"
+        },
+        {
+          "name": "Mango Lassi",
+          "price": 4.0,
+          "reason": "Refreshing yogurt drink"
+        }
+      ],
+      "optimization_strategies": []
+    }
+  },
+  {
+    "timestamp": 1752266755.60206,
+    "event_type": "menu_selections",
+    "data": {
+      "protein": "Chicken",
+      "base_type": "Bowl",
+      "veggies": [],
+      "garnishes": []
+    }
+  }
+]

@@ -1,0 +1,133 @@
+[
+  {
+    "timestamp": 1752266836.343698,
+    "event_type": "system_initialization",
+    "data": {
+      "condition": "emotion_responsive"
+    }
+  },
+  {
+    "timestamp": 1752266836.345313,
+    "event_type": "order_started",
+    "data": {}
+  },
+  {
+    "timestamp": 1752266836.3453162,
+    "event_type": "face_recognition",
+    "data": {
+      "recognized": false,
+      "emotional_state": "sad",
+      "confidence": 0.7582214869587979
+    }
+  },
+  {
+    "timestamp": 1752266836.348654,
+    "event_type": "activity_selection",
+    "data": {
+      "activity": "gym"
+    }
+  },
+  {
+    "timestamp": 1752266836.368716,
+    "event_type": "agent_recommendations_shown",
+    "data": {
+      "success": true,
+      "agents_called": [
+        "context_intelligence",
+        "preference_learning",
+        "preparation_time"
+      ],
+      "preparation_time": {
+        "total_minutes": 67,
+        "ready_time": "16:54",
+        "formatted_duration": "01:07",
+        "queue_position": 45,
+        "complexity_multiplier": 1.3,
+        "queue_multiplier": 2.0,
+        "additional_wait_time": 0,
+        "unavailable_items": [
+          "Curry Masala"
+        ],
+        "low_stock_items": [
+          "Lemon"
+        ],
+        "preparing_items": []
+      },
+      "recommendations": {
+        "context_intelligence": [
+          {
+            "type": "context_intelligence",
+            "title": "Inventory-Aware Suggestion",
+            "message": "Queue position: #45",
+            "priority": "medium"
+          },
+          {
+            "type": "context_intelligence",
+            "title": "Unavailable Items",
+            "message": "These items are currently out of stock: Curry Masala",
+            "priority": "high"
+          }
+        ],
+        "preference_learning": [
+          {
+            "type": "preference_learning",
+            "title": "Most Popular Choice",
+            "message": "Our most loved dish by all customers",
+            "priority": "medium",
+            "confidence": 0.6,
+            "reasoning": "Based on overall popularity"
+          },
+          {
+            "type": "preference_learning",
+            "title": "Chef's Recommendation",
+            "message": "Our signature dish with perfect balance",
+            "priority": "medium",
+            "confidence": 0.7,
+            "reasoning": "Chef's special selection"
+          }
+        ],
+        "preparation_time": [
+          {
+            "type": "preparation_time",
+            "title": "Preparation Time Estimate",
+            "message": "Your order will be ready at 16:54",
+            "priority": "high"
+          }
+        ]
+      },
+      "refreshment_suggestions": [
+        {
+          "name": "Masala Chai",
+          "price": 3.5,
+          "reason": "Perfect for longer waits"
+        },
+        {
+          "name": "Mango Lassi",
+          "price": 4.0,
+          "reason": "Refreshing yogurt drink"
+        }
+      ],
+      "optimization_strategies": [
+        {
+          "type": "queue_optimization",
+          "title": "Queue Management",
+          "message": "You are #45 in the queue",
+          "suggestions": [
+            "Consider simpler order",
+            "Add refreshment drink"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": 1752266836.368799,
+    "event_type": "menu_selections",
+    "data": {
+      "protein": "Chicken",
+      "base_type": "Bowl",
+      "veggies": [],
+      "garnishes": []
+    }
+  }
+]

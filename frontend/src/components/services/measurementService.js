@@ -169,148 +169,22 @@ class MeasurementService {
   }
 
   async requestNASATLX() {
-    // This would typically be called after task completion
-    // For now, we'll simulate realistic values based on the session
-    const simulatedTLX = this.generateSimulatedNASATLX();
-
-    try {
-      const response = await fetch('http://localhost:8000/api/measurements/nasa-tlx', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...simulatedTLX,
-          session_id: this.sessionId,
-          condition: this.condition
-        }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('NASA-TLX submitted:', result);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error submitting NASA-TLX:', error);
-    }
+    // This should be called after task completion with real user input
+    // For now, return null to indicate manual input is required
+    console.log('NASA-TLX requires manual user input - cannot be simulated');
+    return null;
   }
 
   async requestSUS() {
-    // Simulate SUS responses based on the user experience
-    const simulatedSUS = this.generateSimulatedSUS();
-
-    try {
-      const response = await fetch('http://localhost:8000/api/measurements/sus', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...simulatedSUS,
-          session_id: this.sessionId,
-          condition: this.condition
-        }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('SUS submitted:', result);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error submitting SUS:', error);
-    }
+    // SUS requires real user responses - cannot be simulated
+    console.log('SUS requires manual user input - cannot be simulated');
+    return null;
   }
 
   async requestSatisfaction() {
-    // Simulate satisfaction responses
-    const simulatedSatisfaction = this.generateSimulatedSatisfaction();
-
-    try {
-      const response = await fetch('http://localhost:8000/api/measurements/satisfaction', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...simulatedSatisfaction,
-          session_id: this.sessionId,
-          condition: this.condition
-        }),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        console.log('Satisfaction submitted:', result);
-        return result;
-      }
-    } catch (error) {
-      console.error('Error submitting satisfaction:', error);
-    }
-  }
-
-  generateSimulatedNASATLX() {
-    // Generate realistic NASA-TLX values based on session characteristics
-    const baseValues = {
-      mental_demand: 30 + Math.floor(Math.random() * 40), // 30-70
-      physical_demand: 10 + Math.floor(Math.random() * 20), // 10-30
-      temporal_demand: 20 + Math.floor(Math.random() * 30), // 20-50
-      performance: 60 + Math.floor(Math.random() * 30), // 60-90
-      effort: 25 + Math.floor(Math.random() * 35), // 25-60
-      frustration: 10 + Math.floor(Math.random() * 30) // 10-40
-    };
-
-    // Adjust based on errors and decision changes
-    if (this.errors.length > 2) {
-      baseValues.frustration += 15;
-      baseValues.mental_demand += 10;
-    }
-
-    if (this.decisionChanges.length > 3) {
-      baseValues.temporal_demand += 10;
-      baseValues.effort += 10;
-    }
-
-    // Ensure values stay within bounds
-    Object.keys(baseValues).forEach(key => {
-      baseValues[key] = Math.max(0, Math.min(100, baseValues[key]));
-    });
-
-    return baseValues;
-  }
-
-  generateSimulatedSUS() {
-    // Generate realistic SUS responses
-    const baseCondition = this.condition === 'emotion_responsive' ? 4 : 3;
-
-    return {
-      q1_use_frequently: Math.max(1, Math.min(5, baseCondition + Math.floor(Math.random() * 2) - 1)),
-      q2_unnecessarily_complex: Math.max(1, Math.min(5, 3 - baseCondition + Math.floor(Math.random() * 2))),
-      q3_easy_to_use: Math.max(1, Math.min(5, baseCondition + Math.floor(Math.random() * 2))),
-      q4_need_support: Math.max(1, Math.min(5, 3 - baseCondition + Math.floor(Math.random() * 2))),
-      q5_well_integrated: Math.max(1, Math.min(5, baseCondition + Math.floor(Math.random() * 2) - 1)),
-      q6_too_much_inconsistency: Math.max(1, Math.min(5, 3 - baseCondition + Math.floor(Math.random() * 2))),
-      q7_learn_quickly: Math.max(1, Math.min(5, baseCondition + Math.floor(Math.random() * 2))),
-      q8_very_cumbersome: Math.max(1, Math.min(5, 3 - baseCondition + Math.floor(Math.random() * 2))),
-      q9_very_confident: Math.max(1, Math.min(5, baseCondition + Math.floor(Math.random() * 2) - 1)),
-      q10_learn_lot_before: Math.max(1, Math.min(5, 3 - baseCondition + Math.floor(Math.random() * 2)))
-    };
-  }
-
-  generateSimulatedSatisfaction() {
-    // Generate satisfaction ratings (1-7 scale)
-    const baseCondition = this.condition === 'emotion_responsive' ? 5 : 4;
-
-    return {
-      overall_satisfaction: Math.max(1, Math.min(7, baseCondition + Math.floor(Math.random() * 3) - 1)),
-      ease_of_use: Math.max(1, Math.min(7, baseCondition + Math.floor(Math.random() * 3))),
-      recommendation_quality: Math.max(1, Math.min(7, baseCondition + Math.floor(Math.random() * 3) - 1)),
-      perceived_personalization: Math.max(1, Math.min(7, baseCondition + Math.floor(Math.random() * 3))),
-      decision_confidence: Math.max(1, Math.min(7, baseCondition + Math.floor(Math.random() * 3) - 1)),
-      enjoyment: Math.max(1, Math.min(7, baseCondition + Math.floor(Math.random() * 3))),
-      return_intention: Math.max(1, Math.min(7, baseCondition + Math.floor(Math.random() * 3) - 1))
-    };
+    // Satisfaction requires real user responses - cannot be simulated
+    console.log('Satisfaction requires manual user input - cannot be simulated');
+    return null;
   }
 
   async getSessionSummary() {

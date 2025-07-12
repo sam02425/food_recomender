@@ -17,7 +17,8 @@ import {
   Speed as SpeedIcon,
   Favorite as FavoriteIcon,
   Security as SecurityIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
+  AccessTime as AccessTimeIcon
 } from '@mui/icons-material';
 import {
   RecommendationRequest,
@@ -92,7 +93,7 @@ export const RecommendationEngine: React.FC<RecommendationEngineProps> = ({
     switch (source) {
       case 'context_intelligence': return AgentType.CONTEXT_INTELLIGENCE;
       case 'preference_learning': return AgentType.PREFERENCE_LEARNING;
-      case 'problem_prevention': return AgentType.PROBLEM_PREVENTION;
+      case 'preparation_time': return AgentType.PREPARATION_TIME;
       default: return AgentType.CONTEXT_INTELLIGENCE;
     }
   };
@@ -119,7 +120,7 @@ export const RecommendationEngine: React.FC<RecommendationEngineProps> = ({
     switch (source) {
       case 'context_intelligence': return <SpeedIcon />;
       case 'preference_learning': return <FavoriteIcon />;
-      case 'problem_prevention': return <SecurityIcon />;
+      case 'preparation_time': return <AccessTimeIcon />;
       default: return <CheckIcon />;
     }
   };

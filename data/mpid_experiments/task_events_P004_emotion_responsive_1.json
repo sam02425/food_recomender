@@ -1,0 +1,121 @@
+[
+  {
+    "timestamp": 1752266649.436578,
+    "event_type": "system_initialization",
+    "data": {
+      "condition": "emotion_responsive"
+    }
+  },
+  {
+    "timestamp": 1752266649.438064,
+    "event_type": "order_started",
+    "data": {}
+  },
+  {
+    "timestamp": 1752266649.438067,
+    "event_type": "face_recognition",
+    "data": {
+      "recognized": false,
+      "emotional_state": "happy",
+      "confidence": 0.8525633623593551
+    }
+  },
+  {
+    "timestamp": 1752266649.440374,
+    "event_type": "activity_selection",
+    "data": {
+      "activity": "chilling"
+    }
+  },
+  {
+    "timestamp": 1752266649.460893,
+    "event_type": "agent_recommendations_shown",
+    "data": {
+      "success": true,
+      "agents_called": [
+        "context_intelligence",
+        "preference_learning",
+        "preparation_time"
+      ],
+      "preparation_time": {
+        "total_minutes": 15,
+        "ready_time": "15:59",
+        "formatted_duration": "00:15",
+        "queue_position": 1,
+        "complexity_multiplier": 1.7,
+        "queue_multiplier": 1.0,
+        "additional_wait_time": 0,
+        "unavailable_items": [],
+        "low_stock_items": [],
+        "preparing_items": [
+          "Yogurt/Raita"
+        ]
+      },
+      "recommendations": {
+        "context_intelligence": [
+          {
+            "type": "context_intelligence",
+            "title": "Inventory-Aware Suggestion",
+            "message": "Queue position: #1",
+            "priority": "medium"
+          },
+          {
+            "type": "context_intelligence",
+            "title": "Items Being Prepared",
+            "message": "These items are being prepared: Yogurt/Raita",
+            "priority": "medium"
+          }
+        ],
+        "preference_learning": [
+          {
+            "type": "preference_learning",
+            "title": "Most Popular Choice",
+            "message": "Our most loved dish by all customers",
+            "priority": "medium",
+            "confidence": 0.6,
+            "reasoning": "Based on overall popularity"
+          },
+          {
+            "type": "preference_learning",
+            "title": "Chef's Recommendation",
+            "message": "Our signature dish with perfect balance",
+            "priority": "medium",
+            "confidence": 0.7,
+            "reasoning": "Chef's special selection"
+          }
+        ],
+        "preparation_time": [
+          {
+            "type": "preparation_time",
+            "title": "Preparation Time Estimate",
+            "message": "Your order will be ready at 15:59",
+            "priority": "high"
+          }
+        ]
+      },
+      "refreshment_suggestions": [
+        {
+          "name": "Water",
+          "price": 1.0,
+          "reason": "Stay hydrated"
+        },
+        {
+          "name": "Soda",
+          "price": 2.0,
+          "reason": "Quick refreshment"
+        }
+      ],
+      "optimization_strategies": []
+    }
+  },
+  {
+    "timestamp": 1752266649.4609752,
+    "event_type": "menu_selections",
+    "data": {
+      "protein": "Chicken",
+      "base_type": "Bowl",
+      "veggies": [],
+      "garnishes": []
+    }
+  }
+]
