@@ -128,27 +128,21 @@ This framework enables researchers to run controlled, agent-based food ordering 
 
 ---
 
-## 7. Results (Anonymized Example)
 
-**Summary:**
-- 13 participants, 138 trials (all personal data anonymized)
-- All names, phone numbers, ages, and private data are marked as [REDACTED] for compliance
-- Results log is kept locally and versioned with git for audit and reproducibility
+## 7. Contact & Citation
 
-**Key Findings:**
-- **User Satisfaction:** Baseline 5.29/7.0, Adaptive 5.04/7.0 (p=0.004)
-- **Cognitive Workload (NASA-TLX):** Baseline 41.2, Adaptive 38.7 (p=0.03)
-- **Agent Acceptance:** Context Intelligence 62%, Preference Learning 74%
-- **Availability Impact:** 67% risk-avoidance for low stock, 89% substitution acceptance for out-of-stock
-- **Queue-Aware Decisions:** Longer waits led to more refreshment orders
-
----
-
-## 8. Contact & Citation
-
-For questions, collaboration, or to cite this framework, please contact the repository maintainer or open an issue.
+For questions, collaboration, or to cite this framework, please contact the spatel74@lamar.edu or open an issue.
 
 ---
 
 **Critical Note:**
 This framework is provided for research purposes. All experiment data is protected for compliance. Please review and adapt the system for your own ethical and privacy requirements.
+
+## 🔬 Research Design Repository
+
+This repository contains the experimental design and system implementation 
+for our controlled study on adaptive food ordering interfaces. 
+
+**Important**: No participant data or experimental results are included. 
+This repository demonstrates the technical implementation and experimental 
+methodology only. Research findings are available in the published paper.
