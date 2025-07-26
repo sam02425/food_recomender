@@ -1,4 +1,4 @@
-# Emotion-Responsive Food Ordering System: Experiment Framework
+# Adaptive Food Ordering System: Experiment Framework
 
 ## Overview
 
